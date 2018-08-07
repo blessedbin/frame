@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blessedbin.frame.ucenter.mapper.SysMenuMapper">
+    <resultMap id="BaseResultMap" type="com.blessedbin.frame.ucenter.modal.SysMenu">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="permission_id" property="permissionId" jdbcType="INTEGER"/>
+        <result column="title" property="title" jdbcType="VARCHAR"/>
+        <result column="pid" property="pid" jdbcType="INTEGER"/>
+        <result column="component" property="component" jdbcType="VARCHAR"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="path" property="path" jdbcType="VARCHAR"/>
+        <result column="redirect" property="redirect" jdbcType="VARCHAR"/>
+        <result column="icon" property="icon" jdbcType="VARCHAR"/>
+        <result column="enabled" property="enabled" jdbcType="BIT"/>
+        <result column="always_show" property="alwaysShow" jdbcType="BIT"/>
+        <result column="hidden" property="hidden" jdbcType="BIT"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="description" property="remark" jdbcType="VARCHAR"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="meta" property="meta" jdbcType="VARCHAR"/>
+    </resultMap>
+    <select id="selectMenuByUuidAndEnabled" resultType="com.blessedbin.frame.ucenter.modal.SysMenu">
+        select *
+        from sys_menu
+            inner join sys_permission permission on sys_menu.permission_id = permission.id
+            inner join sys_role_has_permission srhp on permission.id = srhp.sys_permission_id
+            inner join sys_role sr on srhp.sys_role_id = sr.id
+            inner join sys_user_has_role suhr on sr.id = suhr.sys_role_id
+        where suhr.sys_user_uuid = #{uuid} and sys_menu.enabled=b'1'
+    </select>
+    <select id="selectByPid" resultType="com.blessedbin.frame.ucenter.modal.SysMenu">
+        select * from sys_menu where pid=#{pid}
+    </select>
+</mapper>

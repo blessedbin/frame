@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.blessedbin.frame.ucenter.mapper.SysRoleHasPermissionMapper">
+    <resultMap id="BaseResultMap" type="com.blessedbin.frame.ucenter.modal.SysRoleHasPermission">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="sys_role_id" property="sysRoleId" jdbcType="INTEGER"/>
+        <id column="sys_permission_id" property="sysPermissionId" jdbcType="INTEGER"/>
+    </resultMap>
+    <insert id="insertLists">
+        insert into sys_role_has_permission(sys_role_id, sys_permission_id) values
+        <foreach collection="lists" item="rp" separator=",">
+            (#{rp.sysRoleId},#{rp.sysPermissionId})
+        </foreach>
+    </insert>
+    <delete id="deleteByRoleId">
+        delete from sys_role_has_permission
+        where sys_role_id = #{roleId}
+    </delete>
+    <delete id="deleteByPermissionId">
+        delete from sys_role_has_permission
+        where sys_permission_id = #{permissionId}
+    </delete>
+    <select id="selectByRoleIdAndPermissionType"
+            resultType="com.blessedbin.frame.ucenter.modal.SysRoleHasPermission">
+        select
+            sys_role_has_permission.sys_role_id,
+            sys_role_has_permission.sys_permission_id
+        from sys_role_has_permission
+            inner join sys_permission permission on sys_role_has_permission.sys_permission_id = permission.id
+        where sys_role_has_permission.sys_role_id = #{roleId} and permission.type = #{type}
+    </select>
+</mapper>

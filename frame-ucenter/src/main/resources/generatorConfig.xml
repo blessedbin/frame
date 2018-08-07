@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+
+    <classPathEntry
+            location="D:\config\.m2\repository\mysql\mysql-connector-java\5.1.44\mysql-connector-java-5.1.44.jar"/>
+
+    <!--
+        targetRuntime 用于指定生成的代码的运行时环境
+            MyBatis3：默认值
+            MyBatis3Simple： 这种情况下不会生成与Example相关的方法
+    -->
+    <context id="mysql" defaultModelType="flat" targetRuntime="MyBatis3Simple">
+
+        <!--分隔符设置-->
+        <property name="autoDelimitKeywords" value="true"/>
+        <property name="beginningDelimiter" value="`"/>
+        <property name="endingDelimiter" value="`"/>
+
+        <plugin type="tk.mybatis.mapper.generator.MapperPlugin">
+            <property name="mappers" value="com.blessedbin.frame.common.mapper.MyMapper"/>
+            <!-- caseSensitive默认false，当数据库表名区分大小写时，可以将该属性设置为true -->
+            <!--<property text="caseSensitive" value="true"/>-->
+        </plugin>
+        <!--通用代码生成器插件-->
+
+        <!--配置如何生成配置信息，可以实现自己的注释生成器，参考《MyBatis从入门到精通》 P97-->
+        <commentGenerator>
+            <!--**阻止**生成注释，默认为false-->
+            <property name="suppressAllComments" value="true"/>
+            <!--**阻止**生成的注释包含时间戳，默认为false-->
+            <property name="suppressDate" value="true"/>
+        </commentGenerator>
+        <!--<jdbcConnection> 元素用于指定数据库连接所需的内省表的属性。
+        MyBatis Generator 使用JDBC的数据库元数据类来发现您在配置中指定的属性表。
+        每一个<context>都必须有一个<jdbcConnection>元素。-->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://192.168.177.129:3306/frame3?useSSL=false"
+                        userId="root"
+                        password="root">
+        </jdbcConnection>
+
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+        <!--该元素用来控制生成的实体类，根据<context>中配置的defaultModelType，一个表可能会对应生成多个不同的实体类。
+        一个表对应多个类实际上并不方便，所以前面也推荐使用flat，这种情况下一个表对应一个实体类。-->
+        <!--targetPackage:生成实体类存放的包名，一般就是放在该包下。实际还会受到其他配置的影响(<table>中会提到)。
+            targetProject:指定目标项目路径，可以是绝对路径或相对路径（如 targetProject="src/main/java"）。-->
+        <javaModelGenerator targetPackage="com.blessedbin.frame.ucenter.modal" targetProject="src/main/java">
+            <!-- 是否对model添加 构造函数 -->
+            <property name="constructorBased" value="false"/>
+            <!-- 是否允许子包，即targetPackage.schemaName.tableName -->
+            <property name="enableSubPackages" value="false"/>
+
+            <!--是否对类CHAR类型的列的数据进行trim操作 -->
+            <!--trimStrings:是否对数据库查询结果进行trim操作，如果设置为true就会生成类似这样
+            public void setUsername(String username) {this.username = username == null ? null : username.trim();}
+            的setter方法。默认值为false-->
+            <property name="trimStrings" value="true"/>
+            <!--<property name="rootClass" value="com.blessedbin.frame.ucenter.modal.BaseEntity"/>-->
+        </javaModelGenerator>
+
+        <sqlMapGenerator targetPackage="com.blessedbin.frame.ucenter.mapper" targetProject="src/main/java"/>
+
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.blessedbin.frame.ucenter.mapper"
+                             targetProject="src/main/java"/>
+        <!--<property text="enableSubPackages" value=""/>-->
+        <!--
+                定义Maper.java 源代码中的ByExample() 方法的可视性，可选的值有：
+                public;
+                private;
+                protected;
+                default
+                注意：如果 targetRuntime="MyBatis3",此参数被忽略
+         -->
+        <!-- <property text="exampleMethodVisibility" value=""/>-->
+        <!--方法名计数器
+          Important note: this property is ignored if the target runtime is MyBatis3.
+         -->
+        <!--<property text="methodNameCalculator" value=""/>-->
+
+        <!--为生成的接口添加父接口 -->
+        <!--  <property text="rootInterface" value="com.blessedbin.frame.ucenter.common.mapper.MyMapper"/>-->
+        <!-- </javaClientGenerator>-->
+
+
+        <!--该元素至少要配置一个，可以配置多个。
+该元素用来配置要通过内省的表。只有配置的才会生成实体类和其他文件。-->
+        <!--
+        schema:数据库的schema,可以使用SQL通配符匹配。如果设置了该值，生成SQL的表名会变成如schema.tableName的形式。
+        catalog:数据库的catalog，如果设置了该值，生成SQL的表名会变成如catalog.tableName的形式。
+        alias:如果指定，这个值会用在生成的select查询SQL的表的别名和列名上。 列名会被别名为 alias_actualColumnName(别名_实际列名) 这种模式。
+        domainObjectName:生成对象的基本名称。如果没有指定，MBG会自动根据表名来生成名称。
+        enableXXX:XXX代表多种SQL方法，该属性用来指定是否生成对应的XXX语句。
+        selectByPrimaryKeyQueryId:DBA跟踪工具会用到，具体请看详细文档。
+        selectByExampleQueryId:DBA跟踪工具会用到，具体请看详细文档。
+        modelType:和<context>的defaultModelType含义一样，这里可以针对表进行配置，这里的配置会覆盖<context>的defaultModelType配置。
+        escapeWildcards:这个属性表示当查询列，是否对schema和表名中的SQL通配符 ('_' and '%') 进行转义。 对于某些驱动当schema或表名中包含SQL通配符时（例如，一个表名是MY_TABLE，有一些驱动需要将下划线进行转义）是必须的。默认值是false。
+        delimitIdentifiers:是否给标识符增加**分隔符**。默认false。当catalog,schema或tableName中包含空白时，默认为true。
+        delimitAllColumns:是否对所有列添加**分隔符**。默认false。
+        -->
+
+
+
+        <table tableName="sys_action_api">
+        </table>
+        <table tableName="sys_action">
+        </table>
+    </context>
+</generatorConfiguration>
