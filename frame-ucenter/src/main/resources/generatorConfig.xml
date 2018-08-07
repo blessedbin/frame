@@ -38,7 +38,7 @@
         MyBatis Generator 使用JDBC的数据库元数据类来发现您在配置中指定的属性表。
         每一个<context>都必须有一个<jdbcConnection>元素。-->
         <jdbcConnection driverClass="com.mysql.jdbc.Driver"
-                        connectionURL="jdbc:mysql://192.168.177.129:3306/frame3?useSSL=false"
+                        connectionURL="jdbc:mysql://192.168.177.129:3306/frame?useSSL=false"
                         userId="root"
                         password="root">
         </jdbcConnection>
@@ -107,9 +107,7 @@
 
 
 
-        <table tableName="sys_action_api">
-        </table>
-        <table tableName="sys_action">
+        <table tableName="sys_%">
         </table>
     </context>
 </generatorConfiguration>
