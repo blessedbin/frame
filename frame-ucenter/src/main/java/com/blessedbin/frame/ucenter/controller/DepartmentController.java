@@ -3,6 +3,7 @@ package com.blessedbin.frame.ucenter.controller;
 import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.ui.CascaderNode;
+import com.blessedbin.frame.common.ui.TreeNode;
 import com.blessedbin.frame.common.validate.PostMethodValidationGroup;
 import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.dto.DepartmentDto;
@@ -27,7 +28,7 @@ import java.util.List;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping(value = "${frame.base-path.ucenter}/department")
+@RequestMapping(value = "${frame.base-path.ucenter}/sys/department")
 @Api(description = "部门管理")
 @Log4j2
 public class DepartmentController {
@@ -35,9 +36,9 @@ public class DepartmentController {
     @Autowired
     private DepartmentService departmentService;
 
-    @RequestMapping("/tree_table.json")
+    @RequestMapping("/tree.json")
     @FrameApi
-    public SimpleResponse<List<DepartmentDto>> treeTables(){
+    public SimpleResponse<List<TreeNode>> treeTables(){
         return SimpleResponse.ok(departmentService.getDepartmentTree());
     }
 
@@ -60,14 +61,14 @@ public class DepartmentController {
 
         if(department.getpId() == null || department.getpId() == -1){
             SysDepartmentExample example = new SysDepartmentExample();
-            //TODO
+            example.createCriteria().andPIdEqualTo(department.getpId()).andNameEqualTo(department.getName());
             if(departmentService.checkExistsByExample(example)){
                 throw new ParamCheckRuntimeException("同级下名称重复");
             }
             department.setpId(null);
         } else {
             SysDepartmentExample example = new SysDepartmentExample();
-            //TODO
+            example.createCriteria().andNameEqualTo(department.getName()).andPIdIsNull();
             if(departmentService.checkExistsByExample(example)){
                 throw new ParamCheckRuntimeException("同级下名称重复");
             }

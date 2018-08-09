@@ -107,7 +107,7 @@
 
 
 
-        <table tableName="sys_%">
+        <table tableName="sys_api">
         </table>
     </context>
 </generatorConfiguration>

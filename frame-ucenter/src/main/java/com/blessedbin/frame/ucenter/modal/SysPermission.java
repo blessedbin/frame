@@ -3,6 +3,7 @@ package com.blessedbin.frame.ucenter.modal;
 import tk.mybatis.mapper.annotation.KeySql;
 
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.*;
 
 @Table(name = "sys_permission")
@@ -207,5 +208,46 @@ public class SysPermission {
      */
     public void setSysSystemId(String sysSystemId) {
         this.sysSystemId = sysSystemId == null ? null : sysSystemId.trim();
+    }
+
+    @Override
+    public String toString() {
+        return "SysPermission{" +
+                "id=" + id +
+                ", permissionName='" + permissionName + '\'' +
+                ", permissionKey='" + permissionKey + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", remark='" + remark + '\'' +
+                ", enabled=" + enabled +
+                ", type='" + type + '\'' +
+                ", sort=" + sort +
+                ", sysSystemId='" + sysSystemId + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        SysPermission that = (SysPermission) o;
+        return Objects.equals(id, that.id) &&
+                Objects.equals(permissionName, that.permissionName) &&
+                Objects.equals(permissionKey, that.permissionKey) &&
+                Objects.equals(remark, that.remark) &&
+                Objects.equals(enabled, that.enabled) &&
+                Objects.equals(type, that.type) &&
+                Objects.equals(sort, that.sort) &&
+                Objects.equals(sysSystemId, that.sysSystemId);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(id, permissionName, permissionKey, remark, enabled, type, sort, sysSystemId);
     }
 }

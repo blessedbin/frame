@@ -198,7 +198,7 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
 
         key = Pinyin.toPinyin(menu.getTitle(), "-");
 
-        permission.setPermissionKey(key);
+        permission.setPermissionKey(SysPermission.TYPE_MENU + "-" +key);
         permission.setRemark(menu.getRemark());
         permission.setPermissionName(menu.getTitle());
         permission.setSort(menu.getSort());

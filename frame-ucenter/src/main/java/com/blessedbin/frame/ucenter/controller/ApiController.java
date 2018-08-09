@@ -16,7 +16,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
@@ -107,6 +106,7 @@ public class ApiController {
 
     @GetMapping("/select_option.json")
     @FrameApi
+    @ApiOperation(value = "select_option")
     public SimpleResponse<Map<String, Object>> selectList(@RequestParam(required = false) Integer roleId,
                                                           @RequestParam(required = false) Integer menuId){
         Map<String, Object> returnData = new HashMap<>();
@@ -147,7 +147,7 @@ public class ApiController {
     public List<FramePermission> findUserApiByUuid(@PathVariable("uuid") String uuid){
         List<SysApi> apis = apiService.selectByUuid(uuid);
         return apis.stream().map(sysApi ->
-                FramePermission.builder().method(sysApi.getMethodType()).url(sysApi.getUrl()).build())
+                FramePermission.builder().method(sysApi.getMethod()).url(sysApi.getUrl()).build())
                 .collect(Collectors.toList());
     }
 }

@@ -1,6 +1,7 @@
 package com.blessedbin.frame.ucenter.modal;
 
 import java.util.Date;
+import java.util.Objects;
 import javax.persistence.*;
 
 @Table(name = "sys_api")
@@ -22,32 +23,7 @@ public class SysApi {
     /**
      * 请求方式 ,分隔
      */
-    @Column(name = "method_type")
-    private String methodType;
-
-    /**
-     * 方法名
-     */
-    @Column(name = "method_name")
-    private String methodName;
-
-    /**
-     * 控制器名
-     */
-    @Column(name = "controller_name")
-    private String controllerName;
-
-    /**
-     * 请求参数类型
-     */
-    @Column(name = "method_param_types")
-    private String methodParamTypes;
-
-    /**
-     * 请求参数名称，与类型一一对应
-     */
-    @Column(name = "method_param_names")
-    private String methodParamNames;
+    private String method;
 
     /**
      * 备注
@@ -75,6 +51,8 @@ public class SysApi {
 
     @Column(name = "addition_information")
     private String additionInformation;
+
+    private String tags;
 
     /**
      * @return permission_id
@@ -129,91 +107,19 @@ public class SysApi {
     /**
      * 获取请求方式 ,分隔
      *
-     * @return method_type - 请求方式 ,分隔
+     * @return method - 请求方式 ,分隔
      */
-    public String getMethodType() {
-        return methodType;
+    public String getMethod() {
+        return method;
     }
 
     /**
      * 设置请求方式 ,分隔
      *
-     * @param methodType 请求方式 ,分隔
+     * @param method 请求方式 ,分隔
      */
-    public void setMethodType(String methodType) {
-        this.methodType = methodType == null ? null : methodType.trim();
-    }
-
-    /**
-     * 获取方法名
-     *
-     * @return method_name - 方法名
-     */
-    public String getMethodName() {
-        return methodName;
-    }
-
-    /**
-     * 设置方法名
-     *
-     * @param methodName 方法名
-     */
-    public void setMethodName(String methodName) {
-        this.methodName = methodName == null ? null : methodName.trim();
-    }
-
-    /**
-     * 获取控制器名
-     *
-     * @return controller_name - 控制器名
-     */
-    public String getControllerName() {
-        return controllerName;
-    }
-
-    /**
-     * 设置控制器名
-     *
-     * @param controllerName 控制器名
-     */
-    public void setControllerName(String controllerName) {
-        this.controllerName = controllerName == null ? null : controllerName.trim();
-    }
-
-    /**
-     * 获取请求参数类型
-     *
-     * @return method_param_types - 请求参数类型
-     */
-    public String getMethodParamTypes() {
-        return methodParamTypes;
-    }
-
-    /**
-     * 设置请求参数类型
-     *
-     * @param methodParamTypes 请求参数类型
-     */
-    public void setMethodParamTypes(String methodParamTypes) {
-        this.methodParamTypes = methodParamTypes == null ? null : methodParamTypes.trim();
-    }
-
-    /**
-     * 获取请求参数名称，与类型一一对应
-     *
-     * @return method_param_names - 请求参数名称，与类型一一对应
-     */
-    public String getMethodParamNames() {
-        return methodParamNames;
-    }
-
-    /**
-     * 设置请求参数名称，与类型一一对应
-     *
-     * @param methodParamNames 请求参数名称，与类型一一对应
-     */
-    public void setMethodParamNames(String methodParamNames) {
-        this.methodParamNames = methodParamNames == null ? null : methodParamNames.trim();
+    public void setMethod(String method) {
+        this.method = method == null ? null : method.trim();
     }
 
     /**
@@ -314,5 +220,58 @@ public class SysApi {
      */
     public void setAdditionInformation(String additionInformation) {
         this.additionInformation = additionInformation == null ? null : additionInformation.trim();
+    }
+
+    /**
+     * @return tags
+     */
+    public String getTags() {
+        return tags;
+    }
+
+    /**
+     * @param tags
+     */
+    public void setTags(String tags) {
+        this.tags = tags == null ? null : tags.trim();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SysApi sysApi = (SysApi) o;
+        return Objects.equals(permissionId, sysApi.permissionId) &&
+                Objects.equals(name, sysApi.name) &&
+                Objects.equals(url, sysApi.url) &&
+                Objects.equals(method, sysApi.method) &&
+                Objects.equals(remark, sysApi.remark) &&
+                Objects.equals(sort, sysApi.sort) &&
+                Objects.equals(description, sysApi.description) &&
+                Objects.equals(additionInformation, sysApi.additionInformation) &&
+                Objects.equals(tags, sysApi.tags);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(permissionId, name, url, method, remark, sort, description, additionInformation, tags);
+    }
+
+    @Override
+    public String toString() {
+        return "SysApi{" +
+                "permissionId=" + permissionId +
+                ", name='" + name + '\'' +
+                ", url='" + url + '\'' +
+                ", method='" + method + '\'' +
+                ", remark='" + remark + '\'' +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", sort=" + sort +
+                ", description='" + description + '\'' +
+                ", additionInformation='" + additionInformation + '\'' +
+                ", tags='" + tags + '\'' +
+                '}';
     }
 }

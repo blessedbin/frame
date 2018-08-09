@@ -1,14 +1,19 @@
 package com.blessedbin.frame.ucenter.modal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import tk.mybatis.mapper.annotation.KeySql;
+
 import java.util.Date;
 import javax.persistence.*;
 
 @Table(name = "sys_department")
 public class SysDepartment {
     @Id
+    @KeySql(useGeneratedKeys = true)
     private Integer id;
 
     @Column(name = "p_id")
+    @JsonProperty(value = "pid")
     private Integer pId;
 
     private String name;
@@ -174,5 +179,20 @@ public class SysDepartment {
      */
     public void setAdditionInformation(String additionInformation) {
         this.additionInformation = additionInformation == null ? null : additionInformation.trim();
+    }
+
+    @Override
+    public String toString() {
+        return "SysDepartment{" +
+                "id=" + id +
+                ", pId=" + pId +
+                ", name='" + name + '\'' +
+                ", remark='" + remark + '\'' +
+                ", sort=" + sort +
+                ", createTime=" + createTime +
+                ", updateTime=" + updateTime +
+                ", delFlag=" + delFlag +
+                ", additionInformation='" + additionInformation + '\'' +
+                '}';
     }
 }

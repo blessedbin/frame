@@ -2,6 +2,7 @@ package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.service.impl.AbstractMysqlCrudServiceImpl;
 import com.blessedbin.frame.common.ui.CascaderNode;
+import com.blessedbin.frame.common.ui.TreeNode;
 import com.blessedbin.frame.ucenter.entity.dto.DepartmentDto;
 import com.blessedbin.frame.ucenter.modal.SysDepartment;
 import com.blessedbin.frame.ucenter.modal.SysDepartmentExample;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,28 +26,21 @@ import java.util.stream.Collectors;
 @Service
 public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartment,Integer> {
 
-    public List<DepartmentDto> getDepartmentTree() {
+    public List<TreeNode> getDepartmentTree() {
         return buildDepartmentTree(null);
     }
 
     /**
      * 递归构建树
-     * @param department
+     * @param pid
      * @return
      */
-    private List<DepartmentDto> buildDepartmentTree(SysDepartment department){
-        return getAllByPid(department == null ? null : department.getId())
-                .stream().map(dt -> {
-            DepartmentDto dto = new DepartmentDto();
-            BeanUtils.copyProperties(dt,dto);
-
-            // 查找并设置组织名称
-            // String organizationName = organizationService.selectNameByPk(dt.getOrganizationId());
-            // dto.setOrganizationName(organizationName);
-
-            dto.setChildren(buildDepartmentTree(dt));
-            return dto;
-        }).collect(Collectors.toList());
+    private List<TreeNode> buildDepartmentTree(Integer pid){
+        return getAllByPid(pid)
+                .stream().map(dt -> TreeNode.builder()
+                        .id(String.valueOf(dt.getId())).label(dt.getName())
+                        .children(buildDepartmentTree(dt.getId())).build())
+                .collect(Collectors.toList());
     }
 
     public List<SysDepartment> getTopAll(){

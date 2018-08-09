@@ -305,353 +305,73 @@ public class SysApiExample {
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeIsNull() {
-            addCriterion("method_type is null");
+        public Criteria andMethodIsNull() {
+            addCriterion("`method` is null");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeIsNotNull() {
-            addCriterion("method_type is not null");
+        public Criteria andMethodIsNotNull() {
+            addCriterion("`method` is not null");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeEqualTo(String value) {
-            addCriterion("method_type =", value, "methodType");
+        public Criteria andMethodEqualTo(String value) {
+            addCriterion("`method` =", value, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeNotEqualTo(String value) {
-            addCriterion("method_type <>", value, "methodType");
+        public Criteria andMethodNotEqualTo(String value) {
+            addCriterion("`method` <>", value, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeGreaterThan(String value) {
-            addCriterion("method_type >", value, "methodType");
+        public Criteria andMethodGreaterThan(String value) {
+            addCriterion("`method` >", value, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeGreaterThanOrEqualTo(String value) {
-            addCriterion("method_type >=", value, "methodType");
+        public Criteria andMethodGreaterThanOrEqualTo(String value) {
+            addCriterion("`method` >=", value, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeLessThan(String value) {
-            addCriterion("method_type <", value, "methodType");
+        public Criteria andMethodLessThan(String value) {
+            addCriterion("`method` <", value, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeLessThanOrEqualTo(String value) {
-            addCriterion("method_type <=", value, "methodType");
+        public Criteria andMethodLessThanOrEqualTo(String value) {
+            addCriterion("`method` <=", value, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeLike(String value) {
-            addCriterion("method_type like", value, "methodType");
+        public Criteria andMethodLike(String value) {
+            addCriterion("`method` like", value, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeNotLike(String value) {
-            addCriterion("method_type not like", value, "methodType");
+        public Criteria andMethodNotLike(String value) {
+            addCriterion("`method` not like", value, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeIn(List<String> values) {
-            addCriterion("method_type in", values, "methodType");
+        public Criteria andMethodIn(List<String> values) {
+            addCriterion("`method` in", values, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeNotIn(List<String> values) {
-            addCriterion("method_type not in", values, "methodType");
+        public Criteria andMethodNotIn(List<String> values) {
+            addCriterion("`method` not in", values, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeBetween(String value1, String value2) {
-            addCriterion("method_type between", value1, value2, "methodType");
+        public Criteria andMethodBetween(String value1, String value2) {
+            addCriterion("`method` between", value1, value2, "method");
             return (Criteria) this;
         }
 
-        public Criteria andMethodTypeNotBetween(String value1, String value2) {
-            addCriterion("method_type not between", value1, value2, "methodType");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameIsNull() {
-            addCriterion("method_name is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameIsNotNull() {
-            addCriterion("method_name is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameEqualTo(String value) {
-            addCriterion("method_name =", value, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameNotEqualTo(String value) {
-            addCriterion("method_name <>", value, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameGreaterThan(String value) {
-            addCriterion("method_name >", value, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameGreaterThanOrEqualTo(String value) {
-            addCriterion("method_name >=", value, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameLessThan(String value) {
-            addCriterion("method_name <", value, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameLessThanOrEqualTo(String value) {
-            addCriterion("method_name <=", value, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameLike(String value) {
-            addCriterion("method_name like", value, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameNotLike(String value) {
-            addCriterion("method_name not like", value, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameIn(List<String> values) {
-            addCriterion("method_name in", values, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameNotIn(List<String> values) {
-            addCriterion("method_name not in", values, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameBetween(String value1, String value2) {
-            addCriterion("method_name between", value1, value2, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodNameNotBetween(String value1, String value2) {
-            addCriterion("method_name not between", value1, value2, "methodName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameIsNull() {
-            addCriterion("controller_name is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameIsNotNull() {
-            addCriterion("controller_name is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameEqualTo(String value) {
-            addCriterion("controller_name =", value, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameNotEqualTo(String value) {
-            addCriterion("controller_name <>", value, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameGreaterThan(String value) {
-            addCriterion("controller_name >", value, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameGreaterThanOrEqualTo(String value) {
-            addCriterion("controller_name >=", value, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameLessThan(String value) {
-            addCriterion("controller_name <", value, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameLessThanOrEqualTo(String value) {
-            addCriterion("controller_name <=", value, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameLike(String value) {
-            addCriterion("controller_name like", value, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameNotLike(String value) {
-            addCriterion("controller_name not like", value, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameIn(List<String> values) {
-            addCriterion("controller_name in", values, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameNotIn(List<String> values) {
-            addCriterion("controller_name not in", values, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameBetween(String value1, String value2) {
-            addCriterion("controller_name between", value1, value2, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andControllerNameNotBetween(String value1, String value2) {
-            addCriterion("controller_name not between", value1, value2, "controllerName");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesIsNull() {
-            addCriterion("method_param_types is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesIsNotNull() {
-            addCriterion("method_param_types is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesEqualTo(String value) {
-            addCriterion("method_param_types =", value, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesNotEqualTo(String value) {
-            addCriterion("method_param_types <>", value, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesGreaterThan(String value) {
-            addCriterion("method_param_types >", value, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesGreaterThanOrEqualTo(String value) {
-            addCriterion("method_param_types >=", value, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesLessThan(String value) {
-            addCriterion("method_param_types <", value, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesLessThanOrEqualTo(String value) {
-            addCriterion("method_param_types <=", value, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesLike(String value) {
-            addCriterion("method_param_types like", value, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesNotLike(String value) {
-            addCriterion("method_param_types not like", value, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesIn(List<String> values) {
-            addCriterion("method_param_types in", values, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesNotIn(List<String> values) {
-            addCriterion("method_param_types not in", values, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesBetween(String value1, String value2) {
-            addCriterion("method_param_types between", value1, value2, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamTypesNotBetween(String value1, String value2) {
-            addCriterion("method_param_types not between", value1, value2, "methodParamTypes");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesIsNull() {
-            addCriterion("method_param_names is null");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesIsNotNull() {
-            addCriterion("method_param_names is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesEqualTo(String value) {
-            addCriterion("method_param_names =", value, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesNotEqualTo(String value) {
-            addCriterion("method_param_names <>", value, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesGreaterThan(String value) {
-            addCriterion("method_param_names >", value, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesGreaterThanOrEqualTo(String value) {
-            addCriterion("method_param_names >=", value, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesLessThan(String value) {
-            addCriterion("method_param_names <", value, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesLessThanOrEqualTo(String value) {
-            addCriterion("method_param_names <=", value, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesLike(String value) {
-            addCriterion("method_param_names like", value, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesNotLike(String value) {
-            addCriterion("method_param_names not like", value, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesIn(List<String> values) {
-            addCriterion("method_param_names in", values, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesNotIn(List<String> values) {
-            addCriterion("method_param_names not in", values, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesBetween(String value1, String value2) {
-            addCriterion("method_param_names between", value1, value2, "methodParamNames");
-            return (Criteria) this;
-        }
-
-        public Criteria andMethodParamNamesNotBetween(String value1, String value2) {
-            addCriterion("method_param_names not between", value1, value2, "methodParamNames");
+        public Criteria andMethodNotBetween(String value1, String value2) {
+            addCriterion("`method` not between", value1, value2, "method");
             return (Criteria) this;
         }
 
@@ -1042,6 +762,76 @@ public class SysApiExample {
 
         public Criteria andAdditionInformationNotBetween(String value1, String value2) {
             addCriterion("addition_information not between", value1, value2, "additionInformation");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsIsNull() {
+            addCriterion("tags is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsIsNotNull() {
+            addCriterion("tags is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsEqualTo(String value) {
+            addCriterion("tags =", value, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsNotEqualTo(String value) {
+            addCriterion("tags <>", value, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsGreaterThan(String value) {
+            addCriterion("tags >", value, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsGreaterThanOrEqualTo(String value) {
+            addCriterion("tags >=", value, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsLessThan(String value) {
+            addCriterion("tags <", value, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsLessThanOrEqualTo(String value) {
+            addCriterion("tags <=", value, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsLike(String value) {
+            addCriterion("tags like", value, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsNotLike(String value) {
+            addCriterion("tags not like", value, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsIn(List<String> values) {
+            addCriterion("tags in", values, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsNotIn(List<String> values) {
+            addCriterion("tags not in", values, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsBetween(String value1, String value2) {
+            addCriterion("tags between", value1, value2, "tags");
+            return (Criteria) this;
+        }
+
+        public Criteria andTagsNotBetween(String value1, String value2) {
+            addCriterion("tags not between", value1, value2, "tags");
             return (Criteria) this;
         }
     }

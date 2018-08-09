@@ -31,9 +31,9 @@ public class SysApiMapperTest extends FrameUcenterApplicationTests {
 
         SysUser admin = userMapper.findByUsername("admin");
 
-        List<SysApi> sysApis = apiMapper.selectByUuid(admin.getUuid());
+        // List<SysApi> sysApis = apiMapper.selectByUuid(admin.getUuid());
 
-        sysApis.forEach(sysApi -> System.out.println(sysApi));
+        // sysApis.forEach(sysApi -> System.out.println(sysApi));
 
     }
 }

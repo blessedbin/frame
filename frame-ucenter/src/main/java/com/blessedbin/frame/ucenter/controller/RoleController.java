@@ -152,7 +152,7 @@ public class RoleController {
      */
     @PutMapping("/user_role.json")
     @FrameApi
-    @ApiOperation("保存永辉角色之间的关系")
+    @ApiOperation(value = "保存用户角色之间的关系")
     public SimpleResponse editUserRole(@Validated @RequestBody UserRoleParam param) {
         log.debug("request param:{}", param);
         roleService.editUserRole(param.getUuid(), param.getSelectedRole());

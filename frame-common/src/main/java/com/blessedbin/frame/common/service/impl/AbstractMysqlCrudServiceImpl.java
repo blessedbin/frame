@@ -6,6 +6,7 @@ import com.blessedbin.frame.common.mapper.MyMapper;
 import com.blessedbin.frame.common.service.CheckExistsService;
 import com.blessedbin.frame.common.service.CrudService;
 import com.blessedbin.frame.common.service.DataTableService;
+import com.blessedbin.frame.common.service.MysqlCrudService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 @Slf4j
 public abstract class AbstractMysqlCrudServiceImpl<M,PK extends Serializable>
-        implements CrudService<M,PK>,DataTableService<M,PK>,CheckExistsService {
+        implements MysqlCrudService<M,PK> {
 
     @Autowired
     protected MyMapper<M> mapper;

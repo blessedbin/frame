@@ -22,32 +22,15 @@ public class ApiDto {
      */
     private String name;
 
-    private String urls;
+    /**
+     * 资源地址
+     */
+    private String url;
 
     /**
      * 请求方式 ,分隔
      */
-    private String methodTypes;
-
-    /**
-     * 方法名
-     */
-    private String methodName;
-
-    /**
-     * 控制器名
-     */
-    private String controllerName;
-
-    /**
-     * 请求参数类型
-     */
-    private String methodParamTypes;
-
-    /**
-     * 请求参数名称，与类型一一对应
-     */
-    private String methodParamNames;
+    private String method;
 
     /**
      * 备注
@@ -71,6 +54,9 @@ public class ApiDto {
      */
     private String description;
 
+    private String additionInformation;
+
+    private String tags;
 
     private String permissionName;
 
@@ -79,6 +65,14 @@ public class ApiDto {
      */
     private String permissionKey;
 
+    /**
+     * 是否启用
+     */
     private Boolean enabled;
+
+    /**
+     * 所属系统
+     */
+    private String sysSystemId;
 
 }
