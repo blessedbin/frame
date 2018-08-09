@@ -1,44 +1,35 @@
 package com.blessedbin.frame.ucenter.modal;
 
-import com.blessedbin.frame.common.validate.PutMethodValidationGroup;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Null;
 import java.util.Date;
-import java.util.Objects;
+import javax.persistence.*;
 
 @Table(name = "sys_menu")
 public class SysMenu {
+
+    public static int ACTION = 1;
+    public static int MENU = 0;
+
     @Id
     @Column(name = "permission_id")
-    @NotNull(groups = PutMethodValidationGroup.class)
     private Integer permissionId;
 
     /**
      * 菜单展示名称
      */
-    @NotEmpty
     private String title;
 
     private Integer pid;
 
-    @NotEmpty
     private String component;
 
     /**
      * 菜单中的标记名称，英文
      */
-    @NotEmpty
     private String name;
 
     /**
      * 路径
      */
-    @NotEmpty
     private String path;
 
     /**
@@ -58,8 +49,8 @@ public class SysMenu {
 
     /**
      * if set true, will always show the root menu, whatever its child routes length
-         if not set alwaysShow, only more than one route under the children
-         it will becomes nested mode, otherwise not show the root menu
+ if not set alwaysShow, only more than one route under the children
+ it will becomes nested mode, otherwise not show the root menu
      */
     @Column(name = "always_show")
     private Boolean alwaysShow;
@@ -70,11 +61,9 @@ public class SysMenu {
     private Boolean hidden;
 
     @Column(name = "create_time")
-    @Null
     private Date createTime;
 
     @Column(name = "update_time")
-    @Null
     private Date updateTime;
 
     /**
@@ -91,6 +80,13 @@ public class SysMenu {
      * 其他配置信息，用json格式存储
      */
     private String meta;
+
+    /**
+     * 类型 
+    0 菜单
+    1 功能点
+     */
+    private Integer type;
 
     /**
      * @return permission_id
@@ -317,7 +313,7 @@ public class SysMenu {
     /**
      * 获取备注
      *
-     * @return description - 备注
+     * @return remark - 备注
      */
     public String getRemark() {
         return remark;
@@ -368,56 +364,29 @@ public class SysMenu {
         this.meta = meta == null ? null : meta.trim();
     }
 
-    @Override
-    public String toString() {
-        return "SysMenu{" +
-                "permissionId=" + permissionId +
-                ", title='" + title + '\'' +
-                ", pid=" + pid +
-                ", component='" + component + '\'' +
-                ", name='" + name + '\'' +
-                ", path='" + path + '\'' +
-                ", redirect='" + redirect + '\'' +
-                ", icon='" + icon + '\'' +
-                ", enabled=" + enabled +
-                ", alwaysShow=" + alwaysShow +
-                ", hidden=" + hidden +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", description='" + remark + '\'' +
-                ", sort=" + sort +
-                ", meta='" + meta + '\'' +
-                '}';
+    /**
+     * 获取类型 
+1 菜单
+2 功能点
+     *
+     * @return type - 类型 
+1 菜单
+2 功能点
+     */
+    public Integer getType() {
+        return type;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SysMenu menu = (SysMenu) o;
-        return Objects.equals(permissionId, menu.permissionId) &&
-                Objects.equals(title, menu.title) &&
-                Objects.equals(pid, menu.pid) &&
-                Objects.equals(component, menu.component) &&
-                Objects.equals(name, menu.name) &&
-                Objects.equals(path, menu.path) &&
-                Objects.equals(redirect, menu.redirect) &&
-                Objects.equals(icon, menu.icon) &&
-                Objects.equals(enabled, menu.enabled) &&
-                Objects.equals(alwaysShow, menu.alwaysShow) &&
-                Objects.equals(hidden, menu.hidden) &&
-                Objects.equals(remark, menu.remark) &&
-                Objects.equals(sort, menu.sort) &&
-                Objects.equals(meta, menu.meta);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(permissionId, title, pid, component, name, path, redirect, icon, enabled, alwaysShow, hidden, remark, sort, meta);
+    /**
+     * 设置类型 
+     0 菜单
+     1 功能点
+     *
+     * @param type 类型 
+    0 菜单
+    1 功能点
+     */
+    public void setType(Integer type) {
+        this.type = type;
     }
 }

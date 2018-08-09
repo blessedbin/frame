@@ -6,7 +6,6 @@ import com.blessedbin.frame.ucenter.entity.dto.DepartmentDto;
 import com.blessedbin.frame.ucenter.modal.SysDepartment;
 import com.blessedbin.frame.ucenter.modal.SysDepartmentExample;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -25,9 +24,6 @@ import java.util.stream.Collectors;
 @Service
 public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartment,Integer> {
 
-    @Autowired
-    private OrganizationService organizationService;
-
     public List<DepartmentDto> getDepartmentTree() {
         return buildDepartmentTree(null);
     }
@@ -44,8 +40,8 @@ public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartmen
             BeanUtils.copyProperties(dt,dto);
 
             // 查找并设置组织名称
-            String organizationName = organizationService.selectNameByPk(dt.getOrganizationId());
-            dto.setOrganizationName(organizationName);
+            // String organizationName = organizationService.selectNameByPk(dt.getOrganizationId());
+            // dto.setOrganizationName(organizationName);
 
             dto.setChildren(buildDepartmentTree(dt));
             return dto;
@@ -89,7 +85,7 @@ public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartmen
     private List<CascaderNode> buildCascader(Integer parentId,Integer organizationId) {
         return getAllByPid(parentId,organizationId).stream().map(department -> CascaderNode.builder()
                 .value(String.valueOf(department.getId()))
-                .label(department.getDepartmentName())
+                .label(department.getName())
                 .children(buildCascader(department.getId(),organizationId))
                 .build())
                 .collect(Collectors.toList());
@@ -99,12 +95,10 @@ public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartmen
         Assert.notNull(organizationId,"organization id is not null.");
         if(parentId == null){
             SysDepartmentExample example = new SysDepartmentExample();
-            example.createCriteria().andPIdIsNull().andOrganizationIdEqualTo(organizationId);
-            example.setOrderByClause("sort ASC");
             return mapper.selectByExample(example);
         }
         SysDepartmentExample example = new SysDepartmentExample();
-        example.createCriteria().andPIdEqualTo(parentId).andOrganizationIdEqualTo(organizationId);
+        // example.createCriteria().andPIdEqualTo(parentId).andOrganizationIdEqualTo(organizationId);
         example.setOrderByClause("sort ASC");
         return mapper.selectByExample(example);
     }

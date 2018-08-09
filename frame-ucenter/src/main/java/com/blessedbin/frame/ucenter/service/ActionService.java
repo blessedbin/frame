@@ -1,10 +1,9 @@
 package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
-import com.blessedbin.frame.common.service.impl.AbstractMysqlCrudServiceImpl;
 import com.blessedbin.frame.ucenter.entity.dto.ActionDto;
-import com.blessedbin.frame.ucenter.mapper.SysActionMapper;
-import com.blessedbin.frame.ucenter.modal.SysAction;
+import com.blessedbin.frame.ucenter.mapper.SysMenuMapper;
+import com.blessedbin.frame.ucenter.modal.SysMenu;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.github.promeg.pinyinhelper.Pinyin;
 import lombok.extern.log4j.Log4j2;
@@ -13,8 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by xubin on 2018/8/3.
@@ -26,16 +27,16 @@ import java.util.List;
  */
 @Service
 @Log4j2
-public class ActionService extends AbstractMysqlCrudServiceImpl<SysAction, Integer> {
+public class ActionService{
 
     @Autowired
     private MenuService menuService;
 
     @Autowired
-    private PermissionService permissionService;
+    private SysMenuMapper menuMapper;
 
     @Autowired
-    private SysActionMapper actionMapper;
+    private PermissionService permissionService;
 
     /**
      * 添加功能点
@@ -51,7 +52,7 @@ public class ActionService extends AbstractMysqlCrudServiceImpl<SysAction, Integ
             throw new ParamCheckRuntimeException("该菜单节点不是叶子节点");
         }
         // 检查同级下名称不能重复
-        if (actionMapper.selectCountByNameAndMenuId(name, pid) > 0) {
+        if (checkNameExists(name,pid)) {
             throw new ParamCheckRuntimeException("同级下名称重复");
         }
 
@@ -71,18 +72,41 @@ public class ActionService extends AbstractMysqlCrudServiceImpl<SysAction, Integ
 
         permissionService.insert(permission);
 
-        SysAction action = new SysAction();
-        action.setPermissionId(permission.getId());
-        action.setMenuId(pid);
-        if (StringUtils.isEmpty(remark)) {
-            action.setRemark(remark);
-        }
-        insert(action);
+        SysMenu menu = new SysMenu();
+        menu.setTitle(name);
+        menu.setType(SysMenu.ACTION);
+        menu.setPid(pid);
+        menu.setPermissionId(permission.getId());
+
+        menuMapper.insertSelective(menu);
 
     }
 
 
+    /**
+     * 检查同级下名称是否重复
+     * @param name 功能点名称
+     * @param pid 所属菜单ID
+     * @return
+     */
+    private boolean checkNameExists(String name,Integer pid){
+        int count = menuMapper.selectCountByNameAndPid(name,pid);
+        return count > 0;
+    }
+
+
+    /**
+     * @param menuId
+     * @return
+     */
     public List<ActionDto> selectByMenuId(Integer menuId){
-        return actionMapper.selectDtoByMenuId(menuId);
+        List<SysMenu> actions = menuMapper.selectByPidAndType(menuId, SysMenu.ACTION);
+        return actions.stream().map(action ->{
+            ActionDto dto = new ActionDto();
+            dto.setId(action.getPermissionId());
+            dto.setName(action.getTitle());
+            dto.setType(SysPermission.TYPE_ACTION);
+            return dto;
+        }).collect(Collectors.toList());
     }
 }

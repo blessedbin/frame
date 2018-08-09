@@ -147,7 +147,7 @@ public class ApiController {
     public List<FramePermission> findUserApiByUuid(@PathVariable("uuid") String uuid){
         List<SysApi> apis = apiService.selectByUuid(uuid);
         return apis.stream().map(sysApi ->
-                FramePermission.builder().method(sysApi.getMethodTypes()).url(sysApi.getUrls()).build())
+                FramePermission.builder().method(sysApi.getMethodType()).url(sysApi.getUrl()).build())
                 .collect(Collectors.toList());
     }
 }

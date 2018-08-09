@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "${frame.base-path.ucenter}/sys/argument")
 @Log4j2
-public class SysArgumentController extends BaseController<SysArgument,Integer> {
+public class SysArgumentController{
 
     @Autowired
     private SysArgumentService argumentService;

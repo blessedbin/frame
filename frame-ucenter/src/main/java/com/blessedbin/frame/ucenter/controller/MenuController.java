@@ -84,7 +84,7 @@ public class MenuController {
                 if(children.isEmpty()){
                     List<ActionDto> actionDtos = actionService.selectByMenuId(menuTreeDto.getPermissionId());
                     children = actionDtos.stream().map(actionDto -> TreeNode.builder().id(String.valueOf(actionDto.getId()))
-                            .label(actionDto.getPermissionName()).tag(actionDto.getType()).build())
+                            .label(actionDto.getName()).tag(actionDto.getType()).build())
                             .collect(Collectors.toList());
                 }
                 return TreeNode.builder()
@@ -117,25 +117,9 @@ public class MenuController {
     @GetMapping
     @FrameApi
     @ApiOperation(value = "获取菜单")
-    public SimpleResponse<Map<String, Object>> getOne(@RequestParam Integer id){
-        Map<String, Object> result = new HashMap<>(2);
+    public SimpleResponse<SysMenu> getOne(@RequestParam Integer id){
         SysMenu content = menuService.selectByPk(id);
-        result.put("content",content);
-
-        List<String> pids = new ArrayList<>();
-        buildPids(content, pids);
-        Collections.reverse(pids);
-        result.put("pids",pids);
-
-        return SimpleResponse.ok(result);
-    }
-
-    private void buildPids(SysMenu content, List<String> pids) {
-        if(content.getPid() != null){
-            SysMenu parent = menuService.selectByPk(content.getPid());
-            pids.add(String.valueOf(parent.getPermissionId()));
-            buildPids(parent,pids);
-        }
+        return SimpleResponse.ok(content);
     }
 
     /**

@@ -1,23 +1,10 @@
 package com.blessedbin.frame.ucenter.modal;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "sys_user")
 public class SysUser {
-
-    /**
-     * 从未登录状态
-     */
-    public static int STATUS_INIT = 1;
-
-    /**
-     * 正常
-     */
-    public static int STATUS_NORMAL = 2;
-
     /**
      * 用户唯一标识
      */
@@ -99,9 +86,6 @@ public class SysUser {
      * 头像
      */
     private String avatar;
-
-    @Column(name = "organization_id")
-    private Integer organizationId;
 
     @Column(name = "department_id")
     private Integer departmentId;
@@ -414,20 +398,6 @@ public class SysUser {
      */
     public void setAvatar(String avatar) {
         this.avatar = avatar == null ? null : avatar.trim();
-    }
-
-    /**
-     * @return organization_id
-     */
-    public Integer getOrganizationId() {
-        return organizationId;
-    }
-
-    /**
-     * @param organizationId
-     */
-    public void setOrganizationId(Integer organizationId) {
-        this.organizationId = organizationId;
     }
 
     /**

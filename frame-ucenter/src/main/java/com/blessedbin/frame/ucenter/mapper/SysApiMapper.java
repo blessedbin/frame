@@ -9,6 +9,5 @@ import java.util.List;
 
 @Repository
 public interface SysApiMapper extends MyMapper<SysApi> {
-
     List<SysApi> selectByUuid(@Param("uuid") String uuid);
 }

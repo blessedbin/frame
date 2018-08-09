@@ -1,10 +1,7 @@
 package com.blessedbin.frame.ucenter.modal;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
-import java.util.Objects;
+import javax.persistence.*;
 
 @Table(name = "sys_api")
 public class SysApi {
@@ -17,13 +14,16 @@ public class SysApi {
      */
     private String name;
 
-    private String urls;
+    /**
+     * 资源地址
+     */
+    private String url;
 
     /**
      * 请求方式 ,分隔
      */
-    @Column(name = "method_types")
-    private String methodTypes;
+    @Column(name = "method_type")
+    private String methodType;
 
     /**
      * 方法名
@@ -73,6 +73,9 @@ public class SysApi {
      */
     private String description;
 
+    @Column(name = "addition_information")
+    private String additionInformation;
+
     /**
      * @return permission_id
      */
@@ -106,35 +109,39 @@ public class SysApi {
     }
 
     /**
-     * @return urls
+     * 获取资源地址
+     *
+     * @return url - 资源地址
      */
-    public String getUrls() {
-        return urls;
+    public String getUrl() {
+        return url;
     }
 
     /**
-     * @param urls
+     * 设置资源地址
+     *
+     * @param url 资源地址
      */
-    public void setUrls(String urls) {
-        this.urls = urls == null ? null : urls.trim();
+    public void setUrl(String url) {
+        this.url = url == null ? null : url.trim();
     }
 
     /**
      * 获取请求方式 ,分隔
      *
-     * @return method_types - 请求方式 ,分隔
+     * @return method_type - 请求方式 ,分隔
      */
-    public String getMethodTypes() {
-        return methodTypes;
+    public String getMethodType() {
+        return methodType;
     }
 
     /**
      * 设置请求方式 ,分隔
      *
-     * @param methodTypes 请求方式 ,分隔
+     * @param methodType 请求方式 ,分隔
      */
-    public void setMethodTypes(String methodTypes) {
-        this.methodTypes = methodTypes == null ? null : methodTypes.trim();
+    public void setMethodType(String methodType) {
+        this.methodType = methodType == null ? null : methodType.trim();
     }
 
     /**
@@ -212,7 +219,7 @@ public class SysApi {
     /**
      * 获取备注
      *
-     * @return description - 备注
+     * @return remark - 备注
      */
     public String getRemark() {
         return remark;
@@ -295,49 +302,17 @@ public class SysApi {
         this.description = description == null ? null : description.trim();
     }
 
-    @Override
-    public String toString() {
-        return "SysApi{" +
-                "permissionId=" + permissionId +
-                ", name='" + name + '\'' +
-                ", urls='" + urls + '\'' +
-                ", methodTypes='" + methodTypes + '\'' +
-                ", methodName='" + methodName + '\'' +
-                ", controllerName='" + controllerName + '\'' +
-                ", methodParamTypes='" + methodParamTypes + '\'' +
-                ", methodParamNames='" + methodParamNames + '\'' +
-                ", remark='" + remark + '\'' +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", sort=" + sort +
-                ", description='" + description + '\'' +
-                '}';
+    /**
+     * @return addition_information
+     */
+    public String getAdditionInformation() {
+        return additionInformation;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SysApi sysApi = (SysApi) o;
-        return Objects.equals(permissionId, sysApi.permissionId) &&
-                Objects.equals(name, sysApi.name) &&
-                Objects.equals(urls, sysApi.urls) &&
-                Objects.equals(methodTypes, sysApi.methodTypes) &&
-                Objects.equals(methodName, sysApi.methodName) &&
-                Objects.equals(controllerName, sysApi.controllerName) &&
-                Objects.equals(methodParamTypes, sysApi.methodParamTypes) &&
-                Objects.equals(methodParamNames, sysApi.methodParamNames) &&
-                Objects.equals(remark, sysApi.remark) &&
-                Objects.equals(description, sysApi.description);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(permissionId, name, urls, methodTypes, methodName, controllerName, methodParamTypes, methodParamNames, remark, description);
+    /**
+     * @param additionInformation
+     */
+    public void setAdditionInformation(String additionInformation) {
+        this.additionInformation = additionInformation == null ? null : additionInformation.trim();
     }
 }

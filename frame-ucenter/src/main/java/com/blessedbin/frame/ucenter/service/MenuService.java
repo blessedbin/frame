@@ -8,10 +8,8 @@ import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
 import com.blessedbin.frame.ucenter.mapper.SysMenuMapper;
 import com.blessedbin.frame.ucenter.mapper.SysPermissionMapper;
 import com.blessedbin.frame.ucenter.mapper.SysRoleHasPermissionMapper;
-import com.blessedbin.frame.ucenter.modal.SysMenu;
-import com.blessedbin.frame.ucenter.modal.SysMenuExample;
-import com.blessedbin.frame.ucenter.modal.SysPermission;
-import com.blessedbin.frame.ucenter.modal.SysRoleHasPermission;
+import com.blessedbin.frame.ucenter.mapper.SysRoleMapper;
+import com.blessedbin.frame.ucenter.modal.*;
 import com.github.promeg.pinyinhelper.Pinyin;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.BeanUtils;
@@ -49,6 +47,9 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
     @Autowired
     private SysRoleHasPermissionMapper roleHasPermissionMapper;
 
+    @Autowired
+    private SysRoleMapper roleMapper;
+
     public List<MenuTreeDto>  getMenuTree(){
         return getTopAll().stream().map(sysMenu -> {
             MenuTreeDto dto = new MenuTreeDto();
@@ -66,9 +67,18 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
     public List<MenuTreeDto> getUserMenu(String uuid){
         Assert.notNull(uuid,"uuid is not null");
 
-        // 去重，TODO 在数据库中做去重操作
-        List<SysMenu> menus = menuMapper.selectMenuByUuidAndEnabled(uuid).stream()
-                .distinct().collect(Collectors.toList());
+        // TODO 逻辑方面的优化，Role信息从参数获取或者从缓存获取，而不是每次查询数据库
+        List<SysRole> roles = roleMapper.selectRolesByUUid(uuid);
+        boolean b = roles.stream().map(SysRole::getRoleKey).anyMatch(s -> "ROLE_ADMIN".equals(s));
+        List<SysMenu> menus;
+        if(b){
+            menus = menuMapper.selectAllMenus();
+        }else {
+            // 去重，TODO 在数据库中做去重操作
+            menus = menuMapper.selectMenusByUuidAndEnabled(uuid).stream()
+                    .distinct().collect(Collectors.toList());
+        }
+
         return menus.stream().filter(menu -> menu.getPid() == null)
                 .map(menu -> {
                     MenuTreeDto dto = new MenuTreeDto();
@@ -142,7 +152,7 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
             return getTopAll();
         }
         SysMenuExample example = new SysMenuExample();
-        example.createCriteria().andPidEqualTo(pid);
+        example.createCriteria().andPidEqualTo(pid).andTypeEqualTo(SysMenu.MENU);
         example.setOrderByClause("sort ASC");
 
         return mapper.selectByExample(example);
@@ -260,7 +270,7 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
         if(!checkExistsByPk(menuId)){
             throw new ResourceNotFoundException();
         }
-        List<SysMenu> sysMenus = menuMapper.selectByPid(menuId);
+        List<SysMenu> sysMenus = menuMapper.selectMenusByPid(menuId);
         return !sysMenus.isEmpty();
     }
 }

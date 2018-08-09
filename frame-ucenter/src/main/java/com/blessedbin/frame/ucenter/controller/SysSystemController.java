@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "${frame.base-path.ucenter}/sys/system")
 @Log4j2
-public class SysSystemController extends BaseController<SysSystem,Integer> {
+public class SysSystemController {
 
     @Autowired
     private SysSystemService sysSystemService;

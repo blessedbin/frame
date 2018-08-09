@@ -14,13 +14,13 @@
             (#{rp.sysRoleId},#{rp.sysPermissionId})
         </foreach>
     </insert>
-    <delete id="deleteByRoleId">
-        delete from sys_role_has_permission
-        where sys_role_id = #{roleId}
-    </delete>
     <delete id="deleteByPermissionId">
         delete from sys_role_has_permission
         where sys_permission_id = #{permissionId}
+    </delete>
+    <delete id="deleteByRoleId">
+        delete from sys_role_has_permission
+        where sys_role_id = #{roleId}
     </delete>
     <select id="selectByRoleIdAndPermissionType"
             resultType="com.blessedbin.frame.ucenter.modal.SysRoleHasPermission">

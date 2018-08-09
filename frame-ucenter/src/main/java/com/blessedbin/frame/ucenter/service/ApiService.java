@@ -74,7 +74,7 @@ public class ApiService extends AbstractMysqlCrudServiceImpl<SysApi,Integer> {
                 mapping.setPermissionId(nPermission.getId());
                 apiMapper.insertSelective(mapping);
                 addPoint.addAndGet(1);
-                log.debug(">>> 新增权限点:{},{}",nPermission.getPermissionName(), mapping.getUrls());
+                log.debug(">>> 新增权限点:{},{}",nPermission.getPermissionName(), mapping.getUrl());
             }else {
                 SysApi preApi = apiMapper.selectByPrimaryKey(permission.getId());
 
@@ -100,8 +100,8 @@ public class ApiService extends AbstractMysqlCrudServiceImpl<SysApi,Integer> {
     private SysApi buildSysApi(FrameApiInfo api) {
         SysApi nApi = new SysApi();
 
-        nApi.setUrls(buildUrls(api));
-        nApi.setMethodTypes(buildMethods(api));
+        nApi.setUrl(buildUrls(api));
+        nApi.setMethodType(buildMethods(api));
 
         RequestParams requestParams = new RequestParams(api).invoke();
 

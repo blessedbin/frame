@@ -108,6 +108,6 @@ public class RoleService extends AbstractMysqlCrudServiceImpl<SysRole, Integer> 
     }
 
     public List<SysRole> selectAllByUuid(String uuid) {
-        return roleMapper.findRolesByUUid(uuid);
+        return roleMapper.selectRolesByUUid(uuid);
     }
 }

@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface SysUserHasRoleMapper extends MyMapper<SysUserHasRole> {
-    void deleteByUuid(String uuid);
+    int deleteByUuid(@Param("uuid") String uuid);
 
-    int insertLists(@Param("roles") List<SysUserHasRole> collect);
+    int insertLists(@Param("roles") List<SysUserHasRole> roles);
 }

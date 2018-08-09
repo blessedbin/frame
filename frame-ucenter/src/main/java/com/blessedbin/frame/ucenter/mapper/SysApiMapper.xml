@@ -1,30 +1,31 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.blessedbin.frame.ucenter.mapper.SysApiMapper">
-    <resultMap id="BaseResultMap" type="com.blessedbin.frame.ucenter.modal.SysApi">
-        <!--
-          WARNING - @mbg.generated
-        -->
-        <id column="permission_id" property="permissionId" jdbcType="INTEGER"/>
-        <result column="name" property="name" jdbcType="VARCHAR"/>
-        <result column="urls" property="urls" jdbcType="VARCHAR"/>
-        <result column="method_types" property="methodTypes" jdbcType="VARCHAR"/>
-        <result column="method_name" property="methodName" jdbcType="VARCHAR"/>
-        <result column="controller_name" property="controllerName" jdbcType="VARCHAR"/>
-        <result column="method_param_types" property="methodParamTypes" jdbcType="VARCHAR"/>
-        <result column="method_param_names" property="methodParamNames" jdbcType="VARCHAR"/>
-        <result column="description" property="remark" jdbcType="VARCHAR"/>
-        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
-        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
-        <result column="sort" property="sort" jdbcType="INTEGER"/>
-        <result column="description" property="description" jdbcType="VARCHAR"/>
-    </resultMap>
+<mapper namespace="com.blessedbin.frame.ucenter.mapper.SysApiMapper" >
+  <resultMap id="BaseResultMap" type="com.blessedbin.frame.ucenter.modal.SysApi" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="permission_id" property="permissionId" jdbcType="INTEGER" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+    <result column="method_type" property="methodType" jdbcType="VARCHAR" />
+    <result column="method_name" property="methodName" jdbcType="VARCHAR" />
+    <result column="controller_name" property="controllerName" jdbcType="VARCHAR" />
+    <result column="method_param_types" property="methodParamTypes" jdbcType="VARCHAR" />
+    <result column="method_param_names" property="methodParamNames" jdbcType="VARCHAR" />
+    <result column="remark" property="remark" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="sort" property="sort" jdbcType="INTEGER" />
+    <result column="description" property="description" jdbcType="VARCHAR" />
+    <result column="addition_information" property="additionInformation" jdbcType="VARCHAR" />
+  </resultMap>
     <select id="selectByUuid" resultType="com.blessedbin.frame.ucenter.modal.SysApi">
-        select *
-        from sys_api
-            inner join sys_permission permission on sys_api.permission_id = permission.id
-            inner join sys_role_has_permission srhp on permission.id = srhp.sys_permission_id
-            inner join sys_user_has_role suhr on srhp.sys_role_id = suhr.sys_role_id
-        where suhr.sys_user_uuid = #{uuid}
+      select *
+      from sys_api
+        inner join sys_permission permission on sys_api.permission_id = permission.id
+        inner join sys_role_has_permission srhp on permission.id = srhp.sys_permission_id
+        inner join sys_user_has_role suhr on srhp.sys_role_id = suhr.sys_role_id
+      where suhr.sys_user_uuid = #{uuid}
     </select>
 </mapper>

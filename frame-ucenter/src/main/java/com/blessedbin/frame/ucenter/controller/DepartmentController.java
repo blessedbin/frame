@@ -60,16 +60,14 @@ public class DepartmentController {
 
         if(department.getpId() == null || department.getpId() == -1){
             SysDepartmentExample example = new SysDepartmentExample();
-            example.createCriteria().andPIdIsNull().andDepartmentNameEqualTo(department.getDepartmentName())
-                    .andOrganizationIdEqualTo(department.getOrganizationId());
+            //TODO
             if(departmentService.checkExistsByExample(example)){
                 throw new ParamCheckRuntimeException("同级下名称重复");
             }
             department.setpId(null);
         } else {
             SysDepartmentExample example = new SysDepartmentExample();
-            example.createCriteria().andPIdEqualTo(department.getpId()).andDepartmentNameEqualTo(department.getDepartmentName())
-                    .andOrganizationIdEqualTo(department.getOrganizationId());
+            //TODO
             if(departmentService.checkExistsByExample(example)){
                 throw new ParamCheckRuntimeException("同级下名称重复");
             }

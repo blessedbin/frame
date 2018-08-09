@@ -34,7 +34,7 @@ public class ActionController {
     @PostMapping
     @FrameApi
     @ApiOperation(value = "添加功能点")
-    private SimpleResponse add(@RequestBody @Validated AddActionParam param) {
+    public SimpleResponse add(@RequestBody @Validated AddActionParam param) {
 
         actionService.addAction(param.getPid(),param.getName(),param.getRemark());
 

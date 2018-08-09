@@ -24,7 +24,6 @@
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="del_flag" property="delFlag" jdbcType="BIT" />
     <result column="avatar" property="avatar" jdbcType="VARCHAR" />
-    <result column="organization_id" property="organizationId" jdbcType="INTEGER" />
     <result column="department_id" property="departmentId" jdbcType="INTEGER" />
   </resultMap>
     <select id="findByUsername" resultType="com.blessedbin.frame.ucenter.modal.SysUser">

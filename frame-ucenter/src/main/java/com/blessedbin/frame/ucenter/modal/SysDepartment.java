@@ -1,33 +1,17 @@
 package com.blessedbin.frame.ucenter.modal;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import tk.mybatis.mapper.annotation.KeySql;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
-import java.util.Objects;
+import javax.persistence.*;
 
 @Table(name = "sys_department")
 public class SysDepartment {
     @Id
-    @KeySql(useGeneratedKeys = true)
     private Integer id;
 
     @Column(name = "p_id")
-    @JsonProperty(value = "pid")
     private Integer pId;
 
-    @Column(name = "organization_id")
-    @NotNull
-    private Integer organizationId;
-
-    @Column(name = "department_name")
-    @NotEmpty(message = "部门名称不能为空")
-    private String departmentName;
+    private String name;
 
     private String remark;
 
@@ -47,6 +31,12 @@ public class SysDepartment {
      */
     @Column(name = "del_flag")
     private Boolean delFlag;
+
+    /**
+     * 附加信息 JSON格式
+     */
+    @Column(name = "addition_information")
+    private String additionInformation;
 
     /**
      * @return id
@@ -77,35 +67,21 @@ public class SysDepartment {
     }
 
     /**
-     * @return organization_id
+     * @return name
      */
-    public Integer getOrganizationId() {
-        return organizationId;
+    public String getName() {
+        return name;
     }
 
     /**
-     * @param organizationId
+     * @param name
      */
-    public void setOrganizationId(Integer organizationId) {
-        this.organizationId = organizationId;
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
     }
 
     /**
-     * @return department_name
-     */
-    public String getDepartmentName() {
-        return departmentName;
-    }
-
-    /**
-     * @param departmentName
-     */
-    public void setDepartmentName(String departmentName) {
-        this.departmentName = departmentName == null ? null : departmentName.trim();
-    }
-
-    /**
-     * @return description
+     * @return remark
      */
     public String getRemark() {
         return remark;
@@ -182,42 +158,21 @@ public class SysDepartment {
         this.delFlag = delFlag;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SysDepartment that = (SysDepartment) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(pId, that.pId) &&
-                Objects.equals(organizationId, that.organizationId) &&
-                Objects.equals(departmentName, that.departmentName) &&
-                Objects.equals(remark, that.remark) &&
-                Objects.equals(sort, that.sort) &&
-                Objects.equals(delFlag, that.delFlag);
+    /**
+     * 获取附加信息 JSON格式
+     *
+     * @return addition_information - 附加信息 JSON格式
+     */
+    public String getAdditionInformation() {
+        return additionInformation;
     }
 
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, pId, organizationId, departmentName, remark, sort, delFlag);
-    }
-
-    @Override
-    public String toString() {
-        return "SysDepartment{" +
-                "id=" + id +
-                ", pId=" + pId +
-                ", organizationId=" + organizationId +
-                ", departmentName='" + departmentName + '\'' +
-                ", description='" + remark + '\'' +
-                ", sort=" + sort +
-                ", createTime=" + createTime +
-                ", updateTime=" + updateTime +
-                ", delFlag=" + delFlag +
-                '}';
+    /**
+     * 设置附加信息 JSON格式
+     *
+     * @param additionInformation 附加信息 JSON格式
+     */
+    public void setAdditionInformation(String additionInformation) {
+        this.additionInformation = additionInformation == null ? null : additionInformation.trim();
     }
 }

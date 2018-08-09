@@ -13,7 +13,6 @@ import com.blessedbin.frame.ucenter.modal.SysRole;
 import com.blessedbin.frame.ucenter.modal.SysRoleExample;
 import com.blessedbin.frame.ucenter.modal.SysUser;
 import com.blessedbin.frame.ucenter.modal.SysUserHasRole;
-import com.blessedbin.frame.ucenter.service.OrganizationService;
 import com.blessedbin.frame.ucenter.service.RoleService;
 import com.blessedbin.frame.ucenter.service.UserManageService;
 import io.swagger.annotations.Api;
@@ -49,9 +48,6 @@ public class RoleController {
     private RoleService roleService;
 
     @Autowired
-    private OrganizationService organizationService;
-
-    @Autowired
     private UserManageService userManageService;
 
     @GetMapping("/datatable.json")
@@ -81,15 +77,7 @@ public class RoleController {
         SysRoleExample.Criteria criteria = example.createCriteria();
         criteria.andRoleNameEqualTo(role.getRoleName());
 
-        //检查角色名称
-        if(role.getOrganizationId() != null && role.getOrganizationId() != -1){
-            if(!organizationService.checkExistsByPk(role.getOrganizationId())){
-                throw new ParamCheckRuntimeException();
-            }
-            criteria.andOrganizationIdEqualTo(role.getOrganizationId());
-        }else{
-            role.setOrganizationId(null);
-        }
+
         if(roleService.checkExistsByExample(example)){
             result.addError(new ObjectError("roleName","角色名称重复"));
         }
@@ -140,14 +128,7 @@ public class RoleController {
     @FrameApi
     public SimpleResponse getTransferList(@RequestParam(value = "uuid") String uuid) {
         SysUser user = userManageService.selectByPk(uuid);
-        List<SysRole> allRoles;
-        if(user != null && user.getOrganizationId() != null){
-            SysRoleExample roleExample = new SysRoleExample();
-            roleExample.createCriteria().andOrganizationIdEqualTo(user.getOrganizationId());
-            allRoles = roleService.selectAllByExample(roleExample);
-        }else {
-            allRoles = roleService.selectAll();
-        }
+        List<SysRole> allRoles = roleService.selectAll();
         List<TransferNode> transferNodes = allRoles.stream().map(role -> TransferNode.builder().key(String.valueOf(role.getId()))
                 .label(role.getRoleName()).build()).collect(Collectors.toList());
 

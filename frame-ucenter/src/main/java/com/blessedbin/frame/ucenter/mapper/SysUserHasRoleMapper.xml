@@ -8,14 +8,14 @@
     <id column="sys_user_uuid" property="sysUserUuid" jdbcType="VARCHAR" />
     <id column="sys_role_id" property="sysRoleId" jdbcType="INTEGER" />
   </resultMap>
-    <insert id="insertLists">
-      insert into sys_user_has_role(sys_user_uuid, sys_role_id)
-      values
-      <foreach collection="roles" item="role" separator=",">
-        (#{role.sysUserUuid},#{role.sysRoleId})
-      </foreach>
-    </insert>
-    <delete id="deleteByUuid">
+  <insert id="insertLists">
+    insert into sys_user_has_role(sys_user_uuid, sys_role_id)
+    values
+    <foreach collection="roles" item="role" separator=",">
+      (#{role.sysUserUuid},#{role.sysRoleId})
+    </foreach>
+  </insert>
+  <delete id="deleteByUuid">
       delete from sys_user_has_role where sys_user_uuid=#{uuid}
     </delete>
 </mapper>

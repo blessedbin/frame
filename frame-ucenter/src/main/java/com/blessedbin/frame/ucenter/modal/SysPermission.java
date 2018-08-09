@@ -2,18 +2,17 @@ package com.blessedbin.frame.ucenter.modal;
 
 import tk.mybatis.mapper.annotation.KeySql;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
-import java.util.Objects;
+import javax.persistence.*;
 
 @Table(name = "sys_permission")
 public class SysPermission {
 
-    public static String TYPE_MENU = "MENU";
-    public static String TYPE_API = "API";
-    public static String TYPE_ACTION = "ACTION";
+    public static final String TYPE_MENU="MENU";
+
+    public static final String TYPE_API="API";
+
+    public static final String TYPE_ACTION = "ACTION";
 
     @Id
     @KeySql(useGeneratedKeys = true)
@@ -129,7 +128,7 @@ public class SysPermission {
     }
 
     /**
-     * @return description
+     * @return remark
      */
     public String getRemark() {
         return remark;
@@ -208,30 +207,5 @@ public class SysPermission {
      */
     public void setSysSystemId(String sysSystemId) {
         this.sysSystemId = sysSystemId == null ? null : sysSystemId.trim();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SysPermission that = (SysPermission) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(permissionName, that.permissionName) &&
-                Objects.equals(permissionKey, that.permissionKey) &&
-                Objects.equals(remark, that.remark) &&
-                Objects.equals(enabled, that.enabled) &&
-                Objects.equals(type, that.type) &&
-                Objects.equals(sort, that.sort) &&
-                Objects.equals(sysSystemId, that.sysSystemId);
-    }
-
-    @Override
-    public int hashCode() {
-
-        return Objects.hash(id, permissionName, permissionKey, remark, enabled, type, sort, sysSystemId);
     }
 }

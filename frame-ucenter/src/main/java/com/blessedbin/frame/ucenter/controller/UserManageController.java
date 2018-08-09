@@ -7,16 +7,13 @@ import com.blessedbin.frame.common.utils.UUIDUtils;
 import com.blessedbin.frame.common.validate.PostMethodValidationGroup;
 import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.dto.UserDto;
-import com.blessedbin.frame.ucenter.modal.SysDepartmentExample;
 import com.blessedbin.frame.ucenter.modal.SysUser;
 import com.blessedbin.frame.ucenter.service.DepartmentService;
-import com.blessedbin.frame.ucenter.service.OrganizationService;
 import com.blessedbin.frame.ucenter.service.UserManageService;
 import io.swagger.annotations.Api;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -44,9 +41,6 @@ public class UserManageController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    private OrganizationService organizationService;
 
     @Autowired
     private DepartmentService departmentService;
@@ -97,25 +91,7 @@ public class UserManageController {
         user.setCreateTime(new Date());
         user.setUpdateTime(new Date());
 
-        // 添加并检查组织ID
-        if(param.getOrganizationId() != null){
-            if(!organizationService.checkExistsByPk(param.getOrganizationId())){
-                throw new ParamCheckRuntimeException();
-            }
-            user.setOrganizationId(param.getOrganizationId());
-            //添加并检查部门ID
-            if(!CollectionUtils.isEmpty(param.getDepartmentIds())){
-                Integer departmentId = param.getDepartmentIds().get(param.getDepartmentIds().size() - 1);
 
-                SysDepartmentExample example = new SysDepartmentExample();
-                example.createCriteria().andIdEqualTo(departmentId).andOrganizationIdEqualTo(param.getOrganizationId());
-
-                if(!departmentService.checkExistsByExample(example) ){
-                    throw new ParamCheckRuntimeException();
-                }
-                user.setDepartmentId(departmentId);
-            }
-        }
         // 添加Email
         if(!StringUtils.isEmpty(param.getEmail())){
             user.setEmail(param.getEmail());

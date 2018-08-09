@@ -1,9 +1,7 @@
 package com.blessedbin.frame.ucenter.modal;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "sys_argument")
 public class SysArgument {

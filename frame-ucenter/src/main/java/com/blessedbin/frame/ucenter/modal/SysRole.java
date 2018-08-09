@@ -1,29 +1,20 @@
 package com.blessedbin.frame.ucenter.modal;
 
-import tk.mybatis.mapper.annotation.KeySql;
-
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.util.Date;
+import javax.persistence.*;
 
 @Table(name = "sys_role")
 public class SysRole {
     @Id
-    @KeySql(useGeneratedKeys = true)
     private Integer id;
 
     @Column(name = "role_name")
-    @NotBlank
     private String roleName;
 
     /**
      * 角色唯一编码
      */
     @Column(name = "role_key")
-    @NotBlank
     private String roleKey;
 
     /**
@@ -49,10 +40,6 @@ public class SysRole {
      * 是否启用，默认1
      */
     private Boolean enabled;
-
-    @Column(name = "organization_id")
-    @NotEmpty
-    private Integer organizationId;
 
     /**
      * @return id
@@ -103,7 +90,7 @@ public class SysRole {
     /**
      * 获取备注
      *
-     * @return description - 备注
+     * @return remark - 备注
      */
     public String getRemark() {
         return remark;
@@ -184,19 +171,5 @@ public class SysRole {
      */
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
-    }
-
-    /**
-     * @return organization_id
-     */
-    public Integer getOrganizationId() {
-        return organizationId;
-    }
-
-    /**
-     * @param organizationId
-     */
-    public void setOrganizationId(Integer organizationId) {
-        this.organizationId = organizationId;
     }
 }

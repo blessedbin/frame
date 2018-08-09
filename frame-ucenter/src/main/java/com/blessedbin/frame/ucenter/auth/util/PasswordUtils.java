@@ -21,6 +21,7 @@ public class PasswordUtils {
         return createDelegatingPasswordEncoder("bcrypt");
     }
 
+    @SuppressWarnings("unchecked")
     public static PasswordEncoder createDelegatingPasswordEncoder(String encodingId) {
         Map<String, PasswordEncoder> encoders = new HashMap<>();
         encoders.put(encodingId, new BCryptPasswordEncoder());

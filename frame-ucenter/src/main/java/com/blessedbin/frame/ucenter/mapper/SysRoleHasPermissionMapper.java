@@ -9,11 +9,12 @@ import java.util.List;
 
 @Repository
 public interface SysRoleHasPermissionMapper extends MyMapper<SysRoleHasPermission> {
-    List<SysRoleHasPermission> selectByRoleIdAndPermissionType(@Param("roleId") Integer roleId, @Param("type") String typeMenu);
+    int deleteByPermissionId(@Param("permissionId") Integer id);
+
+    List<SysRoleHasPermission> selectByRoleIdAndPermissionType(@Param("roleId") Integer roleId,
+                                                               @Param("type") String typeMenu);
 
     int deleteByRoleId(@Param("roleId") Integer roleId);
-
-    int deleteByPermissionId(@Param("permissionId") Integer permissionId);
 
     int insertLists(@Param("lists") List<SysRoleHasPermission> list);
 }

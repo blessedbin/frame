@@ -1,8 +1,6 @@
 package com.blessedbin.frame.ucenter.modal;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Table(name = "sys_role_has_permission")
 public class SysRoleHasPermission {
