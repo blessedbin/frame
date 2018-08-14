@@ -1,5 +1,7 @@
 package com.blessedbin.frame.common.service;
 
+import com.blessedbin.frame.common.mapper.MyMapper;
+
 import java.io.Serializable;
 
 /**
@@ -11,4 +13,7 @@ import java.io.Serializable;
  * @tool intellij idea
  */
 public interface MysqlCrudService<M,PK extends Serializable> extends CrudService<M,PK>,DataTableService<M,PK>,CheckExistsService {
+
+    MyMapper<M> getMyMapper();
+
 }

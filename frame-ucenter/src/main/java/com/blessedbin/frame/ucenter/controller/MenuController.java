@@ -9,9 +9,7 @@ import com.blessedbin.frame.common.validate.PutMethodValidationGroup;
 import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.dto.ActionDto;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
-import com.blessedbin.frame.ucenter.modal.SysMenu;
-import com.blessedbin.frame.ucenter.modal.SysPermission;
-import com.blessedbin.frame.ucenter.modal.SysRoleHasPermission;
+import com.blessedbin.frame.ucenter.modal.*;
 import com.blessedbin.frame.ucenter.service.ActionService;
 import com.blessedbin.frame.ucenter.service.MenuService;
 import io.swagger.annotations.Api;
@@ -48,20 +46,17 @@ public class MenuController {
     private ActionService actionService;
 
     @RequestMapping("/tree_table.json")
-    @FrameApi
     public SimpleResponse<List<MenuTreeDto>> treeTables(){
         return SimpleResponse.ok(menuService.getMenuTree());
     }
 
     @GetMapping("/cascader.json")
-    @FrameApi
     public SimpleResponse<List<CascaderNode>> cascaderList(){
         List<CascaderNode> cascaders = menuService.getCascaders();
         return SimpleResponse.ok(cascaders);
     }
 
     @GetMapping("/menu_tree.json")
-    @FrameApi
     public SimpleResponse menuTree(@RequestParam(required = false) Integer roleId) {
         Map<String,Object> datas = new HashMap<>();
         List<TreeNode> treeNodes = buildMenuTree(menuService.getMenuTree());
@@ -96,7 +91,6 @@ public class MenuController {
     }
 
     @PostMapping
-    @FrameApi
     @ApiOperation(value = "添加菜单")
     public SimpleResponse add(@RequestBody @Validated SysMenu menu){
         // TODO 参数检验
@@ -106,7 +100,6 @@ public class MenuController {
 
 
     @GetMapping("/datatable.json")
-    @FrameApi
     public SimpleResponse<Pagination<SysMenu>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
                                                         @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
                                                         @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue) {
@@ -115,7 +108,6 @@ public class MenuController {
     }
 
     @GetMapping
-    @FrameApi
     @ApiOperation(value = "获取菜单")
     public SimpleResponse<SysMenu> getOne(@RequestParam Integer id){
         SysMenu content = menuService.selectByPk(id);
@@ -135,7 +127,6 @@ public class MenuController {
     }
 
     @PutMapping
-    @FrameApi
     public SimpleResponse edit(@RequestBody @Validated(PutMethodValidationGroup.class) SysMenu menu){
         log.debug("request param:{}",menu);
         menuService.updateByPkSelective(menu);
@@ -145,18 +136,34 @@ public class MenuController {
 
     /**
      * 保存菜单和权限的关系
+     * @param param
      */
     @PostMapping("/save_menu_api.do")
-    @FrameApi
+    @ApiOperation(value = "保存功能点与API的关系")
     public SimpleResponse saveMenuApiRelation(@Validated @RequestBody MenuApiRelationParam param){
 
+        log.debug("[MenuController]Request param:{}",param);
+
         Integer menuId = param.getMenuId();
-        boolean exists = menuService.checkExistsByPk(menuId);
+        boolean exists = menuService.checkActionExistsByPk(menuId);
         if(!exists){
-            throw new ParamCheckRuntimeException();
+            throw new ParamCheckRuntimeException("参数非法");
         }
 
+        menuService.saveActionApiRelation(param.getMenuId(),param.getSelected());
+
         return SimpleResponse.accepted();
+    }
+
+    /**
+     * 查看功能点拥有的API的ID
+     * @param actionId
+     */
+    @GetMapping("/action_api_selected.json")
+    public SimpleResponse<List<Integer>> getSelected(@RequestParam Integer actionId) {
+        List<SysMenuHasApi> selectedApi = menuService.getActionSelectedApi(actionId);
+        List<Integer> collect = selectedApi.stream().map(SysMenuHasApi::getSysApiPermissionId).collect(Collectors.toList());
+        return SimpleResponse.ok(collect);
     }
 
 

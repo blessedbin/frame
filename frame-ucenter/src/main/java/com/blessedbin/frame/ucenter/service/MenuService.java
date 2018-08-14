@@ -5,10 +5,7 @@ import com.blessedbin.frame.common.exception.ResourceNotFoundException;
 import com.blessedbin.frame.common.service.impl.AbstractMysqlCrudServiceImpl;
 import com.blessedbin.frame.common.ui.CascaderNode;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
-import com.blessedbin.frame.ucenter.mapper.SysMenuMapper;
-import com.blessedbin.frame.ucenter.mapper.SysPermissionMapper;
-import com.blessedbin.frame.ucenter.mapper.SysRoleHasPermissionMapper;
-import com.blessedbin.frame.ucenter.mapper.SysRoleMapper;
+import com.blessedbin.frame.ucenter.mapper.*;
 import com.blessedbin.frame.ucenter.modal.*;
 import com.github.promeg.pinyinhelper.Pinyin;
 import lombok.extern.log4j.Log4j2;
@@ -49,6 +46,9 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
 
     @Autowired
     private SysRoleMapper roleMapper;
+
+    @Autowired
+    private SysMenuHasApiMapper menuHasApiMapper;
 
     public List<MenuTreeDto>  getMenuTree(){
         return getTopAll().stream().map(sysMenu -> {
@@ -272,5 +272,47 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
         }
         List<SysMenu> sysMenus = menuMapper.selectMenusByPid(menuId);
         return !sysMenus.isEmpty();
+    }
+
+    /**
+     * 检验功能点ID是否合法
+     * @param menuId
+     * @return
+     */
+    public boolean checkActionExistsByPk(Integer menuId) {
+        SysMenuExample example = new SysMenuExample();
+        example.createCriteria().andTypeEqualTo(SysMenu.ACTION).andPermissionIdEqualTo(menuId);
+        return menuMapper.selectCountByExample(example) > 0;
+    }
+
+    /**
+     * 保存权限点和API的关系
+     * @param actionId
+     * @param selected
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void saveActionApiRelation(Integer actionId, List<Integer> selected) {
+
+        menuHasApiMapper.deleteByMenuIdAndType(actionId);
+        if(selected.isEmpty()){
+            return;
+        }
+
+        List<SysMenuHasApi> collect = selected.stream().map(integer -> {
+            SysMenuHasApi smha = new SysMenuHasApi();
+            smha.setSysApiPermissionId(integer);
+            smha.setSysMenuPermissionId(actionId);
+            return smha;
+        }).collect(Collectors.toList());
+
+        int i = menuHasApiMapper.insertLists(collect);
+        log.debug("成功更新{}条数据",i);
+
+    }
+
+    public List<SysMenuHasApi> getActionSelectedApi(Integer actionId) {
+        SysMenuHasApiExample example = new SysMenuHasApiExample();
+        example.createCriteria().andSysMenuPermissionIdEqualTo(actionId);
+        return menuHasApiMapper.selectByExample(example);
     }
 }

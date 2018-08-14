@@ -33,6 +33,12 @@ public abstract class AbstractMysqlCrudServiceImpl<M,PK extends Serializable>
     @Autowired
     protected MyMapper<M> mapper;
 
+
+    @Override
+    public MyMapper<M> getMyMapper() {
+        return mapper;
+    }
+
     @Override
     public int insert(M record) {
         Assert.notNull(record,"record is not null");

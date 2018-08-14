@@ -70,7 +70,6 @@ public class ApiController {
     }
 
     @GetMapping("/draggable_list.json")
-    @FrameApi
     public SimpleResponse<Map<String, Object>> draggableList(@RequestParam(required = false) Integer roleId) {
         Map<String, Object> returnData = new HashMap<>();
 
@@ -105,7 +104,6 @@ public class ApiController {
     }
 
     @GetMapping("/select_option.json")
-    @FrameApi
     @ApiOperation(value = "select_option")
     public SimpleResponse<Map<String, Object>> selectList(@RequestParam(required = false) Integer roleId,
                                                           @RequestParam(required = false) Integer menuId){
