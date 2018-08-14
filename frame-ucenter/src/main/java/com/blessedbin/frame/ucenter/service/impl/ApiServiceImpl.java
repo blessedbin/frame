@@ -181,4 +181,10 @@ public class ApiServiceImpl extends AbstractMysqlCrudServiceImpl<SysApi,Integer>
         //return apiMapper.selectByUuid(uuid);
         return null;
     }
+
+    @Override
+    public List<SysApi> selectByMenuId(Integer menuId) {
+        List<SysApi> apis = apiMapper.selectByMenuId(menuId);
+        return apis;
+    }
 }

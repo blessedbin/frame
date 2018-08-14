@@ -103,6 +103,12 @@ public class ApiController {
         return SimpleResponse.ok(returnData);
     }
 
+    /**
+     *
+     * @param roleId 角色ID
+     * @param menuId
+     * @return
+     */
     @GetMapping("/select_option.json")
     @ApiOperation(value = "select_option")
     public SimpleResponse<Map<String, Object>> selectList(@RequestParam(required = false) Integer roleId,
@@ -114,6 +120,7 @@ public class ApiController {
             Map<String, String> data = new HashMap<>();
             data.put("label", api.getName());
             data.put("value", String.valueOf(api.getPermissionId()));
+            data.put("url",api.getUrl());
             return data;
         }).collect(Collectors.toList());
         returnData.put("options", options);
@@ -132,9 +139,10 @@ public class ApiController {
             }).collect(Collectors.toList());
             returnData.put("selected", selectedList);
         } else if(menuId != null){
-            // TODO
-            //List<String> selectedList = apiService.selectByMenuId(menuId).stream().map(api -> String.valueOf(api.getPermissionId())).collect(Collectors.toList());
-            returnData.put("selected", Collections.EMPTY_LIST);
+            List<String> selectedList = apiService.selectByMenuId(menuId).stream()
+                    .map(api -> String.valueOf(api.getPermissionId()))
+                    .collect(Collectors.toList());
+            returnData.put("selected", selectedList);
         }
 
         return SimpleResponse.ok(returnData);

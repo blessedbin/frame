@@ -17,4 +17,9 @@
     <result column="addition_information" property="additionInformation" jdbcType="VARCHAR" />
     <result column="tags" property="tags" jdbcType="VARCHAR" />
   </resultMap>
+    <select id="selectByMenuId" resultType="com.blessedbin.frame.ucenter.modal.SysApi">
+      select * from sys_api
+      inner join  sys_menu_has_api a on sys_api.permission_id = a.sys_api_permission_id
+      where a.sys_menu_permission_id=#{menuId}
+    </select>
 </mapper>

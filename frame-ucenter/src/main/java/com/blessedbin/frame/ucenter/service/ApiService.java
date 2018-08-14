@@ -6,6 +6,7 @@ import com.blessedbin.frame.ucenter.entity.dto.ApiDto;
 import com.blessedbin.frame.ucenter.modal.SysApi;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.BitSet;
 import java.util.List;
 
 /**
@@ -23,4 +24,6 @@ public interface ApiService extends MysqlCrudService<SysApi,Integer> {
     Pagination<ApiDto> getDataTables(Integer pageNum, Integer pageSize);
 
     List<SysApi> selectByUuid(String uuid);
+
+    List<SysApi> selectByMenuId(Integer menuId);
 }
