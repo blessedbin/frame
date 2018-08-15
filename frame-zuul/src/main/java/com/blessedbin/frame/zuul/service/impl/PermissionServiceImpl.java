@@ -3,12 +3,19 @@ package com.blessedbin.frame.zuul.service.impl;
 import com.blessedbin.frame.common.entity.FramePermission;
 import com.blessedbin.frame.zuul.service.PermissionService;
 import com.blessedbin.frame.zuul.service.UserService;
+import com.netflix.discovery.converters.Auto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cloud.netflix.zuul.filters.ProxyRequestHelper;
+import org.springframework.cloud.netflix.zuul.filters.Route;
+import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.util.UrlPathHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
@@ -30,6 +37,13 @@ public class PermissionServiceImpl implements PermissionService {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RouteLocator routeLocator;
+
+    private UrlPathHelper urlPathHelper = new UrlPathHelper();
+
+    private AntPathMatcher antPathMatcher = new AntPathMatcher();
+
     @Override
     public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
         log.debug("access hasPermission for request:{},authentication:{}",request.getRequestURI(),authentication.getPrincipal());
@@ -47,8 +61,20 @@ public class PermissionServiceImpl implements PermissionService {
             } else {
                 // 判断是否有权限
                 List<FramePermission> api = userService.findUserApiByUuid(uuid);
-                System.out.println(api);
-                return true;
+                log.debug("拥有的权限：{}",api);
+                final String requestURI = this.urlPathHelper.getPathWithinApplication(request);
+
+                Route route = this.routeLocator.getMatchingRoute(requestURI);
+                String path = route.getPath();
+                String method = request.getMethod();
+
+                // 鉴权
+                return api.stream().anyMatch(framePermission -> {
+                    boolean a = framePermission.getMethod().equalsIgnoreCase(method);
+                    boolean b = antPathMatcher.match(framePermission.getUrl(), path);
+                    return a && b;
+                });
+
             }
         }
 

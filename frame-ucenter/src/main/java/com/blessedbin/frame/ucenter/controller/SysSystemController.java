@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping(value = "${frame.base-path.ucenter}/sys/system")
+@RequestMapping(value = "/sys/system")
 @Log4j2
 public class SysSystemController {
 

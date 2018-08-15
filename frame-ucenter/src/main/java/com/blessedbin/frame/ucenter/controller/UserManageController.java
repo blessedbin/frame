@@ -11,6 +11,7 @@ import com.blessedbin.frame.ucenter.modal.SysUser;
 import com.blessedbin.frame.ucenter.service.DepartmentService;
 import com.blessedbin.frame.ucenter.service.UserManageService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,9 +30,9 @@ import java.util.Date;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping(value = "${frame.base-path.ucenter}/sys/user")
+@RequestMapping(value = "/sys/user")
 @Log4j2
-@Api(description = "用户管理")
+@Api(description = "用户管理",tags = "用户管理")
 public class UserManageController {
 
     private static String DEFAULT_PASSWORD = "123456";
@@ -46,7 +47,7 @@ public class UserManageController {
     private DepartmentService departmentService;
 
     @GetMapping("/datatable.json")
-    @FrameApi
+    @ApiOperation(value = "查看用户")
     public SimpleResponse<Pagination<SysUser>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
                                                         @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
                                                         @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue) {
@@ -55,13 +56,13 @@ public class UserManageController {
     }
 
     @GetMapping
-    @FrameApi
+    @ApiOperation(value = "获取用户信息")
     public SimpleResponse<SysUser> getOne(@RequestParam String uuid){
         return SimpleResponse.ok(userManageService.selectByPk(uuid));
     }
 
     @DeleteMapping
-    @FrameApi
+    @ApiOperation(value = "删除用户")
     public SimpleResponse delete(@RequestParam String id){
         userManageService.deleteByPk(id);
         return SimpleResponse.deleted();
@@ -73,7 +74,7 @@ public class UserManageController {
      * @return
      */
     @PostMapping
-    @FrameApi
+    @ApiOperation(value = "添加用户")
     public SimpleResponse addOne(@RequestBody @Validated(PostMethodValidationGroup.class)
                                          UserDto param){
         if(userManageService.checkEmailExists(param.getEmail()) ||

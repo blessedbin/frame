@@ -34,9 +34,9 @@ import java.util.stream.Collectors;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping(value = "${frame.base-path.ucenter}/sys/menu")
+@RequestMapping(value = "/sys/menu")
 @Log4j2
-@Api(description = "菜单管理")
+@Api(description = "菜单管理",tags = "菜单管理")
 public class MenuController {
 
     @Autowired

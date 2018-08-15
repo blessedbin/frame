@@ -16,12 +16,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,7 +31,7 @@ import java.util.stream.Collectors;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping(value = "${frame.base-path.ucenter}/sys/api")
+@RequestMapping(value = "/sys/api")
 @Api(description = "API列表")
 @Log4j2
 public class ApiController {
@@ -116,13 +114,25 @@ public class ApiController {
         Map<String, Object> returnData = new HashMap<>();
 
         List<SysApi> apis = apiService.selectAll();
-        List<Map<String, String>> options = apis.stream().map(api -> {
-            Map<String, String> data = new HashMap<>();
-            data.put("label", api.getName());
-            data.put("value", String.valueOf(api.getPermissionId()));
-            data.put("url",api.getUrl());
-            return data;
-        }).collect(Collectors.toList());
+
+        Set<String> tags = new HashSet<>();
+        apis.forEach(api -> {
+            String apiTags = api.getTags();
+            if(!StringUtils.isEmpty(apiTags)){
+                tags.addAll(Arrays.asList(apiTags.split(",")));
+            }
+        });
+
+        List<Map> options = new ArrayList<>();
+        tags.forEach(s -> {
+            Map<String,Object> groupApi = new HashMap<>();
+            List<SysApi> tagApi = apis.stream()
+                    .filter(sysApi -> Arrays.asList(sysApi.getTags().split(",")).contains(s))
+                    .collect(Collectors.toList());
+            groupApi.put("tag",s);
+            groupApi.put("list",tagApi);
+            options.add(groupApi);
+        });
         returnData.put("options", options);
 
         if (roleId != null) {

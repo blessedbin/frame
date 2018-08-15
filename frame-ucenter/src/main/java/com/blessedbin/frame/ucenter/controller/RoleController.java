@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping(value = "${frame.base-path.ucenter}/role")
+@RequestMapping(value = "/role")
 @Api(description = "角色管理")
 @Log4j2
 public class RoleController {
@@ -159,7 +159,7 @@ public class RoleController {
         return SimpleResponse.accepted("操作成功");
     }
 
-    @PutMapping("/role_permission.json")
+    @PutMapping("/role_permission.do")
     @FrameApi
     public SimpleResponse saveRolePermission(@RequestBody RolePermissionParam param) {
         log.debug("request param:{}", param);

@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping(value = "${frame.base-path.ucenter}/sys/permission")
+@RequestMapping(value = "/sys/permission")
 @Log4j2
 public class PermissionController {
 

@@ -18,7 +18,7 @@ import java.util.List;
 @FeignClient("frame-ucenter")
 public interface UserService {
 
-    @GetMapping("/api/sys/api/findUserApi/{uuid}")
+    @GetMapping("/sys/api/findUserApi/{uuid}")
     List<FramePermission> findUserApiByUuid(@PathVariable("uuid") String uuid);
 
 }

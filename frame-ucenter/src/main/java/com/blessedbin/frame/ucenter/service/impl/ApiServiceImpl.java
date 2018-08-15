@@ -90,11 +90,12 @@ public class ApiServiceImpl extends AbstractMysqlCrudServiceImpl<SysApi,Integer>
                 } else {
                     // 判断信息是否相同，不相同则更新，相同则跳过
                     SysApi preAPi = apiMapper.selectByPrimaryKey(prePermission.getId());
+                    SysApi api = buildApi(url, httpMethod, operation, prePermission.getId());
 
                     SysPermission buildPermission = buildPermission(operation, permissionKey);
                     buildPermission.setId(prePermission.getId());
 
-                    if(!buildPermission.equals(prePermission)){
+                    if(!buildPermission.equals(prePermission) || !api.equals(preAPi)){
                         SysPermission nPermission = new SysPermission();
                         nPermission.setPermissionName(operation.getSummary());
                         nPermission.setId(prePermission.getId());
@@ -107,6 +108,8 @@ public class ApiServiceImpl extends AbstractMysqlCrudServiceImpl<SysApi,Integer>
                         nApi.setDescription(operation.getDescription());
                         nApi.setPermissionId(prePermission.getId());
                         nApi.setUpdateTime(new Date());
+                        nApi.setUrl(url);
+                        nApi.setMethod(httpMethod.name());
                         apiMapper.updateByPrimaryKeySelective(nApi);
                         log.debug("更新api {}：{}->{}",prePermission.getPermissionKey(),preAPi,nApi);
 
@@ -172,14 +175,12 @@ public class ApiServiceImpl extends AbstractMysqlCrudServiceImpl<SysApi,Integer>
     }
 
     /**
-     * TODO
      * @param uuid
      * @return
      */
     @Override
     public List<SysApi> selectByUuid(String uuid) {
-        //return apiMapper.selectByUuid(uuid);
-        return null;
+        return apiMapper.selectByUuid(uuid);
     }
 
     @Override

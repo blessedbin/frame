@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping("${frame.base-path.ucenter}/sys/oauth_details")
+@RequestMapping("/sys/oauth_details")
 @Log4j2
 public class OauthClientDetailsController {
 

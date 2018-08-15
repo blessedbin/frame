@@ -252,12 +252,12 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
     }
 
     /**
-     * 查找某角色下对应的已选菜单权限
+     * 查找某角色下对应的已选菜单权限,只返回叶子节点
      * @param roleId
      * @return
      */
     public List<SysRoleHasPermission> selectRolePermissionsByRoleId(Integer roleId) {
-        return roleHasPermissionMapper.selectByRoleIdAndPermissionType(roleId,SysPermission.TYPE_MENU);
+        return roleHasPermissionMapper.selectByRoleId(roleId);
     }
 
 

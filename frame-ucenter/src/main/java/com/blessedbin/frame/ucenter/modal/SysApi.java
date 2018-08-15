@@ -238,8 +238,12 @@ public class SysApi {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         SysApi sysApi = (SysApi) o;
         return Objects.equals(permissionId, sysApi.permissionId) &&
                 Objects.equals(name, sysApi.name) &&

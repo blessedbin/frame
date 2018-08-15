@@ -28,7 +28,7 @@ import java.util.List;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping(value = "${frame.base-path.ucenter}/sys/department")
+@RequestMapping(value = "/sys/department")
 @Api(description = "部门管理")
 @Log4j2
 public class DepartmentController {

@@ -11,4 +11,6 @@ import java.util.List;
 public interface SysApiMapper extends MyMapper<SysApi> {
 
     List<SysApi> selectByMenuId(@Param("menuId") Integer menuId);
+
+    List<SysApi> selectByUuid(@Param("uuid") String uuid);
 }

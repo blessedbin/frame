@@ -1,25 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.blessedbin.frame.ucenter.mapper.SysApiMapper" >
-  <resultMap id="BaseResultMap" type="com.blessedbin.frame.ucenter.modal.SysApi" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="permission_id" property="permissionId" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="url" property="url" jdbcType="VARCHAR" />
-    <result column="method" property="method" jdbcType="VARCHAR" />
-    <result column="remark" property="remark" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="sort" property="sort" jdbcType="INTEGER" />
-    <result column="description" property="description" jdbcType="VARCHAR" />
-    <result column="addition_information" property="additionInformation" jdbcType="VARCHAR" />
-    <result column="tags" property="tags" jdbcType="VARCHAR" />
-  </resultMap>
+<mapper namespace="com.blessedbin.frame.ucenter.mapper.SysApiMapper">
+    <resultMap id="BaseResultMap" type="com.blessedbin.frame.ucenter.modal.SysApi">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="permission_id" property="permissionId" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="url" property="url" jdbcType="VARCHAR"/>
+        <result column="method" property="method" jdbcType="VARCHAR"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="description" property="description" jdbcType="VARCHAR"/>
+        <result column="addition_information" property="additionInformation" jdbcType="VARCHAR"/>
+        <result column="tags" property="tags" jdbcType="VARCHAR"/>
+    </resultMap>
     <select id="selectByMenuId" resultType="com.blessedbin.frame.ucenter.modal.SysApi">
-      select * from sys_api
-      inner join  sys_menu_has_api a on sys_api.permission_id = a.sys_api_permission_id
-      where a.sys_menu_permission_id=#{menuId}
+        select *
+        from sys_api
+            inner join sys_menu_has_api a on sys_api.permission_id = a.sys_api_permission_id
+        where a.sys_menu_permission_id = #{menuId}
+    </select>
+    <select id="selectByUuid" resultType="com.blessedbin.frame.ucenter.modal.SysApi">
+        select *
+        from sys_api
+            inner join sys_permission permission on sys_api.permission_id = permission.id
+            inner join sys_role_has_permission srhp on permission.id = srhp.sys_permission_id
+            inner join sys_user_has_role suhr on srhp.sys_role_id = suhr.sys_role_id
+        where suhr.sys_user_uuid = #{uuid}
     </select>
 </mapper>

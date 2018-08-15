@@ -25,7 +25,7 @@ import javax.validation.constraints.NotNull;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping(value = "${frame.base-path.ucenter}/sys/action")
+@RequestMapping(value = "/sys/action")
 public class ActionController {
 
     @Autowired

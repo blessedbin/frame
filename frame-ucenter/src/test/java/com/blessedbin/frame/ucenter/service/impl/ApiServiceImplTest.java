@@ -1,10 +1,13 @@
 package com.blessedbin.frame.ucenter.service.impl;
 
 import com.blessedbin.frame.ucenter.FrameUcenterApplicationTests;
+import com.blessedbin.frame.ucenter.modal.SysApi;
 import com.blessedbin.frame.ucenter.service.ApiService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -29,5 +32,12 @@ public class ApiServiceImplTest extends FrameUcenterApplicationTests {
 
         apiService.scanApi();
 
+    }
+
+
+    @Test
+    public void selectByUuid() {
+        List<SysApi> apis = apiService.selectByUuid("bdbb24514f464eb29eaff7e75ab8ab8c");
+        System.out.println(apis);
     }
 }

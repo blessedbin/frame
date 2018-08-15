@@ -13,6 +13,7 @@ public interface SysRoleHasPermissionMapper extends MyMapper<SysRoleHasPermissio
 
     List<SysRoleHasPermission> selectByRoleIdAndPermissionType(@Param("roleId") Integer roleId,
                                                                @Param("type") String typeMenu);
+    List<SysRoleHasPermission> selectByRoleId(@Param("roleId") Integer roleId);
 
     int deleteByRoleId(@Param("roleId") Integer roleId);
 

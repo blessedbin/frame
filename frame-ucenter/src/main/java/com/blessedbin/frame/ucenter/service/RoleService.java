@@ -3,10 +3,7 @@ package com.blessedbin.frame.ucenter.service;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.service.impl.AbstractMysqlCrudServiceImpl;
 import com.blessedbin.frame.ucenter.mapper.*;
-import com.blessedbin.frame.ucenter.modal.SysRole;
-import com.blessedbin.frame.ucenter.modal.SysRoleHasPermission;
-import com.blessedbin.frame.ucenter.modal.SysUserHasRole;
-import com.blessedbin.frame.ucenter.modal.SysUserHasRoleExample;
+import com.blessedbin.frame.ucenter.modal.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,6 +36,12 @@ public class RoleService extends AbstractMysqlCrudServiceImpl<SysRole, Integer> 
 
     @Autowired
     private SysRoleMapper roleMapper;
+
+    @Autowired
+    private SysApiMapper apiMapper;
+
+    @Autowired
+    private SysMenuHasApiMapper menuHasApiMapper;
 
     public List<SysUserHasRole> findAllUserHasRoleByUuid(String uuid) {
         SysUserHasRoleExample example = new SysUserHasRoleExample();
@@ -90,6 +93,10 @@ public class RoleService extends AbstractMysqlCrudServiceImpl<SysRole, Integer> 
 
         // 查询与菜单关联的api id
         List<Integer> checkedListInteger = checkedList.stream().map(Integer::valueOf).collect(Collectors.toList());
+
+        List<Integer> collect = menuHasApiMapper.selectByMenuIds(checkedListInteger).stream()
+                .map(SysMenuHasApi::getSysApiPermissionId).collect(Collectors.toList());
+        checkedListInteger.addAll(collect);
 
         List<SysRoleHasPermission> list = checkedListInteger.stream().map(s -> {
             SysRoleHasPermission roleHasPermission = new SysRoleHasPermission();
