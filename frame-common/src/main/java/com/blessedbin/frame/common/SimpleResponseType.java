@@ -16,6 +16,7 @@ public enum SimpleResponseType {
     UN_LOGIN(40101,"未登录"),
     LOGIN_FAILED(40103,"登录失败"),
     UNAUTHORIZED(40101,"未授权"),
+    ACCESS_DENIED(40102,"无访问权限"),
     LOGIN_SUCCESS(20101,"登录成功"),
     CREATED(20102,"创建成功"),
     DELETED(20201,"删除成功"),

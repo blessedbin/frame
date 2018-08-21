@@ -63,8 +63,8 @@ public class UserManageController {
 
     @DeleteMapping
     @ApiOperation(value = "删除用户")
-    public SimpleResponse delete(@RequestParam String id){
-        userManageService.deleteByPk(id);
+    public SimpleResponse delete(@RequestParam String uuid){
+        userManageService.deleteByPk(uuid);
         return SimpleResponse.deleted();
     }
 

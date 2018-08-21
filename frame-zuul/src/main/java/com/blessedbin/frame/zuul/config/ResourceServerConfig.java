@@ -1,5 +1,6 @@
 package com.blessedbin.frame.zuul.config;
 
+import com.blessedbin.frame.zuul.component.FrameAccessDeniedHandler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -40,6 +41,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Autowired
     private CustomAccessTokenConverter customAccessTokenConverter;
 
+    @Autowired
+    private FrameAccessDeniedHandler frameAccessDeniedHandler;
+
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
@@ -57,6 +61,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
         resources.expressionHandler(expressionHandler).tokenServices(tokenServices());
+        resources.accessDeniedHandler(frameAccessDeniedHandler);
     }
 
     /**

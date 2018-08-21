@@ -148,6 +148,18 @@ public class SimpleResponse<T> {
     }
 
     /**
+     * 拒绝访问
+     * @return
+     */
+    public static SimpleResponse accessDenied(){
+        SimpleResponse response = new SimpleResponse();
+        response.setCode(SimpleResponseType.ACCESS_DENIED.getCode());
+        response.setCodeMsg(SimpleResponseType.ACCESS_DENIED.getCodeMsg());
+
+        return response;
+    }
+
+    /**
      * 返回描述信息
      * @return
      */
