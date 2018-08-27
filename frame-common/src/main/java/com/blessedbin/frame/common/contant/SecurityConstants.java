@@ -17,4 +17,14 @@ public interface SecurityConstants {
     String ROLE_HEADER = "x-role-header";
 
     String UUID_HEADER = "x-uuid-header";
+
+
+    /**
+     * 图形验证码过期时间
+     */
+    int DEFAULT_IMAGE_CODE_TIMEOUT = 60;
+
+    String TOKEN_IMAGE_CODE_PREFIX = "image-code";
+
+    String OAUTH_TOKEN_URL = "/oauth/token";
 }

@@ -87,6 +87,7 @@ public class AuthenticationServerConfig extends AuthorizationServerConfigurerAda
                 .checkTokenAccess("permitAll()");
     }
 
+
     /**
      * TOKEN增强
      * @return

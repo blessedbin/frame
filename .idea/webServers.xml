@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="624f11c0-c39b-4728-b94c-f27eff6ada52" name="eurekaServer" url="http://192.168.177.129">
+        <fileTransfer host="192.168.177.129" port="22" rootFolder="/home/xubin/jar_project" accessType="SFTP">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" />
+          </advancedOptions>
+          <option name="port" value="22" />
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>
