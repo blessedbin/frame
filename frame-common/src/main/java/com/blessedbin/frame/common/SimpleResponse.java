@@ -34,6 +34,8 @@ public class SimpleResponse<T> {
 
     private String codeMsg = "";
 
+    private String timestamp = String.valueOf(System.currentTimeMillis());
+
     public SimpleResponse(int code,T data){
         this.code = code;
         this.data = data;
