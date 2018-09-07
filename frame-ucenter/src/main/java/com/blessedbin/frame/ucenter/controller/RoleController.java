@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping(value = "/role")
+@RequestMapping(value = "/sys/role")
 @Api(description = "角色管理")
 @Log4j2
 public class RoleController {
