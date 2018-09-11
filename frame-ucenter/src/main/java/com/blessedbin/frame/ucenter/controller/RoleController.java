@@ -12,7 +12,7 @@ import com.blessedbin.frame.ucenter.entity.param.UserRoleParam;
 import com.blessedbin.frame.ucenter.modal.SysRole;
 import com.blessedbin.frame.ucenter.modal.SysRoleExample;
 import com.blessedbin.frame.ucenter.modal.SysUser;
-import com.blessedbin.frame.ucenter.modal.SysUserHasRole;
+import com.blessedbin.frame.ucenter.modal.SysUserRole;
 import com.blessedbin.frame.ucenter.service.RoleService;
 import com.blessedbin.frame.ucenter.service.UserManageService;
 import io.swagger.annotations.Api;
@@ -136,7 +136,7 @@ public class RoleController {
         Map<String, Object> returnData = new HashMap<>(2);
         returnData.put("roleList", transferNodes);
 
-        List<SysUserHasRole> selectedRoles = roleService.findAllUserHasRoleByUuid(uuid);
+        List<SysUserRole> selectedRoles = roleService.findAllUserHasRoleByUuid(uuid);
         List<String> selectedLists = selectedRoles.stream()
                 .map(ur -> String.valueOf(ur.getSysRoleId())).collect(Collectors.toList());
         returnData.put("selectedRole", selectedLists);

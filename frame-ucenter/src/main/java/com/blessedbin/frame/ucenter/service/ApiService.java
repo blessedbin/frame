@@ -1,9 +1,9 @@
 package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.Pagination;
-import com.blessedbin.frame.common.service.MysqlCrudService;
 import com.blessedbin.frame.ucenter.entity.dto.ApiDto;
-import com.blessedbin.frame.ucenter.modal.SysApi;
+import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
+import com.blessedbin.frame.ucenter.modal.SysPermission;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.BitSet;
@@ -17,7 +17,7 @@ import java.util.List;
  * @time 16:46
  * @tool intellij idea
  */
-public interface ApiService extends MysqlCrudService<SysApi,Integer> {
+public interface ApiService {
     @Transactional(rollbackFor = Exception.class)
     void scanApi();
 
@@ -26,4 +26,8 @@ public interface ApiService extends MysqlCrudService<SysApi,Integer> {
     List<SysApi> selectByUuid(String uuid);
 
     List<SysApi> selectByMenuId(Integer menuId);
+
+    List<SysApi> selectAll();
+
+    SysApi selectByPk(Integer permissionId);
 }

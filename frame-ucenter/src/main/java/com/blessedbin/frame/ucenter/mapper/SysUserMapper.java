@@ -4,10 +4,8 @@ import com.blessedbin.frame.common.mapper.MyMapper;
 import com.blessedbin.frame.ucenter.modal.SysUser;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Repository
 public interface SysUserMapper extends MyMapper<SysUser> {
-
     SysUser findByUsername(@Param("username") String username);
 }

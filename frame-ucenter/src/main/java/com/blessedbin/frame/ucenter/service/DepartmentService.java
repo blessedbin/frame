@@ -45,7 +45,7 @@ public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartmen
 
     public List<SysDepartment> getTopAll(){
         SysDepartmentExample example = new SysDepartmentExample();
-        example.createCriteria().andPIdIsNull();
+        example.createCriteria().andPidIsNull();
         example.setOrderByClause("sort ASC");
 
         return mapper.selectByExample(example);
@@ -57,7 +57,7 @@ public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartmen
         }
 
         SysDepartmentExample example = new SysDepartmentExample();
-        example.createCriteria().andPIdEqualTo(pid);
+        example.createCriteria().andPidEqualTo(pid);
         example.setOrderByClause("sort ASC");
 
         return mapper.selectByExample(example);

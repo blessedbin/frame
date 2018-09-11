@@ -105,9 +105,7 @@
         delimitAllColumns:是否对所有列添加**分隔符**。默认false。
         -->
 
-
-
-        <table tableName="sys_api">
+        <table tableName="sys_%">
         </table>
     </context>
 </generatorConfiguration>

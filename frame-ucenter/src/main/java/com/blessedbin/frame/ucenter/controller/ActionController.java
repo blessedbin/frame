@@ -2,7 +2,7 @@ package com.blessedbin.frame.ucenter.controller;
 
 import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.ucenter.component.FrameApi;
-import com.blessedbin.frame.ucenter.service.ActionService;
+import com.blessedbin.frame.ucenter.service.OperationService;
 import io.swagger.annotations.ApiOperation;
 import lombok.Builder;
 import lombok.Data;
@@ -29,14 +29,19 @@ import javax.validation.constraints.NotNull;
 public class ActionController {
 
     @Autowired
-    private ActionService actionService;
+    private OperationService actionService;
 
+    /**
+     * TODO
+     * @param param
+     * @return
+     */
     @PostMapping
     @FrameApi
     @ApiOperation(value = "添加功能点")
     public SimpleResponse add(@RequestBody @Validated AddActionParam param) {
 
-        actionService.addAction(param.getPid(),param.getName(),param.getRemark());
+        // actionService.addOperation(param.getPid(),param.getName(),param.getRemark());
 
         return SimpleResponse.created();
     }

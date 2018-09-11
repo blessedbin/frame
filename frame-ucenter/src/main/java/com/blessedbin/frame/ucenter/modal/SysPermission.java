@@ -13,20 +13,23 @@ public class SysPermission {
 
     public static final String TYPE_API="API";
 
-    public static final String TYPE_ACTION = "ACTION";
+    public static final String TYPE_OPERATION = "OPERATION";
 
     @Id
+    @Column(name = "permission_id")
     @KeySql(useGeneratedKeys = true)
-    private Integer id;
-
-    @Column(name = "permission_name")
-    private String permissionName;
+    private Integer permissionId;
 
     /**
-     * 权限唯一编码
+     * 权限名称
      */
-    @Column(name = "permission_key")
-    private String permissionKey;
+    private String name;
+
+    /**
+     * 权限标识
+     * 格式：   类型:系统标识:编码
+     */
+    private String code;
 
     @Column(name = "create_time")
     private Date createTime;
@@ -34,6 +37,9 @@ public class SysPermission {
     @Column(name = "update_time")
     private Date updateTime;
 
+    /**
+     * 备注信息
+     */
     private String remark;
 
     /**
@@ -49,55 +55,59 @@ public class SysPermission {
     private Integer sort;
 
     /**
-     * 所属系统
+     * 附加信息，JSON格式保存
      */
-    @Column(name = "sys_system_id")
-    private String sysSystemId;
+    @Column(name = "addition_information")
+    private String additionInformation;
 
     /**
-     * @return id
+     * @return permission_id
      */
-    public Integer getId() {
-        return id;
+    public Integer getPermissionId() {
+        return permissionId;
     }
 
     /**
-     * @param id
+     * @param permissionId
      */
-    public void setId(Integer id) {
-        this.id = id;
+    public void setPermissionId(Integer permissionId) {
+        this.permissionId = permissionId;
     }
 
     /**
-     * @return permission_name
-     */
-    public String getPermissionName() {
-        return permissionName;
-    }
-
-    /**
-     * @param permissionName
-     */
-    public void setPermissionName(String permissionName) {
-        this.permissionName = permissionName == null ? null : permissionName.trim();
-    }
-
-    /**
-     * 获取权限唯一编码
+     * 获取权限名称
      *
-     * @return permission_key - 权限唯一编码
+     * @return name - 权限名称
      */
-    public String getPermissionKey() {
-        return permissionKey;
+    public String getName() {
+        return name;
     }
 
     /**
-     * 设置权限唯一编码
+     * 设置权限名称
      *
-     * @param permissionKey 权限唯一编码
+     * @param name 权限名称
      */
-    public void setPermissionKey(String permissionKey) {
-        this.permissionKey = permissionKey == null ? null : permissionKey.trim();
+    public void setName(String name) {
+        this.name = name == null ? null : name.trim();
+    }
+
+    /**
+     * 获取权限标识
+     *
+     * @return code - 权限标识
+     */
+    public String getCode() {
+        return code;
+    }
+
+    /**
+     * 设置权限标识
+     *
+     * @param code 权限标识
+     */
+    public void setCode(String code) {
+        this.code = code == null ? null : code.trim();
     }
 
     /**
@@ -129,14 +139,18 @@ public class SysPermission {
     }
 
     /**
-     * @return remark
+     * 获取备注信息
+     *
+     * @return remark - 备注信息
      */
     public String getRemark() {
         return remark;
     }
 
     /**
-     * @param remark
+     * 设置备注信息
+     *
+     * @param remark 备注信息
      */
     public void setRemark(String remark) {
         this.remark = remark == null ? null : remark.trim();
@@ -193,36 +207,37 @@ public class SysPermission {
     }
 
     /**
-     * 获取所属系统
+     * 获取附加信息，JSON格式保存
      *
-     * @return sys_system_id - 所属系统
+     * @return addition_information - 附加信息，JSON格式保存
      */
-    public String getSysSystemId() {
-        return sysSystemId;
+    public String getAdditionInformation() {
+        return additionInformation;
     }
 
     /**
-     * 设置所属系统
+     * 设置附加信息，JSON格式保存
      *
-     * @param sysSystemId 所属系统
+     * @param additionInformation 附加信息，JSON格式保存
      */
-    public void setSysSystemId(String sysSystemId) {
-        this.sysSystemId = sysSystemId == null ? null : sysSystemId.trim();
+    public void setAdditionInformation(String additionInformation) {
+        this.additionInformation = additionInformation == null ? null : additionInformation.trim();
     }
+
 
     @Override
     public String toString() {
         return "SysPermission{" +
-                "id=" + id +
-                ", permissionName='" + permissionName + '\'' +
-                ", permissionKey='" + permissionKey + '\'' +
+                "permissionId=" + permissionId +
+                ", name='" + name + '\'' +
+                ", code='" + code + '\'' +
                 ", createTime=" + createTime +
                 ", updateTime=" + updateTime +
                 ", remark='" + remark + '\'' +
                 ", enabled=" + enabled +
                 ", type='" + type + '\'' +
                 ", sort=" + sort +
-                ", sysSystemId='" + sysSystemId + '\'' +
+                ", additionInformation='" + additionInformation + '\'' +
                 '}';
     }
 
@@ -235,19 +250,19 @@ public class SysPermission {
             return false;
         }
         SysPermission that = (SysPermission) o;
-        return Objects.equals(id, that.id) &&
-                Objects.equals(permissionName, that.permissionName) &&
-                Objects.equals(permissionKey, that.permissionKey) &&
+        return Objects.equals(permissionId, that.permissionId) &&
+                Objects.equals(name, that.name) &&
+                Objects.equals(code, that.code) &&
                 Objects.equals(remark, that.remark) &&
                 Objects.equals(enabled, that.enabled) &&
                 Objects.equals(type, that.type) &&
                 Objects.equals(sort, that.sort) &&
-                Objects.equals(sysSystemId, that.sysSystemId);
+                Objects.equals(additionInformation, that.additionInformation);
     }
 
     @Override
     public int hashCode() {
 
-        return Objects.hash(id, permissionName, permissionKey, remark, enabled, type, sort, sysSystemId);
+        return Objects.hash(permissionId, name, code, remark, enabled, type, sort, additionInformation);
     }
 }

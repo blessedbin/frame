@@ -6,10 +6,9 @@ import com.blessedbin.frame.common.entity.FramePermission;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.dto.ApiDto;
-import com.blessedbin.frame.ucenter.modal.SysApi;
+import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.blessedbin.frame.ucenter.service.ApiService;
-import com.blessedbin.frame.ucenter.service.MenuService;
 import com.blessedbin.frame.ucenter.service.PermissionService;
 import com.blessedbin.frame.ucenter.service.RoleService;
 import io.swagger.annotations.Api;
@@ -45,8 +44,6 @@ public class ApiController {
     @Autowired
     private RoleService roleService;
 
-    @Autowired
-    private MenuService menuService;
     /**
      * 扫描
      */
@@ -75,8 +72,8 @@ public class ApiController {
         List<Map<String, String>> all = apis.stream().map(api -> {
             Map<String, String> data = new HashMap<>();
             SysPermission permission = permissionService.selectByPk(api.getPermissionId());
-            data.put("name", permission.getPermissionName());
-            data.put("url", api.getName());
+            data.put("name", permission.getName());
+            data.put("url", api.getUrl());
             data.put("id", String.valueOf(api.getPermissionId()));
             return data;
         }).collect(Collectors.toList());
@@ -86,12 +83,12 @@ public class ApiController {
             if (!roleService.checkExistsByPk(roleId)) {
                 throw new ParamCheckRuntimeException();
             }
-            List<SysPermission> sysPermissions = permissionService.selectByRoleIdAndType(roleId, SysPermission.TYPE_API);
+            List<SysPermission> sysPermissions = permissionService.selectByRoleIdAndType(roleId);
             List<Map<String, String>> selectedList = sysPermissions.stream().map(permission -> {
-                SysApi api = apiService.selectByPk(permission.getId());
+                SysApi api = apiService.selectByPk(permission.getPermissionId());
                 Map<String, String> data = new HashMap<>();
-                data.put("name", permission.getPermissionName());
-                data.put("url", api.getName());
+                data.put("name", permission.getName());
+                data.put("url", api.getUrl());
                 data.put("id", String.valueOf(api.getPermissionId()));
                 return data;
             }).collect(Collectors.toList());
@@ -139,11 +136,11 @@ public class ApiController {
             if (!roleService.checkExistsByPk(roleId)) {
                 throw new ParamCheckRuntimeException();
             }
-            List<SysPermission> sysPermissions = permissionService.selectByRoleIdAndType(roleId, SysPermission.TYPE_API);
+            List<SysPermission> sysPermissions = permissionService.selectByRoleIdAndType(roleId);
             List<Map<String, String>> selectedList = sysPermissions.stream().map(permission -> {
-                SysApi api = apiService.selectByPk(permission.getId());
+                SysApi api = apiService.selectByPk(permission.getPermissionId());
                 Map<String, String> data = new HashMap<>();
-                data.put("label", api.getName());
+                data.put("label", permission.getName());
                 data.put("value", String.valueOf(api.getPermissionId()));
                 return data;
             }).collect(Collectors.toList());

@@ -9,9 +9,11 @@ import com.blessedbin.frame.common.validate.PutMethodValidationGroup;
 import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.dto.ActionDto;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
-import com.blessedbin.frame.ucenter.modal.*;
-import com.blessedbin.frame.ucenter.service.ActionService;
+import com.blessedbin.frame.ucenter.entity.pojo.Menu;
+import com.blessedbin.frame.ucenter.modal.SysPermission;
+import com.blessedbin.frame.ucenter.modal.SysRolePermission;
 import com.blessedbin.frame.ucenter.service.MenuService;
+import com.blessedbin.frame.ucenter.service.OperationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
@@ -22,7 +24,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -43,7 +48,7 @@ public class MenuController {
     private MenuService menuService;
 
     @Autowired
-    private ActionService actionService;
+    private OperationService actionService;
 
     @RequestMapping("/tree_table.json")
     public SimpleResponse<List<MenuTreeDto>> treeTables(){
@@ -63,7 +68,7 @@ public class MenuController {
         datas.put("treeList",treeNodes);
 
         if(roleId != null){
-            List<SysRoleHasPermission> rolePermissions = menuService.selectRolePermissionsByRoleId(roleId);
+            List<SysRolePermission> rolePermissions = menuService.selectRolePermissionsByRoleId(roleId);
             List<String> rps = rolePermissions.stream()
                     .map(sysRoleHasPermission -> String.valueOf(sysRoleHasPermission.getSysPermissionId()))
                     .collect(Collectors.toList());
@@ -92,25 +97,17 @@ public class MenuController {
 
     @PostMapping
     @ApiOperation(value = "添加菜单")
-    public SimpleResponse add(@RequestBody @Validated SysMenu menu){
+    public SimpleResponse add(@RequestBody @Validated Menu menu){
         // TODO 参数检验
-        menuService.insert(menu);
+        menuService.addMenu(menu);
         return SimpleResponse.created();
     }
 
 
-    @GetMapping("/datatable.json")
-    public SimpleResponse<Pagination<SysMenu>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
-                                                        @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
-                                                        @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue) {
-        Pagination<SysMenu> dataTable = menuService.getDataTable(pageNum, pageSize);
-        return SimpleResponse.ok(dataTable);
-    }
-
     @GetMapping
     @ApiOperation(value = "获取菜单")
-    public SimpleResponse<SysMenu> getOne(@RequestParam Integer id){
-        SysMenu content = menuService.selectByPk(id);
+    public SimpleResponse<Menu> getOne(@RequestParam Integer id){
+        Menu content = menuService.getMenu(id);
         return SimpleResponse.ok(content);
     }
 
@@ -127,7 +124,7 @@ public class MenuController {
     }
 
     @PutMapping
-    public SimpleResponse edit(@RequestBody @Validated(PutMethodValidationGroup.class) SysMenu menu){
+    public SimpleResponse edit(@RequestBody @Validated(PutMethodValidationGroup.class) Menu menu){
         log.debug("request param:{}",menu);
         menuService.updateByPkSelective(menu);
         return SimpleResponse.accepted();
@@ -156,14 +153,13 @@ public class MenuController {
     }
 
     /**
+     * TODO
      * 查看功能点拥有的API的ID
      * @param actionId
      */
     @GetMapping("/action_api_selected.json")
     public SimpleResponse<List<Integer>> getSelected(@RequestParam Integer actionId) {
-        List<SysMenuHasApi> selectedApi = menuService.getActionSelectedApi(actionId);
-        List<Integer> collect = selectedApi.stream().map(SysMenuHasApi::getSysApiPermissionId).collect(Collectors.toList());
-        return SimpleResponse.ok(collect);
+        return SimpleResponse.ok();
     }
 
 

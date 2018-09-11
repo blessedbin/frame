@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface SysPermissionMapper extends MyMapper<SysPermission> {
-    SysPermission selectByPermissionKey(@Param("key") String key);
+    SysPermission selectByIdentification(@Param("code") String code);
 
-    List<SysPermission> selectByRoleIdAndType(@Param("roleId") Integer roleId, @Param("type") String type);
+    List<SysPermission> selectByRoleId(@Param("roleId") Integer roleId);
 }

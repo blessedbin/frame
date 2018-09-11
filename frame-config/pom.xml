@@ -37,6 +37,24 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
             </plugin>
+
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.13</version>
+                <configuration>
+                    <imageName>registry.cn-hangzhou.aliyuncs.com/aliware2018/debian-jdk8:latest</imageName>
+                    <dockerHost>http://192.168.177.129:2375</dockerHost>
+                    <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
+                    <resources>
+                        <recource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </recource>
+                    </resources>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 

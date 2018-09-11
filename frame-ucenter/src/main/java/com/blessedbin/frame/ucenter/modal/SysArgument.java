@@ -23,13 +23,14 @@ public class SysArgument {
     /**
      * 参数编码
      */
-    @Column(name = "argument_code")
-    private String argumentCode;
+    @Column(name = "argument_key")
+    private String argumentKey;
 
     /**
      * 参数名称，展示用
      */
-    private String name;
+    @Column(name = "argument_name")
+    private String argumentName;
 
     /**
      * 参数值
@@ -53,6 +54,9 @@ public class SysArgument {
 
     @Column(name = "update_time")
     private Date updateTime;
+
+    @Column(name = "addition_information")
+    private String additionInformation;
 
     /**
      * @return id
@@ -107,37 +111,37 @@ public class SysArgument {
     /**
      * 获取参数编码
      *
-     * @return argument_code - 参数编码
+     * @return argument_key - 参数编码
      */
-    public String getArgumentCode() {
-        return argumentCode;
+    public String getArgumentKey() {
+        return argumentKey;
     }
 
     /**
      * 设置参数编码
      *
-     * @param argumentCode 参数编码
+     * @param argumentKey 参数编码
      */
-    public void setArgumentCode(String argumentCode) {
-        this.argumentCode = argumentCode == null ? null : argumentCode.trim();
+    public void setArgumentKey(String argumentKey) {
+        this.argumentKey = argumentKey == null ? null : argumentKey.trim();
     }
 
     /**
      * 获取参数名称，展示用
      *
-     * @return name - 参数名称，展示用
+     * @return argument_name - 参数名称，展示用
      */
-    public String getName() {
-        return name;
+    public String getArgumentName() {
+        return argumentName;
     }
 
     /**
      * 设置参数名称，展示用
      *
-     * @param name 参数名称，展示用
+     * @param argumentName 参数名称，展示用
      */
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setArgumentName(String argumentName) {
+        this.argumentName = argumentName == null ? null : argumentName.trim();
     }
 
     /**
@@ -220,5 +224,19 @@ public class SysArgument {
      */
     public void setUpdateTime(Date updateTime) {
         this.updateTime = updateTime;
+    }
+
+    /**
+     * @return addition_information
+     */
+    public String getAdditionInformation() {
+        return additionInformation;
+    }
+
+    /**
+     * @param additionInformation
+     */
+    public void setAdditionInformation(String additionInformation) {
+        this.additionInformation = additionInformation == null ? null : additionInformation.trim();
     }
 }

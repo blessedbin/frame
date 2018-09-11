@@ -28,7 +28,11 @@ public class PermissionService extends AbstractMysqlCrudServiceImpl<SysPermissio
         return null;
     }
 
-    public List<SysPermission> selectByRoleIdAndType(Integer roleId, String type) {
-        return permissionMapper.selectByRoleIdAndType(roleId,type);
+    public List<SysPermission> selectByRoleIdAndType(Integer roleId) {
+        return permissionMapper.selectByRoleId(roleId);
+    }
+
+    public SysPermission selectByIdentification(String code) {
+        return permissionMapper.selectByIdentification(code);
     }
 }

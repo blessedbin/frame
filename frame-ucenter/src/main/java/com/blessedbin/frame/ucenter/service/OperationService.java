@@ -2,20 +2,18 @@ package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.ucenter.entity.dto.ActionDto;
-import com.blessedbin.frame.ucenter.mapper.SysMenuMapper;
-import com.blessedbin.frame.ucenter.modal.SysMenu;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
-import com.github.promeg.pinyinhelper.Pinyin;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.Collections.EMPTY_LIST;
 
 /**
  * Created by xubin on 2018/8/3.
@@ -27,16 +25,16 @@ import java.util.stream.Collectors;
  */
 @Service
 @Log4j2
-public class ActionService{
+public class OperationService {
 
     @Autowired
     private MenuService menuService;
 
     @Autowired
-    private SysMenuMapper menuMapper;
-
-    @Autowired
     private PermissionService permissionService;
+
+    @Value("spring.application.name")
+    private String applicationName;
 
     /**
      * 添加功能点
@@ -46,7 +44,7 @@ public class ActionService{
      * @param remark 备注
      */
     @Transactional(rollbackFor = Exception.class)
-    public void addAction(Integer pid, String name, String remark) {
+    public void addOperation(Integer pid, String name,String operationCode, String remark) {
         // 参数校验
         if (menuService.hasChildren(pid)) {
             throw new ParamCheckRuntimeException("该菜单节点不是叶子节点");
@@ -57,28 +55,20 @@ public class ActionService{
         }
 
         SysPermission permission = new SysPermission();
-        String key = SysPermission.TYPE_ACTION + "-" + Pinyin.toPinyin(name, "-");
-        permission.setPermissionKey(key);
+        String code = SysPermission.TYPE_OPERATION + ":" + applicationName + ":" + operationCode;
+        permission.setCode(code);
         permission.setUpdateTime(new Date());
         permission.setCreateTime(new Date());
         if (!StringUtils.isEmpty(remark)) {
             permission.setRemark(remark);
         }
-        permission.setSysSystemId("user_center");
-        permission.setPermissionName(name);
-        permission.setType(SysPermission.TYPE_ACTION);
+        permission.setName(name);
+        permission.setType(SysPermission.TYPE_OPERATION);
         permission.setSort(1);
         permission.setEnabled(true);
 
         permissionService.insert(permission);
-
-        SysMenu menu = new SysMenu();
-        menu.setTitle(name);
-        menu.setType(SysMenu.ACTION);
-        menu.setPid(pid);
-        menu.setPermissionId(permission.getId());
-
-        menuMapper.insertSelective(menu);
+        // TODO
 
     }
 
@@ -90,8 +80,8 @@ public class ActionService{
      * @return
      */
     private boolean checkNameExists(String name,Integer pid){
-        int count = menuMapper.selectCountByNameAndPid(name,pid);
-        return count > 0;
+        // int count = menuMapper.selectCountByNameAndPid(name,pid);
+        return false;
     }
 
 
@@ -100,13 +90,14 @@ public class ActionService{
      * @return
      */
     public List<ActionDto> selectByMenuId(Integer menuId){
-        List<SysMenu> actions = menuMapper.selectByPidAndType(menuId, SysMenu.ACTION);
+        /*List<SysMenu> actions = menuMapper.selectByPidAndType(menuId, SysMenu.ACTION);
         return actions.stream().map(action ->{
             ActionDto dto = new ActionDto();
             dto.setId(action.getPermissionId());
             dto.setName(action.getTitle());
-            dto.setType(SysPermission.TYPE_ACTION);
+            dto.setType(SysPermission.TYPE_OPERATION);
             return dto;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toList());*/
+        return EMPTY_LIST;
     }
 }

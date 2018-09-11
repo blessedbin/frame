@@ -11,4 +11,5 @@ import java.util.List;
 public interface SysRoleMapper extends MyMapper<SysRole> {
     List<SysRole> selectRolesByUUid(@Param("uuid") String uuid);
 
+    SysRole selectByRoleKey(@Param("key") String key);
 }

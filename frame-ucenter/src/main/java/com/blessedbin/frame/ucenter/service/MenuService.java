@@ -1,15 +1,15 @@
 package com.blessedbin.frame.ucenter.service;
 
-import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
-import com.blessedbin.frame.common.exception.ResourceNotFoundException;
-import com.blessedbin.frame.common.service.impl.AbstractMysqlCrudServiceImpl;
+import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.ui.CascaderNode;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
-import com.blessedbin.frame.ucenter.mapper.*;
-import com.blessedbin.frame.ucenter.modal.*;
-import com.github.promeg.pinyinhelper.Pinyin;
+import com.blessedbin.frame.ucenter.entity.pojo.Menu;
+import com.blessedbin.frame.ucenter.mapper.SysRoleMapper;
+import com.blessedbin.frame.ucenter.modal.SysPermission;
+import com.blessedbin.frame.ucenter.modal.SysRolePermission;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,7 +18,8 @@ import org.springframework.util.Assert;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static java.util.Collections.EMPTY_LIST;
 
 /**
  * Created by xubin on 2018/7/9.
@@ -30,33 +31,27 @@ import java.util.stream.Collectors;
  */
 @Service
 @Log4j2
-public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
+public class MenuService {
 
     @Autowired
     private PermissionService permissionService;
 
-    @Autowired
-    private SysPermissionMapper permissionMapper;
-
-    @Autowired
-    private SysMenuMapper menuMapper;
-
-    @Autowired
-    private SysRoleHasPermissionMapper roleHasPermissionMapper;
 
     @Autowired
     private SysRoleMapper roleMapper;
 
     @Autowired
-    private SysMenuHasApiMapper menuHasApiMapper;
+    private ObjectMapper objectMapper;
+
 
     public List<MenuTreeDto>  getMenuTree(){
-        return getTopAll().stream().map(sysMenu -> {
+       /* return getTopAll().stream().map(sysMenu -> {
             MenuTreeDto dto = new MenuTreeDto();
             BeanUtils.copyProperties(sysMenu,dto);
             dto.setChildren(buildMenuTree(sysMenu));
             return dto;
-        }).collect(Collectors.toList());
+        }).collect(Collectors.toList());*/
+       return EMPTY_LIST;
     }
 
     /**
@@ -68,7 +63,7 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
         Assert.notNull(uuid,"uuid is not null");
 
         // TODO 逻辑方面的优化，Role信息从参数获取或者从缓存获取，而不是每次查询数据库
-        List<SysRole> roles = roleMapper.selectRolesByUUid(uuid);
+        /*List<SysRole> roles = roleMapper.selectRolesByUUid(uuid);
         boolean b = roles.stream().map(SysRole::getRoleKey).anyMatch(s -> "ROLE_ADMIN".equals(s));
         List<SysMenu> menus;
         if(b){
@@ -85,31 +80,12 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
                     BeanUtils.copyProperties(menu,dto);
                     dto.setChildren(buildUserMenuTree(menus,menu.getPermissionId()));
                     return dto;
-                }).collect(Collectors.toList());
+                }).collect(Collectors.toList());*/
+
+
+        return EMPTY_LIST;
     }
 
-    private List<MenuTreeDto> buildUserMenuTree(List<SysMenu> menus, Integer pid){
-        return menus.stream().filter(menu -> pid.equals(menu.getPid())).map(menu -> {
-            MenuTreeDto dto = new MenuTreeDto();
-            BeanUtils.copyProperties(menu,dto);
-            dto.setChildren(buildUserMenuTree(menus,menu.getPermissionId()));
-            return dto;
-        }).collect(Collectors.toList());
-    }
-
-    /**
-     * 递归构建树
-     * @param menu
-     * @return
-     */
-    private List<MenuTreeDto> buildMenuTree(SysMenu menu){
-        return getAllByPid(menu.getPermissionId()).stream().map(sysMenu -> {
-            MenuTreeDto dto = new MenuTreeDto();
-            BeanUtils.copyProperties(sysMenu,dto);
-            dto.setChildren(buildMenuTree(sysMenu));
-            return dto;
-        }).collect(Collectors.toList());
-    }
 
     public List<CascaderNode> getCascaders() {
         List<CascaderNode> nodes = new ArrayList<>();
@@ -122,98 +98,45 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
     }
 
     private List<CascaderNode> buildCascader(Integer parentId) {
-        return getAllByPid(parentId).stream().map(menu -> CascaderNode.builder()
+       /* return getAllByPid(parentId).stream().map(menu -> CascaderNode.builder()
                     .value(String.valueOf(menu.getPermissionId()))
                     .label(menu.getTitle())
                     .children(buildCascader(menu.getPermissionId()))
                     .build())
-                .collect(Collectors.toList());
+                .collect(Collectors.toList());*/
+       return EMPTY_LIST;
     }
 
-    /**
-     * 获取所有顶级菜单
-     * @return
-     */
-    private List<SysMenu> getTopAll(){
-        SysMenuExample example = new SysMenuExample();
-        example.createCriteria().andPidIsNull();
-        example.setOrderByClause("sort ASC");
-
-        return mapper.selectByExample(example);
-    }
-
-    /**
-     * 根据pid获取所有节点
-     * @param pid
-     * @return
-     */
-    private List<SysMenu> getAllByPid(Integer pid){
-        if(pid == null){
-            return getTopAll();
-        }
-        SysMenuExample example = new SysMenuExample();
-        example.createCriteria().andPidEqualTo(pid).andTypeEqualTo(SysMenu.MENU);
-        example.setOrderByClause("sort ASC");
-
-        return mapper.selectByExample(example);
-    }
 
 
     /**
      * 重写添加方法
      * @param menu 要添加的数据
-     * @return
      */
-    @Override
     @Transactional(rollbackFor = Exception.class)
-    public int insert(SysMenu menu) {
-        validateParam(menu);
+    public void addMenu(Menu menu) {
 
-        SysPermission permission = buildPermission(menu);
+        SysPermission permission = new SysPermission();
+        permission.setName(menu.getTitle());
+        permission.setCreateTime(new Date());
+        permission.setUpdateTime(new Date());
+        permission.setType(SysPermission.TYPE_MENU);
+        permission.setSort(menu.getSort());
+        permission.setCode("menu::" + menu.getName());
 
-        // 检查自动生成的permission key是否重复,若重复则重新生成key
-        int i = 1;
-        while(permissionMapper.selectByPermissionKey(permission.getPermissionKey())!= null){
-            permission.setPermissionKey(permission.getPermissionKey() + i);
-            i ++;
+        try {
+            permission.setAdditionInformation(objectMapper.writeValueAsString(menu));
+        } catch (JsonProcessingException e) {
+            log.error(e.getMessage());
+            throw new RuntimeException(e);
         }
 
-        permissionService.insert(permission);
-
-        Date updateTime = new Date();
-        menu.setPermissionId(permission.getId());
-        menu.setCreateTime(updateTime);
-        menu.setUpdateTime(updateTime);
-
-        return super.insertSelective(menu);
+        permissionService.insertSelective(permission);
     }
 
-    private SysPermission buildPermission(SysMenu menu) {
-        SysPermission permission = new SysPermission();
-        Date updateTime = new Date();
-        permission.setCreateTime(updateTime);
-        permission.setEnabled(menu.getEnabled());
 
-        String key;
-
-        key = Pinyin.toPinyin(menu.getTitle(), "-");
-
-        permission.setPermissionKey(SysPermission.TYPE_MENU + "-" +key);
-        permission.setRemark(menu.getRemark());
-        permission.setPermissionName(menu.getTitle());
-        permission.setSort(menu.getSort());
-        // TODO 换成动态的
-        permission.setSysSystemId("user_center");
-        permission.setType(SysPermission.TYPE_MENU);
-        permission.setUpdateTime(updateTime);
-
-        return permission;
-    }
-
-    @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteByPk(Integer id) {
-        roleHasPermissionMapper.deleteByPermissionId(id);
         return permissionService.deleteByPk(id);
     }
 
@@ -222,67 +145,43 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
      * @param menu 要修改的对象
      * @return
      */
-    @Override
     @Transactional(rollbackFor = Exception.class)
-    public int updateByPkSelective(SysMenu menu) {
-        validateParam(menu);
+    public void updateByPkSelective(Menu menu) {
 
-        SysPermission prePermission = permissionService.selectByPk(menu.getPermissionId());
-        SysPermission nPermission = buildPermission(menu);
-        nPermission.setCreateTime(prePermission.getCreateTime());
-        if(!prePermission.equals(nPermission)){
-            nPermission.setId(prePermission.getId());
-            permissionService.updateByPkSelective(nPermission);
-        }
+        SysPermission prePermission = permissionService.selectByPk(menu.getId());
 
-        menu.setUpdateTime(new Date());
-
-        return super.updateByPkSelective(menu);
-    }
-
-    private void validateParam(SysMenu menu) {
-        if(menu.getPid() == null || menu.getPid() == -1){
-            menu.setPid(null);
-        }else{
-            SysMenu pk = selectByPk(menu.getPid());
-            if(pk == null){
-                throw new ParamCheckRuntimeException("参数错误");
-            }
-        }
+        //TODO
     }
 
     /**
+     * TODO
      * 查找某角色下对应的已选菜单权限,只返回叶子节点
      * @param roleId
      * @return
      */
-    public List<SysRoleHasPermission> selectRolePermissionsByRoleId(Integer roleId) {
-        return roleHasPermissionMapper.selectByRoleId(roleId);
+    public List<SysRolePermission> selectRolePermissionsByRoleId(Integer roleId) {
+        return null;
     }
 
 
     /**
+     * TODO
      * 检查菜单是否有子菜单
      * @param menuId menu id
      * @return 若有子菜单，返回true，否则返回false
      */
     public boolean hasChildren(Integer menuId){
-        if(!checkExistsByPk(menuId)){
-            throw new ResourceNotFoundException();
-        }
-        List<SysMenu> sysMenus = menuMapper.selectMenusByPid(menuId);
-        return !sysMenus.isEmpty();
+        return true;
     }
 
     /**
+     * TODO
      * 检验功能点ID是否合法
      * @param menuId
      * @return
      */
     public boolean checkActionExistsByPk(Integer menuId) {
-        SysMenuExample example = new SysMenuExample();
-        example.createCriteria().andTypeEqualTo(SysMenu.ACTION).andPermissionIdEqualTo(menuId);
-        return menuMapper.selectCountByExample(example) > 0;
+        return true;
     }
 
     /**
@@ -293,26 +192,23 @@ public class MenuService extends AbstractMysqlCrudServiceImpl<SysMenu,Integer> {
     @Transactional(rollbackFor = Exception.class)
     public void saveActionApiRelation(Integer actionId, List<Integer> selected) {
 
-        menuHasApiMapper.deleteByMenuIdAndType(actionId);
-        if(selected.isEmpty()){
-            return;
-        }
-
-        List<SysMenuHasApi> collect = selected.stream().map(integer -> {
-            SysMenuHasApi smha = new SysMenuHasApi();
-            smha.setSysApiPermissionId(integer);
-            smha.setSysMenuPermissionId(actionId);
-            return smha;
-        }).collect(Collectors.toList());
-
-        int i = menuHasApiMapper.insertLists(collect);
-        log.debug("成功更新{}条数据",i);
+        //TODO
+        log.debug("成功更新{}条数据");
 
     }
 
-    public List<SysMenuHasApi> getActionSelectedApi(Integer actionId) {
-        SysMenuHasApiExample example = new SysMenuHasApiExample();
-        example.createCriteria().andSysMenuPermissionIdEqualTo(actionId);
-        return menuHasApiMapper.selectByExample(example);
+    public Pagination<Menu> getDataTable(Integer pageNum, Integer pageSize) {
+        return null;
+    }
+
+    /**
+     *  TODO
+     * 获取menu
+     * @param id menu的Id
+     * @return
+     */
+    public Menu getMenu(Integer id) {
+        SysPermission permission = permissionService.selectByPk(id);
+        return null;
     }
 }

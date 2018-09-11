@@ -26,34 +26,25 @@ import java.util.stream.Collectors;
 public class RoleService extends AbstractMysqlCrudServiceImpl<SysRole, Integer> {
 
     @Autowired
-    private SysUserHasRoleMapper userHasRoleMapper;
+    private SysUserRoleMapper userRoleMapper;
 
     @Autowired
-    private SysUserMapper userMapper;
-
-    @Autowired
-    private SysRoleHasPermissionMapper roleHasPermissionMapper;
+    private SysRolePermissionMapper rolePermissionMapper;
 
     @Autowired
     private SysRoleMapper roleMapper;
 
-    @Autowired
-    private SysApiMapper apiMapper;
 
-    @Autowired
-    private SysMenuHasApiMapper menuHasApiMapper;
-
-    public List<SysUserHasRole> findAllUserHasRoleByUuid(String uuid) {
-        SysUserHasRoleExample example = new SysUserHasRoleExample();
-        SysUserHasRoleExample.Criteria criteria = example.createCriteria();
+    public List<SysUserRole> findAllUserHasRoleByUuid(String uuid) {
+        SysUserRoleExample example = new SysUserRoleExample();
+        SysUserRoleExample.Criteria criteria = example.createCriteria();
         criteria.andSysUserUuidEqualTo(uuid);
 
-        return userHasRoleMapper.selectByExample(example);
+        return userRoleMapper.selectByExample(example);
     }
 
     /**
-     * 编辑用户觉得关系
-     * TODO 检查角色和用户是否同属于一个组织
+     * 编辑用户角色关系
      *
      * @param uuid         用户ID
      * @param selectedRole 角色ID列表
@@ -61,18 +52,18 @@ public class RoleService extends AbstractMysqlCrudServiceImpl<SysRole, Integer> 
     @Transactional(rollbackFor = Exception.class)
     public void editUserRole(String uuid, List<Integer> selectedRole) {
         //清空全部
-        userHasRoleMapper.deleteByUuid(uuid);
+        userRoleMapper.deleteByUuid(uuid);
         if (CollectionUtils.isEmpty(selectedRole)) {
             return;
         }
         // 新建
-        List<SysUserHasRole> collect = selectedRole.stream().map(id -> {
-            SysUserHasRole sur = new SysUserHasRole();
+        List<SysUserRole> collect = selectedRole.stream().map(id -> {
+            SysUserRole sur = new SysUserRole();
             sur.setSysUserUuid(uuid);
             sur.setSysRoleId(id);
             return sur;
         }).collect(Collectors.toList());
-        int count = userHasRoleMapper.insertLists(collect);
+        int count = userRoleMapper.insertLists(collect);
 
         log.debug("<<< 保存成功，共更新{}条数据", count);
     }
@@ -85,36 +76,28 @@ public class RoleService extends AbstractMysqlCrudServiceImpl<SysRole, Integer> 
      */
     @Transactional(rollbackFor = Exception.class)
     public void saveRolePermission(Integer roleId, List<String> checkedList) {
-        roleHasPermissionMapper.deleteByRoleId(roleId);
+        rolePermissionMapper.deleteByRoleId(roleId);
         if (CollectionUtils.isEmpty(checkedList)) {
             //清空全部
             return;
         }
 
         // 查询与菜单关联的api id
-        List<Integer> checkedListInteger = checkedList.stream().map(Integer::valueOf).collect(Collectors.toList());
-
-        List<Integer> collect = menuHasApiMapper.selectByMenuIds(checkedListInteger).stream()
-                .map(SysMenuHasApi::getSysApiPermissionId).collect(Collectors.toList());
-        checkedListInteger.addAll(collect);
-
-        List<SysRoleHasPermission> list = checkedListInteger.stream().map(s -> {
-            SysRoleHasPermission roleHasPermission = new SysRoleHasPermission();
-            roleHasPermission.setSysRoleId(roleId);
-            roleHasPermission.setSysPermissionId(s);
-            return roleHasPermission;
-        }).collect(Collectors.toList());
-        try {
-            int i = roleHasPermissionMapper.insertLists(list);
-            log.debug("成功插入{}条数据", i);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            throw new ParamCheckRuntimeException(e);
-        }
+        // TODO
 
     }
 
     public List<SysRole> selectAllByUuid(String uuid) {
         return roleMapper.selectRolesByUUid(uuid);
+    }
+
+
+    /**
+     *
+     * @param key 角色关键字
+     * @return
+     */
+    public SysRole selectByKey(String key){
+        return roleMapper.selectByRoleKey(key);
     }
 }

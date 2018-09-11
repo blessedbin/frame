@@ -59,16 +59,16 @@ public class DepartmentController {
     public SimpleResponse add(@RequestBody @Validated(PostMethodValidationGroup.class)SysDepartment department) {
         log.debug("request department param:{}",department);
 
-        if(department.getpId() == null || department.getpId() == -1){
+        if(department.getPid() == null || department.getPid() == -1){
             SysDepartmentExample example = new SysDepartmentExample();
-            example.createCriteria().andPIdEqualTo(department.getpId()).andNameEqualTo(department.getName());
+            example.createCriteria().andPidEqualTo(department.getPid()).andNameEqualTo(department.getName());
             if(departmentService.checkExistsByExample(example)){
                 throw new ParamCheckRuntimeException("同级下名称重复");
             }
-            department.setpId(null);
+            department.setPid(null);
         } else {
             SysDepartmentExample example = new SysDepartmentExample();
-            example.createCriteria().andNameEqualTo(department.getName()).andPIdIsNull();
+            example.createCriteria().andNameEqualTo(department.getName()).andPidIsNull();
             if(departmentService.checkExistsByExample(example)){
                 throw new ParamCheckRuntimeException("同级下名称重复");
             }
