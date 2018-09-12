@@ -27,4 +27,8 @@
       inner join sys_role_permission srhp on sys_permission.permission_id = srhp.sys_permission_id
     where srhp.sys_role_id = #{roleId}
   </select>
+    <select id="selectByType" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
+      select * from sys_permission
+      where type=#{type}
+    </select>
 </mapper>

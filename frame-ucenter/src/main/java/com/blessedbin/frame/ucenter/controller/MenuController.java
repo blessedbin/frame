@@ -50,11 +50,6 @@ public class MenuController {
     @Autowired
     private OperationService actionService;
 
-    @RequestMapping("/tree_table.json")
-    public SimpleResponse<List<MenuTreeDto>> treeTables(){
-        return SimpleResponse.ok(menuService.getMenuTree());
-    }
-
     @GetMapping("/cascader.json")
     public SimpleResponse<List<CascaderNode>> cascaderList(){
         List<CascaderNode> cascaders = menuService.getCascaders();
@@ -82,13 +77,13 @@ public class MenuController {
             return treeList.stream().map(menuTreeDto -> {
                 List<TreeNode> children = buildMenuTree(menuTreeDto.getChildren());
                 if(children.isEmpty()){
-                    List<ActionDto> actionDtos = actionService.selectByMenuId(menuTreeDto.getPermissionId());
+                    List<ActionDto> actionDtos = actionService.selectByMenuId(menuTreeDto.getId());
                     children = actionDtos.stream().map(actionDto -> TreeNode.builder().id(String.valueOf(actionDto.getId()))
                             .label(actionDto.getName()).tag(actionDto.getType()).build())
                             .collect(Collectors.toList());
                 }
                 return TreeNode.builder()
-                        .id(String.valueOf(menuTreeDto.getPermissionId())).tag(SysPermission.TYPE_MENU)
+                        .id(String.valueOf(menuTreeDto.getId())).tag(SysPermission.TYPE_MENU)
                         .label(menuTreeDto.getTitle()).children(children).build();
             }).collect(Collectors.toList());
         }
@@ -104,9 +99,9 @@ public class MenuController {
     }
 
 
-    @GetMapping
+    @GetMapping("{id}")
     @ApiOperation(value = "获取菜单")
-    public SimpleResponse<Menu> getOne(@RequestParam Integer id){
+    public SimpleResponse<Menu> getOne(@PathVariable Integer id){
         Menu content = menuService.getMenu(id);
         return SimpleResponse.ok(content);
     }

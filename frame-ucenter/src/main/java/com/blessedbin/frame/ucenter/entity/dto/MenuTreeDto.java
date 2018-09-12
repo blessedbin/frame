@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 public class MenuTreeDto {
 
-    private Integer permissionId;
+    private Integer id;
 
     /**
      * 菜单展示名称
@@ -63,10 +63,6 @@ public class MenuTreeDto {
      * 是否隐藏
      */
     private Boolean hidden;
-
-    private Date createTime;
-
-    private Date updateTime;
 
     /**
      * 备注

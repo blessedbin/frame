@@ -3,6 +3,7 @@ package com.blessedbin.frame.ucenter.entity.pojo;
 import lombok.Data;
 import lombok.ToString;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
@@ -28,6 +29,7 @@ public class Menu {
     private String title;
 
     @NotNull
+    @Min(value = -1)
     private Integer pid;
 
     @NotBlank

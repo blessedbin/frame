@@ -4,20 +4,22 @@ import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.ui.CascaderNode;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
 import com.blessedbin.frame.ucenter.entity.pojo.Menu;
-import com.blessedbin.frame.ucenter.mapper.SysRoleMapper;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.blessedbin.frame.ucenter.modal.SysRolePermission;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.EMPTY_LIST;
 
@@ -38,20 +40,35 @@ public class MenuService {
 
 
     @Autowired
-    private SysRoleMapper roleMapper;
-
-    @Autowired
     private ObjectMapper objectMapper;
 
 
+    private List<Menu> allMenus(){
+        List<SysPermission> permissions = permissionService.selectByType(SysPermission.TYPE_MENU);
+        return permissions.stream().map(permission -> {
+            try {
+                Menu menu = objectMapper.readValue(permission.getAdditionInformation(), Menu.class);
+                menu.setId(permission.getPermissionId());
+                return menu;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+    }
+
+
     public List<MenuTreeDto>  getMenuTree(){
-       /* return getTopAll().stream().map(sysMenu -> {
+        return buildMenuTree(allMenus(),-1);
+    }
+
+    private List<MenuTreeDto> buildMenuTree(List<Menu> menus,Integer pid){
+        return menus.stream().filter(menu -> menu.getPid().equals(pid)).map(menu -> {
             MenuTreeDto dto = new MenuTreeDto();
-            BeanUtils.copyProperties(sysMenu,dto);
-            dto.setChildren(buildMenuTree(sysMenu));
+            BeanUtils.copyProperties(menu,dto);
+            dto.setChildren(buildMenuTree(menus,menu.getId()));
             return dto;
-        }).collect(Collectors.toList());*/
-       return EMPTY_LIST;
+        }).collect(Collectors.toList());
     }
 
     /**
@@ -62,6 +79,7 @@ public class MenuService {
     public List<MenuTreeDto> getUserMenu(String uuid){
         Assert.notNull(uuid,"uuid is not null");
 
+        return getMenuTree();
         // TODO 逻辑方面的优化，Role信息从参数获取或者从缓存获取，而不是每次查询数据库
         /*List<SysRole> roles = roleMapper.selectRolesByUUid(uuid);
         boolean b = roles.stream().map(SysRole::getRoleKey).anyMatch(s -> "ROLE_ADMIN".equals(s));
@@ -82,8 +100,6 @@ public class MenuService {
                     return dto;
                 }).collect(Collectors.toList());*/
 
-
-        return EMPTY_LIST;
     }
 
 
@@ -110,7 +126,7 @@ public class MenuService {
 
 
     /**
-     * 重写添加方法
+     * 添加菜单
      * @param menu 要添加的数据
      */
     @Transactional(rollbackFor = Exception.class)
@@ -197,18 +213,21 @@ public class MenuService {
 
     }
 
-    public Pagination<Menu> getDataTable(Integer pageNum, Integer pageSize) {
-        return null;
-    }
-
     /**
-     *  TODO
+     *
      * 获取menu
      * @param id menu的Id
      * @return
      */
     public Menu getMenu(Integer id) {
         SysPermission permission = permissionService.selectByPk(id);
-        return null;
+        Menu menu = null;
+        try {
+            menu = objectMapper.readValue(permission.getAdditionInformation(), Menu.class);
+            menu.setId(permission.getPermissionId());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return menu;
     }
 }

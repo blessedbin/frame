@@ -12,4 +12,6 @@ public interface SysPermissionMapper extends MyMapper<SysPermission> {
     SysPermission selectByIdentification(@Param("code") String code);
 
     List<SysPermission> selectByRoleId(@Param("roleId") Integer roleId);
+
+    List<SysPermission> selectByType(@Param("type") String type);
 }
