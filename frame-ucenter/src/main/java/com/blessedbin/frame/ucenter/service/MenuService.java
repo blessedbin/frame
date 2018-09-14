@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.blessedbin.frame.ucenter.modal.SysPermission.TYPE_MENU;
 import static java.util.Collections.EMPTY_LIST;
 
 /**
@@ -44,7 +45,7 @@ public class MenuService {
 
 
     private List<Menu> allMenus(){
-        List<SysPermission> permissions = permissionService.selectByType(SysPermission.TYPE_MENU);
+        List<SysPermission> permissions = permissionService.selectByType(TYPE_MENU);
         return permissions.stream().map(permission -> {
             try {
                 Menu menu = objectMapper.readValue(permission.getAdditionInformation(), Menu.class);
@@ -136,7 +137,7 @@ public class MenuService {
         permission.setName(menu.getTitle());
         permission.setCreateTime(new Date());
         permission.setUpdateTime(new Date());
-        permission.setType(SysPermission.TYPE_MENU);
+        permission.setType(TYPE_MENU);
         permission.setSort(menu.getSort());
         permission.setCode("menu::" + menu.getName());
 
@@ -151,22 +152,30 @@ public class MenuService {
     }
 
 
+    /**
+     * 更新菜单
+     * @param menu
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void updateMenu(Menu menu){
+        Assert.notNull(menu.getId(),"menu id should not null");
+        SysPermission permission = permissionService.selectByPkAndType(menu.getId(),TYPE_MENU);
+        if(permission == null) {
+            throw new IllegalArgumentException();
+        }
+        try {
+            permission.setAdditionInformation(objectMapper.writeValueAsString(menu));
+            permissionService.updateByPkSelective(permission);
+        } catch (JsonProcessingException e) {
+            log.error("JSON编码错误");
+        }
+    }
+
+
+
     @Transactional(rollbackFor = Exception.class)
     public int deleteByPk(Integer id) {
         return permissionService.deleteByPk(id);
-    }
-
-    /**
-     * TODO 更新字段的逻辑问题
-     * @param menu 要修改的对象
-     * @return
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void updateByPkSelective(Menu menu) {
-
-        SysPermission prePermission = permissionService.selectByPk(menu.getId());
-
-        //TODO
     }
 
     /**
@@ -187,7 +196,7 @@ public class MenuService {
      * @return 若有子菜单，返回true，否则返回false
      */
     public boolean hasChildren(Integer menuId){
-        return true;
+        return false;
     }
 
     /**
@@ -221,6 +230,9 @@ public class MenuService {
      */
     public Menu getMenu(Integer id) {
         SysPermission permission = permissionService.selectByPk(id);
+        if(permission == null) {
+            return null;
+        }
         Menu menu = null;
         try {
             menu = objectMapper.readValue(permission.getAdditionInformation(), Menu.class);

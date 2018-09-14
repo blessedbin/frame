@@ -31,4 +31,8 @@
       select * from sys_permission
       where type=#{type}
     </select>
+    <select id="selectByPrimaryKeyAndType" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
+      select * from sys_permission
+      where permission_id=#{id} and type=#{type}
+    </select>
 </mapper>

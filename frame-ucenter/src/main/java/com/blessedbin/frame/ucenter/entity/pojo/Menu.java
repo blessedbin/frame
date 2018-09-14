@@ -6,6 +6,8 @@ import lombok.ToString;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by xubin on 2018/9/11.
@@ -81,4 +83,14 @@ public class Menu {
      * 其他配置信息，用json格式存储
      */
     private String meta;
+
+    private List<Integer> operations;
+
+
+    public void addOperation(Integer operationId){
+        if(operations == null){
+            operations = new ArrayList<>();
+        }
+        operations.add(operationId);
+    }
 }

@@ -39,4 +39,8 @@ public class PermissionService extends AbstractMysqlCrudServiceImpl<SysPermissio
     public List<SysPermission> selectByType(String type){
         return permissionMapper.selectByType(type);
     }
+
+    public SysPermission selectByPkAndType(Integer id, String type) {
+        return permissionMapper.selectByPrimaryKeyAndType(id,type);
+    }
 }

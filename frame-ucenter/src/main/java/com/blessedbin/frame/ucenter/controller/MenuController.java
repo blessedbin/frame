@@ -118,10 +118,14 @@ public class MenuController {
         return SimpleResponse.deleted();
     }
 
+    /**
+     * TODO
+     * @param menu
+     * @return
+     */
     @PutMapping
     public SimpleResponse edit(@RequestBody @Validated(PutMethodValidationGroup.class) Menu menu){
         log.debug("request param:{}",menu);
-        menuService.updateByPkSelective(menu);
         return SimpleResponse.accepted();
     }
 
