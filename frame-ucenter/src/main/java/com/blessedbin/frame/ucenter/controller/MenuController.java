@@ -10,10 +10,12 @@ import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.dto.ActionDto;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
 import com.blessedbin.frame.ucenter.entity.pojo.Menu;
+import com.blessedbin.frame.ucenter.entity.pojo.Operation;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.blessedbin.frame.ucenter.modal.SysRolePermission;
 import com.blessedbin.frame.ucenter.service.MenuService;
 import com.blessedbin.frame.ucenter.service.OperationService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.Data;
@@ -48,27 +50,17 @@ public class MenuController {
     private MenuService menuService;
 
     @Autowired
-    private OperationService actionService;
+    private OperationService operationService;
 
-    @GetMapping("/cascader.json")
-    public SimpleResponse<List<CascaderNode>> cascaderList(){
-        List<CascaderNode> cascaders = menuService.getCascaders();
-        return SimpleResponse.ok(cascaders);
-    }
+    @Autowired
+    private ObjectMapper objectMapper;
+
 
     @GetMapping("/menu_tree.json")
     public SimpleResponse menuTree(@RequestParam(required = false) Integer roleId) {
         Map<String,Object> datas = new HashMap<>();
         List<TreeNode> treeNodes = buildMenuTree(menuService.getMenuTree());
         datas.put("treeList",treeNodes);
-
-        if(roleId != null){
-            List<SysRolePermission> rolePermissions = menuService.selectRolePermissionsByRoleId(roleId);
-            List<String> rps = rolePermissions.stream()
-                    .map(sysRoleHasPermission -> String.valueOf(sysRoleHasPermission.getSysPermissionId()))
-                    .collect(Collectors.toList());
-            datas.put("selectedList",rps);
-        }
         return SimpleResponse.ok(datas);
     }
 
@@ -76,12 +68,6 @@ public class MenuController {
         if(!CollectionUtils.isEmpty(treeList)){
             return treeList.stream().map(menuTreeDto -> {
                 List<TreeNode> children = buildMenuTree(menuTreeDto.getChildren());
-                if(children.isEmpty()){
-                    List<ActionDto> actionDtos = actionService.selectByMenuId(menuTreeDto.getId());
-                    children = actionDtos.stream().map(actionDto -> TreeNode.builder().id(String.valueOf(actionDto.getId()))
-                            .label(actionDto.getName()).tag(actionDto.getType()).build())
-                            .collect(Collectors.toList());
-                }
                 return TreeNode.builder()
                         .id(String.valueOf(menuTreeDto.getId())).tag(SysPermission.TYPE_MENU)
                         .label(menuTreeDto.getTitle()).children(children).build();
@@ -129,45 +115,14 @@ public class MenuController {
         return SimpleResponse.accepted();
     }
 
-
-    /**
-     * 保存菜单和权限的关系
-     * @param param
-     */
-    @PostMapping("/save_menu_api.do")
-    @ApiOperation(value = "保存功能点与API的关系")
-    public SimpleResponse saveMenuApiRelation(@Validated @RequestBody MenuApiRelationParam param){
-
-        log.debug("[MenuController]Request param:{}",param);
-
-        Integer menuId = param.getMenuId();
-        boolean exists = menuService.checkActionExistsByPk(menuId);
-        if(!exists){
-            throw new ParamCheckRuntimeException("参数非法");
+    @GetMapping("menu_details.json")
+    public void menuDetails(@RequestParam Integer id){
+        Menu menu = menuService.getMenu(id);
+        if(menu == null) {
+            throw new ParamCheckRuntimeException();
         }
-
-        menuService.saveActionApiRelation(param.getMenuId(),param.getSelected());
-
-        return SimpleResponse.accepted();
-    }
-
-    /**
-     * TODO
-     * 查看功能点拥有的API的ID
-     * @param actionId
-     */
-    @GetMapping("/action_api_selected.json")
-    public SimpleResponse<List<Integer>> getSelected(@RequestParam Integer actionId) {
-        return SimpleResponse.ok();
-    }
+        List<Operation> operations = operationService.getOperations(menu.getOperations());
 
 
-    @Data
-    public static class MenuApiRelationParam{
-
-        private List<Integer> selected;
-
-        @NotNull
-        private Integer menuId;
     }
 }

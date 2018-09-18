@@ -8,7 +8,7 @@ import java.util.Date;
 public class SysApi {
 
 
-    private Integer permissionId;
+    private Integer id;
 
     /**
      * mapping名称，用于展示

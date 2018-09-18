@@ -1,6 +1,7 @@
 package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
+import com.blessedbin.frame.common.exception.ServiceRuntimeException;
 import com.blessedbin.frame.ucenter.entity.dto.ActionDto;
 import com.blessedbin.frame.ucenter.entity.pojo.Menu;
 import com.blessedbin.frame.ucenter.entity.pojo.Operation;
@@ -12,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.blessedbin.frame.ucenter.modal.SysPermission.TYPE_OPERATION;
 import static java.util.Collections.EMPTY_LIST;
@@ -113,6 +116,7 @@ public class OperationService {
 
 
     /**
+     * TODO
      * @param menuId
      * @return
      */
@@ -125,15 +129,43 @@ public class OperationService {
         if(permission == null) {
             return null;
         }
-        try {
-            return objectMapper.readValue(permission.getAdditionInformation(), Operation.class);
-        } catch (IOException e) {
-           log.error(e.getMessage());
-           return null;
-        }
+        return toOperation(permission);
     }
 
     public List<Operation> getOperations(List<Integer> ids) {
-        return null;
+        List<SysPermission> permissions = permissionService.selectByPksAndType(ids, TYPE_OPERATION);
+        if(permissions == null || permissions.isEmpty()){
+            return EMPTY_LIST;
+        }
+        return permissions.stream().map(this::toOperation).collect(Collectors.toList());
+    }
+
+    /**
+     * permission 转换为 operation
+     * @param permission
+     * @return
+     */
+    private Operation toOperation(SysPermission permission) {
+        try {
+            Operation operation = objectMapper.readValue(permission.getAdditionInformation(), Operation.class);
+            operation.setId(permission.getPermissionId());
+            return operation;
+        } catch (IOException e) {
+            throw new ServiceRuntimeException(e.getMessage());
+        }
+    }
+
+    public void updateOperation(Operation operation) {
+        Assert.notNull(operation.getId());
+        try {
+            SysPermission permission = permissionService.selectByPk(operation.getId());
+            String s = objectMapper.writeValueAsString(operation);
+            permission.setAdditionInformation(s);
+            permission.setUpdateTime(new Date());
+            permissionService.updateByPkSelective(permission);
+        } catch (JsonProcessingException e) {
+            log.error(e);
+        }
+
     }
 }

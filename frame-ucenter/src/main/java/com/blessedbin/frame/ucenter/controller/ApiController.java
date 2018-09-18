@@ -5,7 +5,6 @@ import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.entity.FramePermission;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.ucenter.component.FrameApi;
-import com.blessedbin.frame.ucenter.entity.dto.ApiDto;
 import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.blessedbin.frame.ucenter.service.ApiService;
@@ -56,46 +55,28 @@ public class ApiController {
     }
 
     @GetMapping("/datatable.json")
-    @FrameApi
-    public SimpleResponse<Pagination<ApiDto>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
+    public SimpleResponse<Pagination<SysApi>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
                                                        @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
                                                        @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue) {
-        Pagination<ApiDto> dataTable = apiService.getDataTables(pageNum, pageSize);
+        Pagination<SysApi> dataTable = apiService.getDataTables(pageNum, pageSize);
         return SimpleResponse.ok(dataTable);
     }
 
-    @GetMapping("/draggable_list.json")
-    public SimpleResponse<Map<String, Object>> draggableList(@RequestParam(required = false) Integer roleId) {
-        Map<String, Object> returnData = new HashMap<>();
-
-        List<SysApi> apis = apiService.selectAll();
-        List<Map<String, String>> all = apis.stream().map(api -> {
-            Map<String, String> data = new HashMap<>();
-            SysPermission permission = permissionService.selectByPk(api.getPermissionId());
-            data.put("name", permission.getName());
-            data.put("url", api.getUrl());
-            data.put("id", String.valueOf(api.getPermissionId()));
-            return data;
-        }).collect(Collectors.toList());
-        returnData.put("all", all);
-
-        if (roleId != null) {
-            if (!roleService.checkExistsByPk(roleId)) {
-                throw new ParamCheckRuntimeException();
-            }
-            List<SysPermission> sysPermissions = permissionService.selectByRoleIdAndType(roleId);
-            List<Map<String, String>> selectedList = sysPermissions.stream().map(permission -> {
-                SysApi api = apiService.selectByPk(permission.getPermissionId());
-                Map<String, String> data = new HashMap<>();
-                data.put("name", permission.getName());
-                data.put("url", api.getUrl());
-                data.put("id", String.valueOf(api.getPermissionId()));
-                return data;
-            }).collect(Collectors.toList());
-            returnData.put("selected", selectedList);
+    @GetMapping
+    public SimpleResponse<Object> getAPi(@RequestParam String id,
+                       @RequestParam(required = false,defaultValue = "false") Boolean array) {
+        List<Integer> ids = Arrays.stream(id.split(","))
+                .map(Integer::valueOf).collect(Collectors.toList());
+        if(ids.isEmpty()) {
+            throw new ParamCheckRuntimeException("参数错误");
         }
-
-        return SimpleResponse.ok(returnData);
+        if(ids.size() == 1 && !array){
+            SysApi operation = apiService.getApi(ids.get(0));
+            return SimpleResponse.ok(operation);
+        } else {
+            List<SysApi> operations = apiService.getApis(ids);
+            return SimpleResponse.ok(operations);
+        }
     }
 
     /**
@@ -141,13 +122,13 @@ public class ApiController {
                 SysApi api = apiService.selectByPk(permission.getPermissionId());
                 Map<String, String> data = new HashMap<>();
                 data.put("label", permission.getName());
-                data.put("value", String.valueOf(api.getPermissionId()));
+                data.put("value", String.valueOf(api.getId()));
                 return data;
             }).collect(Collectors.toList());
             returnData.put("selected", selectedList);
         } else if(menuId != null){
             List<String> selectedList = apiService.selectByMenuId(menuId).stream()
-                    .map(api -> String.valueOf(api.getPermissionId()))
+                    .map(api -> String.valueOf(api.getId()))
                     .collect(Collectors.toList());
             returnData.put("selected", selectedList);
         }

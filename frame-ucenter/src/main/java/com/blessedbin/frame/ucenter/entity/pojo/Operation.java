@@ -2,6 +2,8 @@ package com.blessedbin.frame.ucenter.entity.pojo;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * Created by xubin on 2018/9/13.
  *
@@ -22,5 +24,7 @@ public class Operation {
     private Integer sort;
 
     private Integer belongMenu;
+
+    private List<Integer> apis;
 
 }

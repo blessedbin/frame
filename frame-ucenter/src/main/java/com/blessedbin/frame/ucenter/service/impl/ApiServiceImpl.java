@@ -1,9 +1,10 @@
 package com.blessedbin.frame.ucenter.service.impl;
 
 import com.blessedbin.frame.common.Pagination;
-import com.blessedbin.frame.ucenter.entity.dto.ApiDto;
+import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
+import com.blessedbin.frame.ucenter.modal.SysPermissionExample;
 import com.blessedbin.frame.ucenter.service.ApiService;
 import com.blessedbin.frame.ucenter.service.PermissionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 /**
  * Created by xubin on 2018/7/10.
@@ -84,10 +86,9 @@ public class ApiServiceImpl implements ApiService {
                     if(prePermission == null){
                         // 新的点，插入
                         SysPermission permission = buildPermission(operation, code);
-                        permissionService.insertSelective(permission);
-
                         SysApi api = buildApi(url, httpMethod, operation, permission.getPermissionId());
                         permission.setAdditionInformation(objectMapper.writeValueAsString(api));
+                        permissionService.insertSelective(permission);
 
                         log.debug("插入新的API：{}-{}",permission.getCode(),api);
                         addPoint.addAndGet(1);
@@ -127,7 +128,7 @@ public class ApiServiceImpl implements ApiService {
 
     private SysApi buildApi(String url, HttpMethod httpMethod, Operation operation, Integer permissionId) {
         SysApi api = new SysApi();
-        api.setPermissionId(permissionId);
+        api.setId(permissionId);
         api.setDescription(operation.getDescription());
         api.setName(operation.getSummary());
         api.setUrl(url);
@@ -151,26 +152,18 @@ public class ApiServiceImpl implements ApiService {
 
 
     /**
-     * TODO  查询优化
      * @param pageNum
      * @param pageSize
      * @return
      */
     @Override
-    public Pagination<ApiDto> getDataTables(Integer pageNum, Integer pageSize) {
-        /*PageHelper.startPage(pageNum,pageSize);
-        List<SysApi> sysApis = mapper.selectAll();
-        PageInfo<SysApi> pageInfo = new PageInfo<SysApi>(sysApis);
-        List<ApiDto> collect = sysApis.stream().map(api -> {
-            SysPermission permission = permissionMapper.selectByPrimaryKey(api.getPermissionId());
-            ApiDto dto = new ApiDto();
-            BeanUtils.copyProperties(permission, dto);
-            BeanUtils.copyProperties(api, dto);
-            return dto;
-        }).collect(Collectors.toList());
-        return new Pagination<ApiDto>(pageInfo.getPageNum(),pageInfo.getPageSize(),
-                pageInfo.getTotal(),collect);*/
-        return null;
+    public Pagination<SysApi> getDataTables(Integer pageNum, Integer pageSize) {
+        SysPermissionExample example = new SysPermissionExample();
+        example.createCriteria().andTypeEqualTo(SysPermission.TYPE_API);
+        Pagination<SysPermission> dataTable = permissionService.getDataTable(pageNum, pageSize, example);
+        List<SysApi> collect = dataTable.getData().stream().map(this::toSysApi).collect(Collectors.toList());
+        return new Pagination<SysApi>(dataTable.getCurrentPage(),dataTable.getPageSize(),
+                dataTable.getTotal(),collect);
     }
 
     /**
@@ -184,7 +177,6 @@ public class ApiServiceImpl implements ApiService {
 
     @Override
     public List<SysApi> selectByMenuId(Integer menuId) {
-        // List<SysApi> apis = apiMapper.selectByMenuId(menuId);
         return null;
     }
 
@@ -196,5 +188,31 @@ public class ApiServiceImpl implements ApiService {
     @Override
     public SysApi selectByPk(Integer permissionId) {
         return null;
+    }
+
+    @Override
+    public SysApi getApi(Integer integer) {
+        SysPermission permission = permissionService.selectByPkAndType(integer, SysPermission.TYPE_API);
+        if(permission == null) {
+            throw new ParamCheckRuntimeException();
+        }
+        return toSysApi(permission);
+    }
+
+    @Override
+    public List<SysApi> getApis(List<Integer> ids) {
+        List<SysPermission> permissions = permissionService.selectByPksAndType(ids, SysPermission.TYPE_API);
+        return permissions.stream().map(this::toSysApi).collect(Collectors.toList());
+    }
+
+    private SysApi toSysApi(SysPermission permission) {
+        try {
+            SysApi sysApi = objectMapper.readValue(permission.getAdditionInformation(), SysApi.class);
+            sysApi.setId(permission.getPermissionId());
+            return sysApi;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

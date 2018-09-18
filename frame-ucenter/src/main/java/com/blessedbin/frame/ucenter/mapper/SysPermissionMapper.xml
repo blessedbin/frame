@@ -1,38 +1,48 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.blessedbin.frame.ucenter.mapper.SysPermissionMapper" >
-  <resultMap id="BaseResultMap" type="com.blessedbin.frame.ucenter.modal.SysPermission" >
-    <!--
-      WARNING - @mbg.generated
-    -->
-    <id column="permission_id" property="permissionId" jdbcType="INTEGER" />
-    <result column="name" property="name" jdbcType="VARCHAR" />
-    <result column="code" property="code" jdbcType="VARCHAR" />
-    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
-    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
-    <result column="remark" property="remark" jdbcType="VARCHAR" />
-    <result column="enabled" property="enabled" jdbcType="BIT" />
-    <result column="type" property="type" jdbcType="VARCHAR" />
-    <result column="sort" property="sort" jdbcType="INTEGER" />
-    <result column="addition_information" property="additionInformation" jdbcType="CHAR" />
-  </resultMap>
+<mapper namespace="com.blessedbin.frame.ucenter.mapper.SysPermissionMapper">
+    <resultMap id="BaseResultMap" type="com.blessedbin.frame.ucenter.modal.SysPermission">
+        <!--
+          WARNING - @mbg.generated
+        -->
+        <id column="permission_id" property="permissionId" jdbcType="INTEGER"/>
+        <result column="name" property="name" jdbcType="VARCHAR"/>
+        <result column="code" property="code" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <result column="remark" property="remark" jdbcType="VARCHAR"/>
+        <result column="enabled" property="enabled" jdbcType="BIT"/>
+        <result column="type" property="type" jdbcType="VARCHAR"/>
+        <result column="sort" property="sort" jdbcType="INTEGER"/>
+        <result column="addition_information" property="additionInformation" jdbcType="CHAR"/>
+    </resultMap>
     <select id="selectByIdentification" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
-      select *
-      from sys_permission
-      where code = #{code}
+        select *
+        from sys_permission
+        where code = #{code}
     </select>
-  <select id="selectByRoleId" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
-    select *
-    from sys_permission
-      inner join sys_role_permission srhp on sys_permission.permission_id = srhp.sys_permission_id
-    where srhp.sys_role_id = #{roleId}
-  </select>
+    <select id="selectByRoleId" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
+        select *
+        from sys_permission
+            inner join sys_role_permission srhp on sys_permission.permission_id = srhp.sys_permission_id
+        where srhp.sys_role_id = #{roleId}
+    </select>
     <select id="selectByType" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
-      select * from sys_permission
-      where type=#{type}
+        select *
+        from sys_permission
+        where type = #{type}
     </select>
     <select id="selectByPrimaryKeyAndType" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
-      select * from sys_permission
-      where permission_id=#{id} and type=#{type}
+        select *
+        from sys_permission
+        where permission_id = #{id} and type = #{type}
+    </select>
+    <select id="selectByPrimaryKeysAndType" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
+        select * from sys_permission
+        where permission_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        and type=#{type}
     </select>
 </mapper>

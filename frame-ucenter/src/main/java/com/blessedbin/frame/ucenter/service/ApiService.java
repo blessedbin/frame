@@ -1,12 +1,9 @@
 package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.Pagination;
-import com.blessedbin.frame.ucenter.entity.dto.ApiDto;
 import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
-import com.blessedbin.frame.ucenter.modal.SysPermission;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.BitSet;
 import java.util.List;
 
 /**
@@ -21,7 +18,7 @@ public interface ApiService {
     @Transactional(rollbackFor = Exception.class)
     void scanApi();
 
-    Pagination<ApiDto> getDataTables(Integer pageNum, Integer pageSize);
+    Pagination<SysApi> getDataTables(Integer pageNum, Integer pageSize);
 
     List<SysApi> selectByUuid(String uuid);
 
@@ -30,4 +27,8 @@ public interface ApiService {
     List<SysApi> selectAll();
 
     SysApi selectByPk(Integer permissionId);
+
+    SysApi getApi(Integer integer);
+
+    List<SysApi> getApis(List<Integer> ids);
 }
