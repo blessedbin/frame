@@ -1,31 +1,28 @@
 package com.blessedbin.frame.ucenter.controller;
 
-import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
-import com.blessedbin.frame.common.ui.CascaderNode;
 import com.blessedbin.frame.common.ui.TreeNode;
 import com.blessedbin.frame.common.validate.PutMethodValidationGroup;
 import com.blessedbin.frame.ucenter.component.FrameApi;
-import com.blessedbin.frame.ucenter.entity.dto.ActionDto;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
 import com.blessedbin.frame.ucenter.entity.pojo.Menu;
 import com.blessedbin.frame.ucenter.entity.pojo.Operation;
+import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
-import com.blessedbin.frame.ucenter.modal.SysRolePermission;
+import com.blessedbin.frame.ucenter.service.ApiService;
 import com.blessedbin.frame.ucenter.service.MenuService;
 import com.blessedbin.frame.ucenter.service.OperationService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import lombok.Data;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotNull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -55,6 +52,8 @@ public class MenuController {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private ApiService apiService;
 
     @GetMapping("/menu_tree.json")
     public SimpleResponse menuTree(@RequestParam(required = false) Integer roleId) {
@@ -116,13 +115,56 @@ public class MenuController {
     }
 
     @GetMapping("menu_details.json")
-    public void menuDetails(@RequestParam Integer id){
+    public SimpleResponse<ForeignMenu> menuDetails(@RequestParam Integer id){
         Menu menu = menuService.getMenu(id);
         if(menu == null) {
             throw new ParamCheckRuntimeException();
         }
-        List<Operation> operations = operationService.getOperations(menu.getOperations());
+
+        ForeignMenu fm = new ForeignMenu();
+        BeanUtils.copyProperties(menu,fm);
+
+        if(!CollectionUtils.isEmpty(menu.getOperations())){
+            List<Operation> operations = operationService.getOperations(menu.getOperations());
+            List<ForeignOperation> collect = operations.stream().map(operation -> {
+                ForeignOperation fo = new ForeignOperation();
+                BeanUtils.copyProperties(operation, fo);
+                if(!CollectionUtils.isEmpty(operation.getApis())){
+                    List<SysApi> apis = apiService.getApis(operation.getApis());
+                    fo.setApiDetails(apis);
+                }
+                return fo;
+            }).collect(Collectors.toList());
+            fm.setOperationDetails(collect);
+        }
+
+        return SimpleResponse.ok(fm);
+    }
+
+    public static class ForeignOperation extends Operation{
+
+        private List<SysApi> apiDetails;
+
+        public List<SysApi> getApiDetails() {
+            return apiDetails;
+        }
+
+        public void setApiDetails(List<SysApi> apiDetails) {
+            this.apiDetails = apiDetails;
+        }
+    }
 
 
+    public static class ForeignMenu extends Menu {
+
+        private List<ForeignOperation> operationDetails;
+
+        public void setOperationDetails(List<ForeignOperation> operationDetails) {
+            this.operationDetails = operationDetails;
+        }
+
+        public List<ForeignOperation> getOperationDetails() {
+            return operationDetails;
+        }
     }
 }

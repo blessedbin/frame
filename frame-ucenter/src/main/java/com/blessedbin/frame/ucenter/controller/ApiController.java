@@ -4,6 +4,7 @@ import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.entity.FramePermission;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
+import com.blessedbin.frame.common.ui.SelectNode;
 import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
@@ -57,12 +58,30 @@ public class ApiController {
     @GetMapping("/datatable.json")
     public SimpleResponse<Pagination<SysApi>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
                                                        @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
-                                                       @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue) {
+                                                       @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue,
+                                                       @RequestParam(name = "tags",required = false,defaultValue = "") String tags) {
         Pagination<SysApi> dataTable = apiService.getDataTables(pageNum, pageSize);
         return SimpleResponse.ok(dataTable);
     }
 
+    /**
+     * 获取API标签列表
+     * @return
+     */
+    @GetMapping("/tag_options.json")
+    public SimpleResponse tagOptions(){
+        Set<String> tags = new HashSet<>();
+        apiService.selectAll().forEach(api -> {
+            if(!StringUtils.isEmpty(api.getTags())){
+                tags.addAll(Arrays.asList(api.getTags().split(",")));
+            }
+        });
+        List<SelectNode> collect = tags.stream().map(tag -> SelectNode.builder().label(tag).value(tag).build()).collect(Collectors.toList());
+        return SimpleResponse.ok(collect);
+    }
+
     @GetMapping
+    @ApiOperation("获取API信息")
     public SimpleResponse<Object> getAPi(@RequestParam String id,
                        @RequestParam(required = false,defaultValue = "false") Boolean array) {
         List<Integer> ids = Arrays.stream(id.split(","))
