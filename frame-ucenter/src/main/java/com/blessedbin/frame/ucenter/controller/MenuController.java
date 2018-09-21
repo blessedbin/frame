@@ -114,7 +114,7 @@ public class MenuController {
         return SimpleResponse.accepted();
     }
 
-    @GetMapping("menu_details.json")
+    @GetMapping("/menu_details.json")
     public SimpleResponse<ForeignMenu> menuDetails(@RequestParam Integer id){
         Menu menu = menuService.getMenu(id);
         if(menu == null) {

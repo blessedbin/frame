@@ -1,6 +1,7 @@
 package com.blessedbin.frame.zuul.config;
 
-import org.springframework.context.annotation.Configuration;
+import lombok.extern.log4j.Log4j2;
+import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import springfox.documentation.swagger.web.SwaggerResource;
@@ -20,12 +21,21 @@ import java.util.List;
  */
 @Component
 @Primary
+@Log4j2
 public class RegistrySwaggerResourcesProvider implements SwaggerResourcesProvider {
+
+    private final RouteLocator routeLocator;
+
+    public RegistrySwaggerResourcesProvider(RouteLocator routeLocator) {
+        this.routeLocator = routeLocator;
+        log.debug("-----------{}",routeLocator.getRoutes());
+    }
+
 
     @Override
     public List<SwaggerResource> get() {
         List<SwaggerResource> resources = new ArrayList<>();
-        resources.add(swaggerResource("用户管理中心","/frame-ucenter/v2/api-docs"));
+        resources.add(swaggerResource("用户管理中心","/api/frame-ucenter/v2/api-docs"));
         return resources;
     }
 

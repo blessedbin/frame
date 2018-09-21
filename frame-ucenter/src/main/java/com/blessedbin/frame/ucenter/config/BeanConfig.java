@@ -1,7 +1,11 @@
 package com.blessedbin.frame.ucenter.config;
 
+import com.github.tobato.fastdfs.FdfsClientConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableMBeanExport;
+import org.springframework.context.annotation.Import;
+import org.springframework.jmx.support.RegistrationPolicy;
 import org.springframework.web.client.RestTemplate;
 
 /**
@@ -13,6 +17,9 @@ import org.springframework.web.client.RestTemplate;
  * @tool intellij idea
  */
 @Configuration
+@Import(FdfsClientConfig.class)
+// 解决jmx重复注册bean的问题
+@EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
 public class BeanConfig {
 
     @Bean

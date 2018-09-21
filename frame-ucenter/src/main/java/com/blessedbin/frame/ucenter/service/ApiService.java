@@ -52,7 +52,7 @@ public class ApiService {
     @Autowired
     private ServiceModelToSwagger2Mapper swagger2mapper;
 
-    @Value("spring.application.name")
+    @Value("${spring.application.name}")
     private String applicationName;
 
     @Autowired

@@ -43,7 +43,7 @@ import static com.blessedbin.frame.ucenter.auth.util.AuthenticationUtils.getUuid
  */
 @RestController
 @Log4j2
-@RequestMapping("/api/user")
+@RequestMapping("/user")
 @Api(description = "用户操作")
 public class UserController {
 

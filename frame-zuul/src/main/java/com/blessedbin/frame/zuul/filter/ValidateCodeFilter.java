@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by xubin on 2018/8/22.
- *
+ * 验证码过滤器
  * @author 37075
  * @date 2018/8/22
  * @time 22:17

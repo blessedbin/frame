@@ -26,5 +26,5 @@ public interface SecurityConstants {
 
     String TOKEN_IMAGE_CODE_PREFIX = "image-code";
 
-    String OAUTH_TOKEN_URL = "/oauth/token";
+    String OAUTH_TOKEN_URL = "/api/oauth/token";
 }
