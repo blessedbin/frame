@@ -1,6 +1,7 @@
 package com.blessedbin.frame.ucenter.controller;
 
 import com.blessedbin.frame.common.SimpleResponse;
+import com.blessedbin.frame.common.contant.SecurityConstants;
 import com.blessedbin.frame.common.entity.FrameUser;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.ucenter.component.FrameApi;
@@ -8,6 +9,8 @@ import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
 import com.blessedbin.frame.ucenter.modal.SysUser;
 import com.blessedbin.frame.ucenter.service.MenuService;
 import com.blessedbin.frame.ucenter.service.UserManageService;
+import com.github.tobato.fastdfs.domain.StorePath;
+import com.github.tobato.fastdfs.service.FastFileStorageClient;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -20,6 +23,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -56,6 +60,9 @@ public class UserController {
     @Autowired
     private MenuService menuService;
 
+    @Autowired
+    private FastFileStorageClient fastFileStorageClient;
+
     @GetMapping("/me")
     public SimpleResponse me(Principal principal){
         return SimpleResponse.ok(principal);
@@ -70,8 +77,7 @@ public class UserController {
             @ApiResponse(code = 200,message = "返回用户头像")
     })
     @FrameApi
-    public void getAvatar(HttpServletResponse response, Principal principal) throws IOException {
-        log.debug("principal:{}",principal);
+    public void getAvatar(HttpServletResponse response, @RequestHeader(SecurityConstants.UUID_HEADER) String uuid) throws IOException {
         File file = ResourceUtils.getFile("classpath:image/default_avatar.jpg");
         BufferedImage read = ImageIO.read(file);
         ServletOutputStream outputStream = response.getOutputStream();
@@ -123,16 +129,29 @@ public class UserController {
 
 
     /**
-     * TODO 肯定有问题
-     * @param authentication
      * @return
      */
     @GetMapping("/menus")
     @ResponseBody
-    public SimpleResponse menus(Authentication authentication) {
-        String uuid = getUuid(authentication);
+    public SimpleResponse menus(@RequestHeader(SecurityConstants.UUID_HEADER) String uuid) {
         List<MenuTreeDto> menus = menuService.getUserMenu(uuid);
         return SimpleResponse.ok(menus);
+    }
+
+    @PostMapping("/avatar.do")
+    @ApiOperation("设置头像")
+    public SimpleResponse setAvatar(MultipartFile img, @RequestHeader(SecurityConstants.UUID_HEADER) String uuid) throws IOException {
+        log.debug("file name:{},size:{},name:{}",img.getOriginalFilename(),img.getSize(),img.getName());
+        SysUser user = userManageService.selectByPk(uuid);
+        if(user == null) {
+            throw new ParamCheckRuntimeException();
+        }
+
+        StorePath image = fastFileStorageClient.uploadImageAndCrtThumbImage(img.getInputStream(), img.getSize(), "PNG", null);
+        user.setAvatar(image.getFullPath());
+        userManageService.updateByPkSelective(user);
+
+        return SimpleResponse.accepted();
     }
 
 }

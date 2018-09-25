@@ -104,6 +104,15 @@
         </dependencies>
     </dependencyManagement>
 
+
+    <distributionManagement>
+        <repository>
+            <id>${project.artifactId}</id>
+            <name>${project.build.finalName}-deploy</name>
+            <url>file://${basedir}/target/deploy</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <plugins>
             <plugin>
@@ -115,11 +124,24 @@
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
                 <version>1.1.0</version>
+                <executions>
+                    <execution>
+                        <id>build-image</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
                 <configuration>
                     <imageName>frame/${project.artifactId}</imageName>
                     <dockerHost>http://192.168.177.129:2375</dockerHost>
                     <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
                     <dockerCertPath>F:\test\default</dockerCertPath>
+                    <forceTags>true</forceTags>
+                    <imageTags>
+                        <imageTag>latest</imageTag>
+                    </imageTags>
                     <resources>
                         <recource>
                             <targetPath>/</targetPath>

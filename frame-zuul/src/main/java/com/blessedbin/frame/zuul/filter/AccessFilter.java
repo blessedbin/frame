@@ -8,8 +8,11 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.cloud.netflix.zuul.filters.support.FilterConstants;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
+
+import java.util.Map;
 
 import static org.springframework.cloud.netflix.zuul.filters.support.FilterConstants.FORM_BODY_WRAPPER_FILTER_ORDER;
 
@@ -22,7 +25,7 @@ import static org.springframework.cloud.netflix.zuul.filters.support.FilterConst
  * @tool intellij idea
  */
 @Log4j2
-// @Component
+@Component
 public class AccessFilter extends ZuulFilter {
 
     /**
@@ -65,7 +68,27 @@ public class AccessFilter extends ZuulFilter {
             log.debug("authentication.details:{}",authentication.getPrincipal());
             RequestContext requestContext = RequestContext.getCurrentContext();
             requestContext.addZuulRequestHeader(SecurityConstants.USER_HEADER, authentication.getName());
+            try {
+                String uuid = getUuid(authentication);
+                requestContext.addZuulRequestHeader(SecurityConstants.UUID_HEADER, uuid);
+            } catch (Exception e) {
+                //TODO 进行没有获取到UUID的请求的处理
+                log.warn(e.getMessage());
+            }
         }
         return null;
+    }
+
+
+    public static Map<String, Object> getExtraInfo(Authentication auth) {
+        OAuth2AuthenticationDetails oauthDetails
+                = (OAuth2AuthenticationDetails) auth.getDetails();
+        return (Map<String, Object>) oauthDetails
+                .getDecodedDetails();
+    }
+
+
+    public static String getUuid(Authentication authentication){
+        return (String)getExtraInfo(authentication).get("uuid");
     }
 }

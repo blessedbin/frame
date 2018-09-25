@@ -98,6 +98,7 @@ public class ValidateCodeFilter extends ZuulFilter {
 
             SimpleResponse<Object> build = SimpleResponse.builder().code(SimpleResponseType.LOGIN_FAILED.getCode())
                     .codeMsg(SimpleResponseType.LOGIN_FAILED.getCodeMsg()).message(e.getMessage())
+                    .timestamp(String.valueOf(System.currentTimeMillis()))
                     .build();
             try {
                 ctx.setResponseBody(objectMapper.writeValueAsString(build));

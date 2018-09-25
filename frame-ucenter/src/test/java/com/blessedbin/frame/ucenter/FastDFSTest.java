@@ -42,10 +42,11 @@ public class FastDFSTest extends FrameUcenterApplicationTests {
 
             FileInputStream inputStream = new FileInputStream(file);
 
-            StorePath storePath = fastFileStorageClient.uploadSlaveFile("group1", "M00/00/00/wKiAjVlpNjiAK5IHAADGA0F72jo578.jpg"
-                    , inputStream, inputStream.available(), "a_", null);
+            StorePath storePath = fastFileStorageClient.uploadImageAndCrtThumbImage(inputStream, inputStream.available(),
+                    "JPG", null);
 
-            System.out.println(storePath.getPath());
+            System.out.println(storePath.getFullPath());
+            System.out.println(storePath);
 
             inputStream.close();
 
