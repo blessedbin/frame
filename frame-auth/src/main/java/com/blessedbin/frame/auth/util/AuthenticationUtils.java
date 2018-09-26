@@ -1,4 +1,4 @@
-package com.blessedbin.frame.ucenter.auth.util;
+package com.blessedbin.frame.auth.util;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;

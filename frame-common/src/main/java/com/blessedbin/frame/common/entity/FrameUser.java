@@ -1,5 +1,6 @@
 package com.blessedbin.frame.common.entity;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
@@ -14,10 +15,11 @@ import java.util.Set;
  * @tool intellij idea
  */
 @Data
+@Builder
 public class FrameUser {
 
     private final String username;
-    private final List<String> roleList;
+    private final List<FrameRole> roleList;
     private final boolean accountNonExpired;
     private final boolean accountNonLocked;
     private final boolean credentialsNonExpired;

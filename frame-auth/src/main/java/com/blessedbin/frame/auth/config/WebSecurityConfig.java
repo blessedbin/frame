@@ -1,4 +1,4 @@
-package com.blessedbin.frame.ucenter.auth.config;
+package com.blessedbin.frame.auth.config;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import com.google.code.kaptcha.util.Config;

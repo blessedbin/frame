@@ -1,9 +1,9 @@
-package com.blessedbin.frame.ucenter.auth.support;
+package com.blessedbin.frame.auth.support;
 
 import com.blessedbin.frame.common.SimpleResponseType;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.SerializerProvider;
-import com.fasterxml.jackson.databind.ser.std.StdSerializer;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.map.JsonSerializer;
+import org.codehaus.jackson.map.SerializerProvider;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -19,10 +19,9 @@ import java.util.Map;
  * @time 23:30
  * @tool intellij idea
  */
-public class CustomOauth2ExceptionSerializer extends StdSerializer<CustomOauth2Exception> {
+public class CustomOauth2ExceptionSerializer2 extends JsonSerializer<CustomOauth2Exception> {
 
-    public CustomOauth2ExceptionSerializer() {
-        super(CustomOauth2Exception.class);
+    public CustomOauth2ExceptionSerializer2() {
     }
 
     @Override

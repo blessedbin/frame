@@ -2,12 +2,10 @@ package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.service.impl.AbstractMysqlCrudServiceImpl;
-import com.blessedbin.frame.ucenter.auth.util.PasswordUtils;
 import com.blessedbin.frame.ucenter.modal.OauthClientDetails;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

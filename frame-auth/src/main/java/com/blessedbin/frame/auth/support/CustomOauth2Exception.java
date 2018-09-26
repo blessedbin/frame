@@ -1,4 +1,4 @@
-package com.blessedbin.frame.ucenter.auth.support;
+package com.blessedbin.frame.auth.support;
 
 import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
 

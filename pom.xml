@@ -23,6 +23,7 @@
         <module>frame-zuul</module>
         <module>frame-sso-demo</module>
         <module>frame-config</module>
+        <module>frame-auth</module>
     </modules>
 
     <properties>
@@ -39,6 +40,8 @@
         <springfox-swagger2.version>2.9.1</springfox-swagger2.version>
         <springfox-swagger-ui.version>2.9.1</springfox-swagger-ui.version>
         <druid.version>1.1.10</druid.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
+        <frame-common.version>1.0-SNAPSHOT</frame-common.version>
     </properties>
 
 

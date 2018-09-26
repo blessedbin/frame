@@ -1,4 +1,4 @@
-package com.blessedbin.frame.ucenter.auth.support;
+package com.blessedbin.frame.auth.support;
 
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;

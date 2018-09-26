@@ -1,11 +1,8 @@
-package com.blessedbin.frame.ucenter.auth.service;
+package com.blessedbin.frame.auth.service;
 
+import com.blessedbin.frame.auth.support.FrameUserDetail;
+import com.blessedbin.frame.common.entity.FrameRole;
 import com.blessedbin.frame.common.entity.FrameUser;
-import com.blessedbin.frame.ucenter.auth.support.FrameUserDetail;
-import com.blessedbin.frame.ucenter.modal.SysRole;
-import com.blessedbin.frame.ucenter.modal.SysUser;
-import com.blessedbin.frame.ucenter.service.RoleService;
-import com.blessedbin.frame.ucenter.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -33,19 +30,18 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Autowired
     private UserService userService;
 
-    @Autowired
-    private RoleService roleService;
+
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.debug("select user by username:{}",username);
 
-        SysUser user = userService.findByUsername(username);
+        FrameUser user = userService.findByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException("没有这个用户:" + username);
         }
 
-        List<SysRole> roles = roleService.selectAllByUuid(user.getUuid());
+        List<FrameRole> roles = user.getRoleList();
 
         List<SimpleGrantedAuthority> grantedAuthorities = roles.stream()
                 .map(role -> new SimpleGrantedAuthority(role.getRoleKey())).collect(Collectors.toList());
@@ -53,10 +49,10 @@ public class UserDetailServiceImpl implements UserDetailsService {
         return new FrameUserDetail(
                 user.getUsername(),
                 user.getPassword(),
-                user.getEnabled(),
-                user.getAccountNonExpired(),
-                user.getCredentialsNonExpired(),
-                user.getAccountNonLocked(),
+                user.isEnabled(),
+                user.isAccountNonExpired(),
+                user.isCredentialsNonExpired(),
+                user.isAccountNonLocked(),
                 grantedAuthorities,
                 user.getUuid()
         );

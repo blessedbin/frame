@@ -1,4 +1,4 @@
-package com.blessedbin.frame.ucenter.auth.util;
+package com.blessedbin.frame.auth.util;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.*;

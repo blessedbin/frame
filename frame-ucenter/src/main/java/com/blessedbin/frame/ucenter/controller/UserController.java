@@ -19,7 +19,6 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
@@ -34,8 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
-
-import static com.blessedbin.frame.ucenter.auth.util.AuthenticationUtils.getUuid;
 
 /**
  * Created by xubin on 2018/7/10.
@@ -64,8 +61,10 @@ public class UserController {
     private FastFileStorageClient fastFileStorageClient;
 
     @GetMapping("/me")
-    public SimpleResponse me(Principal principal){
-        return SimpleResponse.ok(principal);
+    public SimpleResponse me(@RequestHeader(SecurityConstants.UUID_HEADER) String uuid){
+        SysUser user = userManageService.selectByPk(uuid);
+        user.setPassword(null);
+        return SimpleResponse.ok(user);
     }
 
     /**

@@ -25,4 +25,10 @@
         from sys_role
         where role_key = #{key}
     </select>
+    <select id="selectAllByUuidAndEnabled" resultMap="BaseResultMap">
+        select *
+        from sys_role
+            inner join sys_user_role suhr on sys_role.id = suhr.sys_role_id
+        where suhr.sys_user_uuid = #{uuid} and enabled=b'1'
+    </select>
 </mapper>

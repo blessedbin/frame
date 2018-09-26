@@ -1,4 +1,4 @@
-package com.blessedbin.frame.ucenter.auth.config;
+package com.blessedbin.frame.auth.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -30,7 +30,8 @@ public class ResourceServiceConfig extends ResourceServerConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/api/user/**").authenticated()
+        http.authorizeRequests()
+                .antMatchers("/oauth/token_key","/oauth/token","/code/**").permitAll()
                 .anyRequest().permitAll();
     }
 }

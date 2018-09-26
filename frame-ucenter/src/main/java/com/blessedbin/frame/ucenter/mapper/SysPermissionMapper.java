@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
+
 public interface SysPermissionMapper extends MyMapper<SysPermission> {
     SysPermission selectByIdentification(@Param("code") String code);
 

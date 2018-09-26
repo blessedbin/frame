@@ -1,7 +1,7 @@
-package com.blessedbin.frame.ucenter.auth.controller;
+package com.blessedbin.frame.auth.controller;
 
 import com.blessedbin.frame.common.SimpleResponse;
-import com.blessedbin.frame.ucenter.auth.service.ValidateCodeService;
+import com.blessedbin.frame.auth.service.ValidateCodeService;
 import com.google.code.kaptcha.impl.DefaultKaptcha;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Base64Utils;

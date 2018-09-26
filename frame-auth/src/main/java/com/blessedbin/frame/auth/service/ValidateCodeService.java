@@ -1,7 +1,6 @@
-package com.blessedbin.frame.ucenter.auth.service;
+package com.blessedbin.frame.auth.service;
 
 import com.blessedbin.frame.common.contant.SecurityConstants;
-import com.google.code.kaptcha.impl.DefaultKaptcha;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;

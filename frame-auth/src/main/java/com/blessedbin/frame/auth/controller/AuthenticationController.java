@@ -1,4 +1,4 @@
-package com.blessedbin.frame.ucenter.auth.controller;
+package com.blessedbin.frame.auth.controller;
 
 import lombok.extern.log4j.Log4j2;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;

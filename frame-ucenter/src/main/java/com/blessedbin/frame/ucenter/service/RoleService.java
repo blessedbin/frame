@@ -91,6 +91,10 @@ public class RoleService extends AbstractMysqlCrudServiceImpl<SysRole, Integer> 
         return roleMapper.selectRolesByUUid(uuid);
     }
 
+    public List<SysRole> selectAllByUuidAndEnabled(String uuid){
+        return roleMapper.selectAllByUuidAndEnabled(uuid);
+    }
+
 
     /**
      *
