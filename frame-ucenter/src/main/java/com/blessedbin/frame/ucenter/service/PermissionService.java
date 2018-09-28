@@ -2,12 +2,15 @@ package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.service.impl.AbstractMysqlCrudServiceImpl;
 import com.blessedbin.frame.ucenter.mapper.SysPermissionMapper;
+import com.blessedbin.frame.ucenter.mapper.SysRolePermissionMapper;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
+import com.blessedbin.frame.ucenter.modal.SysRolePermission;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by xubin on 2018/7/9.
@@ -24,8 +27,17 @@ public class PermissionService extends AbstractMysqlCrudServiceImpl<SysPermissio
     @Autowired
     private SysPermissionMapper permissionMapper;
 
+    @Autowired
+    private SysRolePermissionMapper rolePermissionMapper;
+
     public List<SysPermission> selectByRoleId(Integer roleId) {
         return null;
+    }
+
+
+    public List<Integer> selectPermissionIdsByRoleId(Integer roleId){
+        return rolePermissionMapper.selectByRoleId(roleId).stream().map(SysRolePermission::getSysPermissionId)
+                .collect(Collectors.toList());
     }
 
     public List<SysPermission> selectByRoleIdAndType(Integer roleId) {

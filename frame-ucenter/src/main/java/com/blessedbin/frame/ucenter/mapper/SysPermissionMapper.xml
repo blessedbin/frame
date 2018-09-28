@@ -45,4 +45,10 @@
         </foreach>
         and type=#{type}
     </select>
+    <select id="selectIdsByInIds" resultType="java.lang.Integer">
+      select permission_id from sys_permission where permission_id in
+      <foreach collection="ids" item="i" open="(" close=")" separator=",">
+          #{i}
+      </foreach>
+    </select>
 </mapper>

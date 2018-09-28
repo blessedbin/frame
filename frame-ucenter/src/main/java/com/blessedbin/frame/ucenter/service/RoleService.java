@@ -2,7 +2,11 @@ package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.service.impl.AbstractMysqlCrudServiceImpl;
-import com.blessedbin.frame.ucenter.mapper.*;
+import com.blessedbin.frame.ucenter.entity.pojo.Operation;
+import com.blessedbin.frame.ucenter.mapper.SysPermissionMapper;
+import com.blessedbin.frame.ucenter.mapper.SysRoleMapper;
+import com.blessedbin.frame.ucenter.mapper.SysRolePermissionMapper;
+import com.blessedbin.frame.ucenter.mapper.SysUserRoleMapper;
 import com.blessedbin.frame.ucenter.modal.*;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,6 +38,15 @@ public class RoleService extends AbstractMysqlCrudServiceImpl<SysRole, Integer> 
 
     @Autowired
     private SysRoleMapper roleMapper;
+
+    @Autowired
+    private PermissionService permissionService;
+
+    @Autowired
+    private OperationService operationService;
+
+    @Autowired
+    private SysPermissionMapper permissionMapper;
 
 
     public List<SysUserRole> findAllUserHasRoleByUuid(String uuid) {
@@ -71,19 +85,51 @@ public class RoleService extends AbstractMysqlCrudServiceImpl<SysRole, Integer> 
     /**
      * 保存角色权限关系
      *
-     * @param roleId
+     * @param roleId 角色ID
      * @param checkedList 选择的菜单的权限
      */
     @Transactional(rollbackFor = Exception.class)
     public void saveRolePermission(Integer roleId, List<String> checkedList) {
+
+        SysRole role = selectByPk(roleId);
+        if(role == null){
+            throw new ParamCheckRuntimeException("角色不存在");
+        }
+
         rolePermissionMapper.deleteByRoleId(roleId);
         if (CollectionUtils.isEmpty(checkedList)) {
             //清空全部
             return;
         }
 
-        // 查询与菜单关联的api id
-        // TODO
+        List<Integer> permissionIds = new ArrayList<>();
+        checkedList.stream().map(Integer::valueOf).forEach(id -> {
+
+            SysPermission permission = permissionService.selectByPk(id);
+            permissionIds.add(id);
+
+            // 添加API权限
+            if(SysPermission.TYPE_OPERATION.equals(permission.getType())) {
+                Operation operation = operationService.toOperation(permission);
+                if(!CollectionUtils.isEmpty(operation.getApis())){
+                    operation.getApis().forEach(permissionIds::add);
+                }
+            }
+
+        });
+
+        // 过滤掉失效的permissionid
+        List<SysRolePermission> srps = permissionMapper.selectIdsByInIds(permissionIds).stream().map(id -> {
+            SysRolePermission rp = new SysRolePermission();
+            rp.setSysRoleId(roleId);
+            rp.setSysPermissionId(id);
+            return rp;
+        }).collect(Collectors.toList());
+
+        int i = rolePermissionMapper.insertLists(srps);
+
+        log.debug("更新API成功，角色：{}，添加数量：{}，过滤数量：{}",
+                role.getRoleName(),i,(permissionIds.size() - i));
 
     }
 

@@ -145,7 +145,11 @@ public class OperationService {
      * @param permission
      * @return
      */
-    private Operation toOperation(SysPermission permission) {
+    public Operation toOperation(SysPermission permission) {
+        Assert.notNull(permission,"permission can not be null");
+        if(!TYPE_OPERATION.equals(permission.getType())){
+            throw new IllegalArgumentException("type error");
+        }
         try {
             Operation operation = objectMapper.readValue(permission.getAdditionInformation(), Operation.class);
             operation.setId(permission.getPermissionId());

@@ -13,6 +13,7 @@ import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.blessedbin.frame.ucenter.service.ApiService;
 import com.blessedbin.frame.ucenter.service.MenuService;
 import com.blessedbin.frame.ucenter.service.OperationService;
+import com.blessedbin.frame.ucenter.service.PermissionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -50,16 +51,22 @@ public class MenuController {
     private OperationService operationService;
 
     @Autowired
-    private ObjectMapper objectMapper;
+    private ApiService apiService;
 
     @Autowired
-    private ApiService apiService;
+    private PermissionService permissionService;
 
     @GetMapping("/menu_tree.json")
     public SimpleResponse menuTree(@RequestParam(required = false) Integer roleId) {
         Map<String,Object> datas = new HashMap<>();
         List<TreeNode> treeNodes = buildMenuTree(menuService.getMenuTree());
         datas.put("treeList",treeNodes);
+
+        if(roleId != null && roleId > 0){
+            List<Integer> ids = permissionService.selectPermissionIdsByRoleId(roleId);
+            datas.put("checked",ids);
+        }
+
         return SimpleResponse.ok(datas);
     }
 
@@ -114,6 +121,11 @@ public class MenuController {
         return SimpleResponse.accepted();
     }
 
+    /**
+     * TODO   错误处理
+     * @param id
+     * @return
+     */
     @GetMapping("/menu_details.json")
     public SimpleResponse<ForeignMenu> menuDetails(@RequestParam Integer id){
         Menu menu = menuService.getMenu(id);

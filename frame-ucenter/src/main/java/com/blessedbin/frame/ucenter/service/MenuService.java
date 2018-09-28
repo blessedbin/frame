@@ -104,27 +104,6 @@ public class MenuService {
     }
 
 
-    public List<CascaderNode> getCascaders() {
-        List<CascaderNode> nodes = new ArrayList<>();
-        nodes.add(CascaderNode.builder().value("-1").label("一级菜单").build());
-        List<CascaderNode> cascaderNodes = buildCascader(null);
-        if (cascaderNodes != null) {
-            nodes.addAll(cascaderNodes);
-        }
-        return nodes;
-    }
-
-    private List<CascaderNode> buildCascader(Integer parentId) {
-       /* return getAllByPid(parentId).stream().map(menu -> CascaderNode.builder()
-                    .value(String.valueOf(menu.getPermissionId()))
-                    .label(menu.getTitle())
-                    .children(buildCascader(menu.getPermissionId()))
-                    .build())
-                .collect(Collectors.toList());*/
-       return EMPTY_LIST;
-    }
-
-
 
     /**
      * 添加菜单
@@ -233,13 +212,23 @@ public class MenuService {
         if(permission == null) {
             return null;
         }
-        Menu menu = null;
-        try {
-            menu = objectMapper.readValue(permission.getAdditionInformation(), Menu.class);
-            menu.setId(permission.getPermissionId());
-        } catch (IOException e) {
-            e.printStackTrace();
+        return toMenu(permission);
+    }
+
+
+    public Menu toMenu(SysPermission permission){
+        Assert.notNull(permission,"permission can not be null");
+        if(TYPE_MENU.equals(permission.getType())){
+            Menu menu = null;
+            try {
+                menu = objectMapper.readValue(permission.getAdditionInformation(), Menu.class);
+                menu.setId(permission.getPermissionId());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return menu;
+        } else {
+            throw new IllegalArgumentException("type error...");
         }
-        return menu;
     }
 }
