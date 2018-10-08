@@ -53,6 +53,12 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <!--Spring cloud 消息总线配置-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+        </dependency>
+
         <!--Swagger文档相关-->
         <!--集成swagger-->
         <dependency>

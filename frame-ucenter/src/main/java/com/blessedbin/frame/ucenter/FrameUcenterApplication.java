@@ -13,7 +13,7 @@ import tk.mybatis.spring.annotation.MapperScan;
 @MapperScan("com.blessedbin.frame.ucenter.mapper")
 @EnableTransactionManagement
 @Log4j2
-@EnableAspectJAutoProxy
+@EnableAspectJAutoProxy(proxyTargetClass = true)
 public class FrameUcenterApplication {
 
     public static void main(String[] args) {

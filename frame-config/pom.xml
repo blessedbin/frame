@@ -27,7 +27,21 @@
             <groupId>de.codecentric</groupId>
             <artifactId>spring-boot-admin-starter-client</artifactId>
         </dependency>
+
+        <!--Spring cloud 消息总线配置-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-monitor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
+        </dependency>
+
+
     </dependencies>
+
+
 
 
     <build>

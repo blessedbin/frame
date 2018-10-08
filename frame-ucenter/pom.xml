@@ -30,6 +30,10 @@
                     <artifactId>jsr305</artifactId>
                     <groupId>com.google.code.findbugs</groupId>
                 </exclusion>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
             </exclusions>
         </dependency>
         <dependency>
@@ -94,8 +98,11 @@
             <version>${druid.version}</version>
         </dependency>
 
-
-
+        <!--Spring cloud 消息总线配置-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-bus-amqp</artifactId>
+        </dependency>
 
         <!--Swagger文档相关-->
         <!--集成swagger-->
@@ -103,6 +110,12 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-swagger2</artifactId>
             <version>${springfox-swagger2.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>guava</artifactId>
+                    <groupId>com.google.guava</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>io.springfox</groupId>
@@ -148,6 +161,7 @@
         </dependency>
 
     </dependencies>
+
 
     <build>
         <plugins>
