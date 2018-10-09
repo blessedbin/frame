@@ -3,9 +3,9 @@ package com.blessedbin.frame.ucenter.controller;
 import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
+import com.blessedbin.frame.common.exception.ResourceNotFoundException;
 import com.blessedbin.frame.common.utils.UUIDUtils;
 import com.blessedbin.frame.common.validate.PostMethodValidationGroup;
-import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.dto.UserDto;
 import com.blessedbin.frame.ucenter.modal.SysUser;
 import com.blessedbin.frame.ucenter.service.DepartmentService;
@@ -15,11 +15,14 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+
+import static com.blessedbin.frame.common.contant.SecurityConstants.DEFAULT_PASSWORD;
 
 /**
  * Created by xubin on 2018/7/9.
@@ -34,8 +37,6 @@ import java.util.Date;
 @Log4j2
 @Api(description = "用户管理",tags = "用户管理")
 public class UserManageController {
-
-    private static String DEFAULT_PASSWORD = "123456";
 
     @Autowired
     private UserManageService userManageService;
@@ -104,6 +105,31 @@ public class UserManageController {
         int add = userManageService.insertSelective(user);
         log.debug("添加用户{}成功，result:{}",user.getUsername(),add);
         return SimpleResponse.ok();
+    }
+
+
+    /**
+     * 重置用户密码
+     * TODO 完成登录页用户可以自己修改密码后，重置密码操作将会使用户密码过期，强制用户更改密码
+     */
+    @GetMapping("/reset_password.do")
+    @Transactional(rollbackFor = Exception.class)
+    @ApiOperation(value = "重置用户密码为默认密码")
+    public SimpleResponse resetPassword(@RequestParam String uuid) {
+
+        SysUser user = userManageService.selectByPk(uuid);
+        if(user == null) {
+            throw new ResourceNotFoundException("未发现用户信息");
+        }
+
+        SysUser nUser = new SysUser();
+        nUser.setUuid(user.getUuid());
+        nUser.setPassword(passwordEncoder.encode(DEFAULT_PASSWORD));
+        nUser.setUpdateTime(new Date());
+
+        userManageService.updateByPkSelective(nUser);
+
+        return SimpleResponse.accepted();
     }
 }
 

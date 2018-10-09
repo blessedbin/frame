@@ -10,6 +10,7 @@ import org.springframework.cloud.netflix.zuul.filters.Route;
 import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
@@ -19,6 +20,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+
+import static com.blessedbin.frame.common.contant.SecurityConstants.ROLE_ADMIN_KEY;
 
 /**
  * Created by xubin on 2018/7/31.
@@ -50,14 +53,14 @@ public class PermissionServiceImpl implements PermissionService {
         Object principal = authentication.getPrincipal();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-        if(authentication instanceof OAuth2AuthenticationDetails) {
+        if(authentication instanceof OAuth2Authentication) {
 
             Map<String, Object> extraInfo = getExtraInfo(authentication);
             String uuid = (String)extraInfo.get("uuid");
             log.debug("extraInfo:{}",extraInfo);
 
             if(principal != null){
-                if(authorities.stream().anyMatch(o -> o.getAuthority().equals("ROLE_ADMIN"))){
+                if(authorities.stream().anyMatch(o -> ROLE_ADMIN_KEY.equals(o.getAuthority()))){
                     return true;
                 } else {
                     // 判断是否有权限

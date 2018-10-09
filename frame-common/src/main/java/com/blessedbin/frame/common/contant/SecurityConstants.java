@@ -27,4 +27,15 @@ public interface SecurityConstants {
     String TOKEN_IMAGE_CODE_PREFIX = "image-code";
 
     String OAUTH_TOKEN_URL = "/api/oauth/token";
+
+
+    /**
+     * 超级管理员角色关键字
+     */
+    String ROLE_ADMIN_KEY  = "ROLE_ADMIN";
+
+    /**
+     * 默认密码
+     */
+    String DEFAULT_PASSWORD = "123456";
 }
