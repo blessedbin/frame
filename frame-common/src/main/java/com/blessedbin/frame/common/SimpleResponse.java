@@ -161,6 +161,7 @@ public class SimpleResponse<T>{
         SimpleResponse response = new SimpleResponse();
         response.setCode(SimpleResponseType.ACCESS_DENIED.getCode());
         response.setCodeMsg(SimpleResponseType.ACCESS_DENIED.getCodeMsg());
+        response.setMessage("无访问权限");
 
         return response;
     }

@@ -31,4 +31,9 @@ public class UserServiceImpl implements UserService {
         return userMapper.findByUsername(username);
     }
 
+    @Override
+    public SysUser selectByUuid(String uuid) {
+        return userMapper.selectByPrimaryKey(uuid);
+    }
+
 }

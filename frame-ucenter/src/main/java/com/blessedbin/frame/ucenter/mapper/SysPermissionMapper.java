@@ -20,4 +20,8 @@ public interface SysPermissionMapper extends MyMapper<SysPermission> {
     List<SysPermission> selectByPrimaryKeysAndType(@Param("ids") List<Integer> ids, @Param("type") String type);
 
     List<Integer> selectIdsByInIds(@Param("ids")List<Integer> permissionIds);
+
+    List<SysPermission> selectByUuid(@Param("uuid") String uuid);
+
+    List<SysPermission> selectByUuidAndType(@Param("uuid") String uuid,@Param("type") String type);
 }

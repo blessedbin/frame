@@ -19,6 +19,7 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.bind.annotation.*;
@@ -59,6 +60,7 @@ public class UserController {
 
     @Autowired
     private FastFileStorageClient fastFileStorageClient;
+
 
     @GetMapping("/me")
     public SimpleResponse me(@RequestHeader(SecurityConstants.UUID_HEADER) String uuid){
@@ -106,9 +108,8 @@ public class UserController {
     @ApiOperation(value = "修改自己的密码")
     @PostMapping("/change_password")
     @FrameApi
-    public SimpleResponse changePassword(@RequestBody ChangePasswordParam param,FrameUser frameUser){
+    public SimpleResponse changePassword(@RequestBody ChangePasswordParam param,@RequestHeader(SecurityConstants.UUID_HEADER) String uuid){
         log.debug("request change password param:{}",param);
-        String uuid = frameUser.getUuid();
         SysUser user = userManageService.selectByPk(uuid);
         if(!passwordEncoder.matches(param.getOldPass(),user.getPassword())){
             throw new ParamCheckRuntimeException("密码错误，请重试");

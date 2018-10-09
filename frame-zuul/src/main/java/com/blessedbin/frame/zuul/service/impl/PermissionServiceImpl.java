@@ -3,10 +3,8 @@ package com.blessedbin.frame.zuul.service.impl;
 import com.blessedbin.frame.common.entity.FramePermission;
 import com.blessedbin.frame.zuul.service.PermissionService;
 import com.blessedbin.frame.zuul.service.UserService;
-import com.netflix.discovery.converters.Auto;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.netflix.zuul.filters.ProxyRequestHelper;
 import org.springframework.cloud.netflix.zuul.filters.Route;
 import org.springframework.cloud.netflix.zuul.filters.RouteLocator;
@@ -44,6 +42,7 @@ public class PermissionServiceImpl implements PermissionService {
 
     private AntPathMatcher antPathMatcher = new AntPathMatcher();
 
+
     @Override
     public boolean hasPermission(HttpServletRequest request, Authentication authentication) {
         log.debug("access hasPermission for request:{},authentication:{}",request.getRequestURI(),authentication.getPrincipal());
@@ -51,31 +50,35 @@ public class PermissionServiceImpl implements PermissionService {
         Object principal = authentication.getPrincipal();
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
 
-        Map<String, Object> extraInfo = getExtraInfo(authentication);
-        String uuid = (String)extraInfo.get("uuid");
-        log.debug("extraInfo:{}",extraInfo);
+        if(authentication instanceof OAuth2AuthenticationDetails) {
 
-        if(principal != null){
-            if(authorities.stream().anyMatch(o -> o.getAuthority().equals("ROLE_ADMIN"))){
-                return true;
-            } else {
-                // 判断是否有权限
-                List<FramePermission> api = userService.findUserApiByUuid(uuid);
-                log.debug("拥有的权限：{}",api);
-                final String requestURI = this.urlPathHelper.getPathWithinApplication(request);
+            Map<String, Object> extraInfo = getExtraInfo(authentication);
+            String uuid = (String)extraInfo.get("uuid");
+            log.debug("extraInfo:{}",extraInfo);
 
-                Route route = this.routeLocator.getMatchingRoute(requestURI);
-                String path = route.getPath();
-                String method = request.getMethod();
+            if(principal != null){
+                if(authorities.stream().anyMatch(o -> o.getAuthority().equals("ROLE_ADMIN"))){
+                    return true;
+                } else {
+                    // 判断是否有权限
+                    List<FramePermission> api = userService.findUserApiByUuid(uuid);
+                    log.debug("拥有的权限：{}",api);
+                    final String requestURI = this.urlPathHelper.getPathWithinApplication(request);
 
-                // 鉴权
-                return api.stream().anyMatch(framePermission -> {
-                    boolean a = framePermission.getMethod().equalsIgnoreCase(method);
-                    boolean b = antPathMatcher.match(framePermission.getUrl(), path);
-                    return a && b;
-                });
+                    Route route = this.routeLocator.getMatchingRoute(requestURI);
+                    String path = route.getPath();
+                    String method = request.getMethod();
 
+                    // 鉴权
+                    return api.stream().anyMatch(framePermission -> {
+                        boolean a = framePermission.getMethod().equalsIgnoreCase(method);
+                        boolean b = antPathMatcher.match(framePermission.getUrl(), path);
+                        return a && b;
+                    });
+
+                }
             }
+
         }
 
         return false;

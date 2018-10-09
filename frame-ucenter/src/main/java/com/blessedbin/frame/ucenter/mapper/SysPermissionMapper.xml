@@ -24,7 +24,7 @@
     <select id="selectByRoleId" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
         select *
         from sys_permission
-            inner join sys_role_permission srhp on sys_permission.permission_id = srhp.sys_permission_id
+                 inner join sys_role_permission srhp on sys_permission.permission_id = srhp.sys_permission_id
         where srhp.sys_role_id = #{roleId}
     </select>
     <select id="selectByType" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
@@ -35,7 +35,8 @@
     <select id="selectByPrimaryKeyAndType" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
         select *
         from sys_permission
-        where permission_id = #{id} and type = #{type}
+        where permission_id = #{id}
+          and type = #{type}
     </select>
     <select id="selectByPrimaryKeysAndType" resultType="com.blessedbin.frame.ucenter.modal.SysPermission">
         select * from sys_permission
@@ -46,9 +47,24 @@
         and type=#{type}
     </select>
     <select id="selectIdsByInIds" resultType="java.lang.Integer">
-      select permission_id from sys_permission where permission_id in
-      <foreach collection="ids" item="i" open="(" close=")" separator=",">
-          #{i}
-      </foreach>
+        select permission_id from sys_permission where permission_id in
+        <foreach collection="ids" item="i" open="(" close=")" separator=",">
+            #{i}
+        </foreach>
+    </select>
+    <select id="selectByUuid" resultMap="BaseResultMap">
+        select sys_permission.*
+        from sys_permission
+                 inner join sys_role_permission srp on sys_permission.permission_id = srp.sys_permission_id
+                 inner join sys_user_role sur on srp.sys_role_id = sur.sys_role_id
+        where sur.sys_user_uuid = #{uuid}
+    </select>
+    <select id="selectByUuidAndType" resultMap="BaseResultMap">
+        select sys_permission.*
+        from sys_permission
+                 inner join sys_role_permission srp on sys_permission.permission_id = srp.sys_permission_id
+                 inner join sys_user_role sur on srp.sys_role_id = sur.sys_role_id
+        where sur.sys_user_uuid = #{uuid}
+          and sys_permission.type = #{type}
     </select>
 </mapper>

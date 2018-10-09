@@ -12,4 +12,6 @@ import com.blessedbin.frame.ucenter.modal.SysUser;
  */
 public interface UserService {
     SysUser findByUsername(String username);
+
+    SysUser selectByUuid(String uuid);
 }

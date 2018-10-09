@@ -169,7 +169,8 @@ public class ApiService {
      * @return
      */
     public List<SysApi> selectByUuid(String uuid) {
-        return null;
+        List<SysPermission> permissions = permissionService.selectByUuidAndType(uuid, TYPE_API);
+        return permissions.stream().map(this::toSysApi).collect(Collectors.toList());
     }
 
     public List<SysApi> selectByMenuId(Integer menuId) {
