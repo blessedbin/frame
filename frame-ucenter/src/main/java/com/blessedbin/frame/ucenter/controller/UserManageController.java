@@ -24,6 +24,8 @@ import java.util.Date;
 
 import static com.blessedbin.frame.common.contant.SecurityConstants.DEFAULT_PASSWORD;
 
+import static com.blessedbin.frame.common.contant.SecurityConstants.DEFAULT_PASSWORD;
+
 /**
  * Created by xubin on 2018/7/9.
  *
@@ -44,8 +46,6 @@ public class UserManageController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private DepartmentService departmentService;
 
     @GetMapping("/datatable.json")
     @ApiOperation(value = "查看用户")

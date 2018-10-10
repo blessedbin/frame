@@ -24,6 +24,7 @@
         <module>frame-sso-demo</module>
         <module>frame-config</module>
         <module>frame-auth</module>
+        <module>frame-message-service</module>
     </modules>
 
     <properties>
@@ -50,6 +51,10 @@
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
         </dependency>
 
         <dependency>
