@@ -14,7 +14,6 @@ import com.blessedbin.frame.ucenter.service.ApiService;
 import com.blessedbin.frame.ucenter.service.MenuService;
 import com.blessedbin.frame.ucenter.service.OperationService;
 import com.blessedbin.frame.ucenter.service.PermissionService;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
