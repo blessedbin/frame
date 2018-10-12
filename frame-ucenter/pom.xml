@@ -101,12 +101,7 @@
 
 
 
-        <!--&lt;!&ndash; https://mvnrepository.com/artifact/com.google.guava/guava &ndash;&gt;-->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${google-guava.version}</version>
-        </dependency>
+
 
         <dependency>
             <groupId>com.blessedbin.frame.common</groupId>
