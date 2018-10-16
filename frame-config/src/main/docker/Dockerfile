@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/aliware2018/debian-jdk8:latest
+FROM java:openjdk-8-jre
 # 创建数据卷挂载点
 ADD frame-config-server.jar app.jar
 #设置时区

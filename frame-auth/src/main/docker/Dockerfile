@@ -1,4 +1,4 @@
-FROM registry.cn-hangzhou.aliyuncs.com/aliware2018/debian-jdk8:latest
+FROM java:openjdk-8-jre
 ADD frame-auth.jar app.jar
 #设置时区
 RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone

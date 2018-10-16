@@ -3,13 +3,10 @@ package com.blessedbin.frame.ucenter.service;
 import com.blessedbin.frame.ucenter.FrameUcenterApplicationTests;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
 import com.blessedbin.frame.ucenter.modal.SysUser;
-import com.netflix.discovery.converters.Auto;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by xubin on 2018/7/29.

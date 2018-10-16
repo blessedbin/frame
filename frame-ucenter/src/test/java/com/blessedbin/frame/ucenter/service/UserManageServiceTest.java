@@ -6,16 +6,12 @@ import com.blessedbin.frame.ucenter.mapper.SysUserRoleMapper;
 import com.blessedbin.frame.ucenter.modal.SysRole;
 import com.blessedbin.frame.ucenter.modal.SysUser;
 import com.blessedbin.frame.ucenter.modal.SysUserRole;
-import com.netflix.discovery.converters.Auto;
 import lombok.extern.log4j.Log4j2;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
-
-import static org.junit.Assert.*;
 
 /**
  * Created by xubin on 2018/9/11.
