@@ -31,8 +31,11 @@
 
 ## TODO
 - 动态路由
+- 系统监控
 
 # 开发环境
 - docker
 - jdk8
 - fastDfs
+- rabbitmq
+- mysql

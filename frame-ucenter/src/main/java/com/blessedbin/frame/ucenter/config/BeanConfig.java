@@ -20,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
  */
 @Configuration
 @Import(FdfsClientConfig.class)
-// 解决jmx重复注册bean的问题
 @EnableMBeanExport(registration = RegistrationPolicy.IGNORE_EXISTING)
 public class BeanConfig {
 

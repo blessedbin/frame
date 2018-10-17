@@ -13,10 +13,16 @@ import com.blessedbin.frame.ucenter.service.PermissionService;
 import com.blessedbin.frame.ucenter.service.RoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.v3.oas.models.OpenAPI;
+import io.swagger.v3.parser.OpenAPIV3Parser;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -44,6 +50,8 @@ public class ApiController {
     @Autowired
     private RoleService roleService;
 
+    @Autowired
+    private DiscoveryClient discoveryClient;
     /**
      * 扫描
      */
@@ -157,10 +165,31 @@ public class ApiController {
 
 
     @GetMapping("/findUserApi/{uuid}")
+    @ApiIgnore
     public List<FramePermission> findUserApiByUuid(@PathVariable("uuid") String uuid){
         List<SysApi> apis = apiService.selectByUuid(uuid);
         return apis.stream().map(sysApi ->
                 FramePermission.builder().method(sysApi.getMethod()).url(sysApi.getUrl()).build())
                 .collect(Collectors.toList());
+    }
+
+
+    @GetMapping("/test")
+    public OpenAPI test() {
+        OpenAPI openAPI = new OpenAPIV3Parser().read("http://localhost:8081/v2/api-docs");
+
+        for( String s :  discoveryClient.getServices()) {
+            System.out.println("services " + s);
+            List<ServiceInstance> serviceInstances = discoveryClient.getInstances(s);
+            for (ServiceInstance si : serviceInstances) {
+                System.out.println("    services:" + s + ":getHost()=" + si.getHost());
+                System.out.println("    services:" + s + ":getPort()=" + si.getPort());
+                System.out.println("    services:" + s + ":getServiceId()=" + si.getServiceId());
+                System.out.println("    services:" + s + ":getUri()=" + si.getUri());
+                System.out.println("    services:" + s + ":getMetadata()=" + si.getMetadata());
+            }
+        }
+
+        return openAPI;
     }
 }
