@@ -45,9 +45,6 @@ public class ApiService {
     @Autowired
     private PermissionService permissionService;
 
-    @Value("${spring.application.name}")
-    private String applicationName;
-
     @Autowired
     private ObjectMapper objectMapper;
 

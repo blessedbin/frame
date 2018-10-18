@@ -11,11 +11,15 @@ package com.blessedbin.frame.ucenter;
 public class Test {
 
     public static void main(String[] args) {
-        String s  = "2";
-        String[] split = s.split(",");
-        for (String s1 : split) {
-            System.out.println(s1);
-        }
+        String s = "group1/M00/00/00/wKixgVu7EnmASzIwAAJoZejCSYU118.PNG";
+        int i = s.indexOf("/");
+        String group = s.substring(0,i);
+        String path = s.substring(i + 1);
+        String type = s.substring(s.lastIndexOf(".") + 1);
+
+        System.out.println(group);
+        System.out.println(path);
+        System.out.println(type);
     }
 
 }

@@ -186,7 +186,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <imageName>frame/${project.artifactId}</imageName>
+                    <imageName>registry.cn-beijing.aliyuncs.com/blessedbin/${project.build.finalName}</imageName>
                     <dockerHost>http://192.168.177.129:2375</dockerHost>
                     <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
                     <dockerCertPath>F:\test\default</dockerCertPath>
