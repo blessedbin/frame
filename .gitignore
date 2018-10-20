@@ -163,3 +163,4 @@ typings/
 # next.js build output
 .next
 
+/frame-config/src/test/java/com/blessedbin/frame/config/EncodePassword.java
