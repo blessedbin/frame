@@ -78,11 +78,11 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bus-amqp</artifactId>
         </dependency>
-        <!--邮件发送组件-->
+        <!--&lt;!&ndash;邮件发送组件&ndash;&gt;
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!--图片处理-->
         <dependency>

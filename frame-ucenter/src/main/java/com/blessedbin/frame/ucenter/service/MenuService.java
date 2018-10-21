@@ -4,10 +4,7 @@ import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.ui.CascaderNode;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
 import com.blessedbin.frame.ucenter.entity.pojo.Menu;
-import com.blessedbin.frame.ucenter.modal.SysPermission;
-import com.blessedbin.frame.ucenter.modal.SysRole;
-import com.blessedbin.frame.ucenter.modal.SysRolePermission;
-import com.blessedbin.frame.ucenter.modal.SysUser;
+import com.blessedbin.frame.ucenter.modal.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
@@ -66,9 +63,30 @@ public class MenuService {
         }).collect(Collectors.toList());
     }
 
+    private List<Menu> allMenuEnabled() {
+        SysPermissionExample example = new SysPermissionExample();
+        example.createCriteria().andTypeEqualTo(TYPE_MENU).andEnabledEqualTo(Boolean.TRUE);
+        List<SysPermission> permissions = permissionService.selectAllByExample(example);
+
+        return permissions.stream().map(permission -> {
+            try {
+                Menu menu = objectMapper.readValue(permission.getAdditionInformation(), Menu.class);
+                menu.setId(permission.getPermissionId());
+                return menu;
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).collect(Collectors.toList());
+    }
+
 
     public List<MenuTreeDto>  getMenuTree(){
         return buildMenuTree(allMenus(),-1);
+    }
+
+    public List<MenuTreeDto> getMenuTreeEnabled() {
+        return buildMenuTree(allMenuEnabled(), -1);
     }
 
     private List<MenuTreeDto> buildMenuTree(List<Menu> menus,Integer pid){
@@ -92,7 +110,7 @@ public class MenuService {
         List<SysRole> roles = roleService.selectAllByUuid(uuid);
         boolean isAdmin = roles.stream().anyMatch(role -> "ROLE_ADMIN".equals(role.getRoleKey()));
         if(isAdmin) {
-            return getMenuTree();
+            return getMenuTreeEnabled();
         }
 
         List<SysPermission> permissions = permissionService.selectByUuidAndType(uuid, TYPE_MENU);
