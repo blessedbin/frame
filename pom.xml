@@ -185,9 +185,17 @@
                 <executions>
                     <execution>
                         <id>build-image</id>
-                        <phase>deploy</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>build</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>push-image</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <!--<goal>build</goal>-->
+                            <goal>push</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -197,6 +205,8 @@
                     <dockerDirectory>${project.basedir}/src/main/docker</dockerDirectory>
                     <dockerCertPath>F:\test\default</dockerCertPath>
                     <forceTags>true</forceTags>
+                    <serverId>docker-aliyun</serverId>
+                    <registryUrl>registry.cn-beijing.aliyuncs.com</registryUrl>
                     <imageTags>
                         <imageTag>latest</imageTag>
                     </imageTags>

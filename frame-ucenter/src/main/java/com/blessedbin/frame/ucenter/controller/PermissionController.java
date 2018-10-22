@@ -2,7 +2,6 @@ package com.blessedbin.frame.ucenter.controller;
 
 import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.SimpleResponse;
-import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.blessedbin.frame.ucenter.service.PermissionService;
 import lombok.extern.log4j.Log4j2;
@@ -26,7 +25,6 @@ public class PermissionController {
     private PermissionService permissionService;
 
     @GetMapping("/datatable.json")
-    @FrameApi
     public SimpleResponse<Pagination<SysPermission>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
                                                         @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
                                                         @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue) {

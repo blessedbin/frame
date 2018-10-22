@@ -78,6 +78,13 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-bus-amqp</artifactId>
         </dependency>
+
+        <!--mybatis plus-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>3.0.4</version>
+        </dependency>
         <!--&lt;!&ndash;邮件发送组件&ndash;&gt;
         <dependency>
             <groupId>org.springframework.boot</groupId>

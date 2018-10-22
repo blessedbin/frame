@@ -2,7 +2,6 @@ package com.blessedbin.frame.ucenter.controller;
 
 import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.validate.PostMethodValidationGroup;
-import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.modal.SysArgument;
 import com.blessedbin.frame.ucenter.service.SysArgumentService;
 import lombok.extern.log4j.Log4j2;
@@ -35,7 +34,6 @@ public class SysArgumentController{
      * @param argument
      */
     @PostMapping
-    @FrameApi
     public SimpleResponse<SysArgument> add(@RequestBody @Validated(PostMethodValidationGroup.class) SysArgument argument){
         argumentService.insert(argument);
         SysArgument select = argumentService.selectByPk(argument.getId());

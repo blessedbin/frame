@@ -8,7 +8,6 @@ import com.blessedbin.frame.common.utils.UUIDUtils;
 import com.blessedbin.frame.common.validate.PostMethodValidationGroup;
 import com.blessedbin.frame.ucenter.entity.dto.UserDto;
 import com.blessedbin.frame.ucenter.modal.SysUser;
-import com.blessedbin.frame.ucenter.service.DepartmentService;
 import com.blessedbin.frame.ucenter.service.UserManageService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;

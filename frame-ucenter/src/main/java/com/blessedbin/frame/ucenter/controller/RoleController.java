@@ -6,7 +6,6 @@ import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.exception.ResourceNotFoundException;
 import com.blessedbin.frame.common.ui.TransferNode;
 import com.blessedbin.frame.common.validate.PostMethodValidationGroup;
-import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.param.RolePermissionParam;
 import com.blessedbin.frame.ucenter.entity.param.UserRoleParam;
 import com.blessedbin.frame.ucenter.modal.SysRole;
@@ -51,7 +50,6 @@ public class RoleController {
     private UserManageService userManageService;
 
     @GetMapping("/datatable.json")
-    @FrameApi
     public SimpleResponse<Pagination<SysRole>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
                                                   @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
                                                   @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue) {
@@ -67,7 +65,6 @@ public class RoleController {
      * @return
      */
     @PostMapping
-    @FrameApi
     @ApiOperation(value = "添加角色", notes = "同组织机构下角色名称不能重复,角色关键字不能重复")
     public SimpleResponse add(@RequestBody @Validated(PostMethodValidationGroup.class) SysRole role,
                               BindingResult result){
@@ -105,7 +102,6 @@ public class RoleController {
 
     @ApiOperation(value = "获取角色信息")
     @GetMapping("/{id}")
-    @FrameApi
     public SimpleResponse<SysRole> get(@PathVariable Integer id){
         SysRole role = roleService.selectByPk(id);
         if(role == null){
@@ -125,7 +121,6 @@ public class RoleController {
      * @return
      */
     @GetMapping("/transfer-list.json")
-    @FrameApi
     public SimpleResponse getTransferList(@RequestParam(value = "uuid") String uuid) {
         SysUser user = userManageService.selectByPk(uuid);
         List<SysRole> allRoles = roleService.selectAll();
@@ -151,7 +146,6 @@ public class RoleController {
      * @return
      */
     @PutMapping("/user_role.json")
-    @FrameApi
     @ApiOperation(value = "保存用户角色之间的关系")
     public SimpleResponse editUserRole(@Validated @RequestBody UserRoleParam param) {
         log.debug("request param:{}", param);
@@ -160,7 +154,6 @@ public class RoleController {
     }
 
     @PutMapping("/role_permission.do")
-    @FrameApi
     public SimpleResponse saveRolePermission(@RequestBody RolePermissionParam param) {
         log.debug("request param:{}", param);
         roleService.saveRolePermission(param.getId(), param.getCheckedList());

@@ -4,7 +4,6 @@ import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.ui.TreeNode;
 import com.blessedbin.frame.common.validate.PutMethodValidationGroup;
-import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
 import com.blessedbin.frame.ucenter.entity.pojo.Menu;
 import com.blessedbin.frame.ucenter.entity.pojo.Operation;
@@ -103,7 +102,6 @@ public class MenuController {
      * @return
      */
     @DeleteMapping
-    @FrameApi
     public SimpleResponse delete(@RequestParam Integer id){
         menuService.deleteByPk(id);
         return SimpleResponse.deleted();

@@ -5,7 +5,6 @@ import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.entity.FramePermission;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.ui.SelectNode;
-import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
 import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.blessedbin.frame.ucenter.service.ApiService;
@@ -56,7 +55,6 @@ public class ApiController {
      * 扫描
      */
     @GetMapping("/scan")
-    @FrameApi
     @ApiOperation(value = "更新API列表", notes = "扫描并更新API列表")
     public SimpleResponse scan() {
         apiService.scanApi();

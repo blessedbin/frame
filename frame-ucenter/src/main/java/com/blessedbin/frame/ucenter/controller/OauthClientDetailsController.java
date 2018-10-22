@@ -2,12 +2,10 @@ package com.blessedbin.frame.ucenter.controller;
 
 import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.SimpleResponse;
-import com.blessedbin.frame.ucenter.component.FrameApi;
 import com.blessedbin.frame.ucenter.modal.OauthClientDetails;
 import com.blessedbin.frame.ucenter.service.OauthClientDetailsService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +31,6 @@ public class OauthClientDetailsController {
 
 
     @GetMapping("/datatable.json")
-    @FrameApi
     public SimpleResponse<Pagination<OauthClientDetails>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
                                                                 @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
                                                                 @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue) {
@@ -43,7 +40,6 @@ public class OauthClientDetailsController {
 
 
     @PostMapping
-    @FrameApi
     public SimpleResponse add(@RequestBody @Validated OauthClientDetails details){
         oauthClientDetailsService.insert(details);
         return SimpleResponse.created();

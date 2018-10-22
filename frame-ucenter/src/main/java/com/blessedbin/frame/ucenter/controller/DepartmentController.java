@@ -5,8 +5,6 @@ import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.ui.CascaderNode;
 import com.blessedbin.frame.common.ui.TreeNode;
 import com.blessedbin.frame.common.validate.PostMethodValidationGroup;
-import com.blessedbin.frame.ucenter.component.FrameApi;
-import com.blessedbin.frame.ucenter.entity.dto.DepartmentDto;
 import com.blessedbin.frame.ucenter.modal.SysDepartment;
 import com.blessedbin.frame.ucenter.modal.SysDepartmentExample;
 import com.blessedbin.frame.ucenter.service.DepartmentService;
@@ -37,13 +35,11 @@ public class DepartmentController {
     private DepartmentService departmentService;
 
     @RequestMapping("/tree.json")
-    @FrameApi
     public SimpleResponse<List<TreeNode>> treeTables(){
         return SimpleResponse.ok(departmentService.getDepartmentTree());
     }
 
     @GetMapping("/cascader.json")
-    @FrameApi
     public SimpleResponse<List<CascaderNode>> cascaderList(@RequestParam Integer organizationId){
         List<CascaderNode> cascaders = departmentService.getCascaders(organizationId);
         return SimpleResponse.ok(cascaders);
@@ -55,7 +51,6 @@ public class DepartmentController {
      * @return
      */
     @PostMapping
-    @FrameApi
     public SimpleResponse add(@RequestBody @Validated(PostMethodValidationGroup.class)SysDepartment department) {
         log.debug("request department param:{}",department);
 
