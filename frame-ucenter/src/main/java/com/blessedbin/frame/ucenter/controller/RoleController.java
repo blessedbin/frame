@@ -1,19 +1,22 @@
 package com.blessedbin.frame.ucenter.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.exception.ResourceNotFoundException;
 import com.blessedbin.frame.common.ui.TransferNode;
 import com.blessedbin.frame.common.validate.PostMethodValidationGroup;
+import com.blessedbin.frame.ucenter.entity.SysRole;
+import com.blessedbin.frame.ucenter.entity.SysUser;
+import com.blessedbin.frame.ucenter.entity.SysUserRole;
 import com.blessedbin.frame.ucenter.entity.param.RolePermissionParam;
 import com.blessedbin.frame.ucenter.entity.param.UserRoleParam;
-import com.blessedbin.frame.ucenter.modal.SysRole;
-import com.blessedbin.frame.ucenter.modal.SysRoleExample;
-import com.blessedbin.frame.ucenter.modal.SysUser;
-import com.blessedbin.frame.ucenter.modal.SysUserRole;
-import com.blessedbin.frame.ucenter.service.RoleService;
-import com.blessedbin.frame.ucenter.service.UserManageService;
+import com.blessedbin.frame.ucenter.service.ISysRoleService;
+import com.blessedbin.frame.ucenter.service.ISysUserRoleService;
+import com.blessedbin.frame.ucenter.service.ISysUserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
@@ -23,7 +26,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,16 +47,21 @@ import java.util.stream.Collectors;
 public class RoleController {
 
     @Autowired
-    private RoleService roleService;
+    private ISysRoleService roleService;
 
     @Autowired
-    private UserManageService userManageService;
+    private ISysUserService userService;
+
+    @Autowired
+    private ISysUserRoleService userRoleService;
 
     @GetMapping("/datatable.json")
     public SimpleResponse<Pagination<SysRole>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
                                                   @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
                                                   @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue) {
-        Pagination<SysRole> dataTable = roleService.getDataTable(pageNum, pageSize);
+        Page<SysRole> page = new Page<>(pageNum,pageSize);
+        IPage<SysRole> roles = roleService.page(page, null);
+        Pagination<SysRole> dataTable = new Pagination<SysRole>(roles.getCurrent(),roles.getSize(),roles.getTotal(),roles.getRecords());
         return SimpleResponse.ok(dataTable);
     }
 
@@ -65,24 +73,22 @@ public class RoleController {
      * @return
      */
     @PostMapping
-    @ApiOperation(value = "添加角色", notes = "同组织机构下角色名称不能重复,角色关键字不能重复")
+    @ApiOperation(value = "添加角色", notes = "角色名称不能重复,角色关键字不能重复")
     public SimpleResponse add(@RequestBody @Validated(PostMethodValidationGroup.class) SysRole role,
                               BindingResult result){
 
         // 参数检查
-        SysRoleExample example = new SysRoleExample();
-        SysRoleExample.Criteria criteria = example.createCriteria();
-        criteria.andRoleNameEqualTo(role.getRoleName());
+        LambdaQueryWrapper<SysRole> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysRole::getRoleName,role.getRoleName());
 
-
-        if(roleService.checkExistsByExample(example)){
+        if(roleService.exists(wrapper)){
             result.addError(new ObjectError("roleName","角色名称重复"));
         }
 
         // 检查关键字
-        SysRoleExample example1 = new SysRoleExample();
-        example1.createCriteria().andRoleKeyEqualTo(role.getRoleKey());
-        if(roleService.checkExistsByExample(example1)){
+        LambdaQueryWrapper<SysRole> wrapper1 = new LambdaQueryWrapper<>();
+        wrapper1.eq(SysRole::getRoleKey,role.getRoleKey());
+        if(roleService.exists(wrapper1)){
             result.addError(new ObjectError("roleKey","角色关键字重复"));
         }
 
@@ -90,11 +96,11 @@ public class RoleController {
             throw new ParamCheckRuntimeException(result.getAllErrors().toString());
         }
 
-        role.setCreateTime(new Date());
-        role.setUpdateTime(new Date());
+        role.setCreateTime(LocalDateTime.now());
+        role.setUpdateTime(LocalDateTime.now());
 
         // 插入数据
-        roleService.insertSelective(role);
+        roleService.save(role);
 
         return SimpleResponse.created("创建成功",role);
     }
@@ -103,7 +109,7 @@ public class RoleController {
     @ApiOperation(value = "获取角色信息")
     @GetMapping("/{id}")
     public SimpleResponse<SysRole> get(@PathVariable Integer id){
-        SysRole role = roleService.selectByPk(id);
+        SysRole role = roleService.getById(id);
         if(role == null){
             throw new ResourceNotFoundException("id:" + id);
         }
@@ -122,8 +128,8 @@ public class RoleController {
      */
     @GetMapping("/transfer-list.json")
     public SimpleResponse getTransferList(@RequestParam(value = "uuid") String uuid) {
-        SysUser user = userManageService.selectByPk(uuid);
-        List<SysRole> allRoles = roleService.selectAll();
+        SysUser user = userService.getById(uuid);
+        List<SysRole> allRoles = roleService.list(null);
         List<TransferNode> transferNodes = allRoles.stream().map(role -> TransferNode.builder().key(String.valueOf(role.getId()))
                 .label(role.getRoleName()).build()).collect(Collectors.toList());
 
@@ -131,7 +137,9 @@ public class RoleController {
         Map<String, Object> returnData = new HashMap<>(2);
         returnData.put("roleList", transferNodes);
 
-        List<SysUserRole> selectedRoles = roleService.findAllUserHasRoleByUuid(uuid);
+        LambdaQueryWrapper<SysUserRole> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysUserRole::getSysUserUuid,uuid);
+        List<SysUserRole> selectedRoles = userRoleService.list(wrapper);
         List<String> selectedLists = selectedRoles.stream()
                 .map(ur -> String.valueOf(ur.getSysRoleId())).collect(Collectors.toList());
         returnData.put("selectedRole", selectedLists);
@@ -149,10 +157,15 @@ public class RoleController {
     @ApiOperation(value = "保存用户角色之间的关系")
     public SimpleResponse editUserRole(@Validated @RequestBody UserRoleParam param) {
         log.debug("request param:{}", param);
-        roleService.editUserRole(param.getUuid(), param.getSelectedRole());
+        roleService.saveUserRole(param.getUuid(), param.getSelectedRole());
         return SimpleResponse.accepted("操作成功");
     }
 
+    /**
+     * 保存角色和权限之间的关系
+     * @param param
+     * @return
+     */
     @PutMapping("/role_permission.do")
     public SimpleResponse saveRolePermission(@RequestBody RolePermissionParam param) {
         log.debug("request param:{}", param);

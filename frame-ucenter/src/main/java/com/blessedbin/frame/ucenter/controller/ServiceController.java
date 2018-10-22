@@ -2,9 +2,8 @@ package com.blessedbin.frame.ucenter.controller;
 
 import com.blessedbin.frame.common.entity.FrameRole;
 import com.blessedbin.frame.common.entity.FrameUser;
-import com.blessedbin.frame.ucenter.modal.SysRole;
-import com.blessedbin.frame.ucenter.modal.SysUser;
-import com.blessedbin.frame.ucenter.service.RoleService;
+import com.blessedbin.frame.ucenter.entity.SysUser;
+import com.blessedbin.frame.ucenter.service.ISysRoleService;
 import com.blessedbin.frame.ucenter.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +33,7 @@ public class ServiceController {
     private UserService userService;
 
     @Autowired
-    private RoleService roleService;
+    private ISysRoleService roleService;
 
 
     @GetMapping("/findByUsername")

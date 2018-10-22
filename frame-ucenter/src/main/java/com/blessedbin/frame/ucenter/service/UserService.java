@@ -1,6 +1,7 @@
 package com.blessedbin.frame.ucenter.service;
 
-import com.blessedbin.frame.ucenter.modal.SysUser;
+
+import com.blessedbin.frame.ucenter.entity.SysUser;
 
 /**
  * Created by xubin on 2018/7/29.

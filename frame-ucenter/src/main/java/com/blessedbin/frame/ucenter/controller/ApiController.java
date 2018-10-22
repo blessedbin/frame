@@ -5,11 +5,11 @@ import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.entity.FramePermission;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.ui.SelectNode;
+import com.blessedbin.frame.ucenter.entity.SysPermission;
 import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
-import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.blessedbin.frame.ucenter.service.ApiService;
-import com.blessedbin.frame.ucenter.service.PermissionService;
-import com.blessedbin.frame.ucenter.service.RoleService;
+import com.blessedbin.frame.ucenter.service.ISysPermissionService;
+import com.blessedbin.frame.ucenter.service.ISysRoleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -20,7 +20,6 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.*;
@@ -44,10 +43,10 @@ public class ApiController {
     private ApiService apiService;
 
     @Autowired
-    private PermissionService permissionService;
+    private ISysPermissionService permissionService;
 
     @Autowired
-    private RoleService roleService;
+    private ISysRoleService roleService;
 
     @Autowired
     private DiscoveryClient discoveryClient;
@@ -139,7 +138,7 @@ public class ApiController {
         returnData.put("options", options);
 
         if (roleId != null) {
-            if (!roleService.checkExistsByPk(roleId)) {
+            if (!roleService.existsById(roleId)) {
                 throw new ParamCheckRuntimeException();
             }
             List<SysPermission> sysPermissions = permissionService.selectByRoleIdAndType(roleId);

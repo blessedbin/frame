@@ -3,10 +3,10 @@ package com.blessedbin.frame.ucenter.controller;
 import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.contant.SecurityConstants;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
+import com.blessedbin.frame.ucenter.entity.SysUser;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
-import com.blessedbin.frame.ucenter.modal.SysUser;
+import com.blessedbin.frame.ucenter.service.ISysUserService;
 import com.blessedbin.frame.ucenter.service.MenuService;
-import com.blessedbin.frame.ucenter.service.UserManageService;
 import com.github.tobato.fastdfs.domain.StorePath;
 import com.github.tobato.fastdfs.proto.storage.DownloadByteArray;
 import com.github.tobato.fastdfs.service.FastFileStorageClient;
@@ -52,7 +52,7 @@ public class UserController {
     private PasswordEncoder passwordEncoder;
 
     @Autowired
-    private UserManageService userManageService;
+    private ISysUserService userService;
 
     @Autowired
     private MenuService menuService;
@@ -63,7 +63,7 @@ public class UserController {
 
     @GetMapping("/me")
     public SimpleResponse me(@RequestHeader(SecurityConstants.UUID_HEADER) String uuid){
-        SysUser user = userManageService.selectByPk(uuid);
+        SysUser user = userService.getById(uuid);
         user.setPassword(null);
         return SimpleResponse.ok(user);
     }
@@ -77,7 +77,7 @@ public class UserController {
             @ApiResponse(code = 200,message = "返回用户头像")
     })
     public void getAvatar(HttpServletResponse response, @RequestHeader(SecurityConstants.UUID_HEADER) String uuid) throws IOException {
-        SysUser user = userManageService.selectByPk(uuid);
+        SysUser user = userService.getById(uuid);
         if(user == null) {
             throw new ParamCheckRuntimeException();
         }
@@ -129,7 +129,7 @@ public class UserController {
     @PostMapping("/change_password")
     public SimpleResponse changePassword(@RequestBody ChangePasswordParam param,@RequestHeader(SecurityConstants.UUID_HEADER) String uuid){
         log.debug("request change password param:{}",param);
-        SysUser user = userManageService.selectByPk(uuid);
+        SysUser user = userService.getById(uuid);
         if(!passwordEncoder.matches(param.getOldPass(),user.getPassword())){
             throw new ParamCheckRuntimeException("密码错误，请重试");
         }
@@ -140,7 +140,7 @@ public class UserController {
         SysUser sysUser = new SysUser();
         sysUser.setUuid(user.getUuid());
         sysUser.setPassword(passwordEncoder.encode(param.getPass()));
-        userManageService.updateByPkSelective(sysUser);
+        userService.updateById(sysUser);
 
 
         return SimpleResponse.accepted("修改成功");
@@ -161,14 +161,14 @@ public class UserController {
     @ApiOperation("设置头像")
     public SimpleResponse setAvatar(MultipartFile img, @RequestHeader(SecurityConstants.UUID_HEADER) String uuid) throws IOException {
         log.debug("file name:{},size:{},name:{}",img.getOriginalFilename(),img.getSize(),img.getName());
-        SysUser user = userManageService.selectByPk(uuid);
+        SysUser user = userService.getById(uuid);
         if(user == null) {
             throw new ParamCheckRuntimeException();
         }
 
         StorePath image = fastFileStorageClient.uploadImageAndCrtThumbImage(img.getInputStream(), img.getSize(), "PNG", null);
         user.setAvatar(image.getFullPath());
-        userManageService.updateByPkSelective(user);
+        userService.updateById(user);
 
         return SimpleResponse.accepted();
     }

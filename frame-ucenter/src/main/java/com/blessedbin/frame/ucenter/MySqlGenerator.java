@@ -54,6 +54,10 @@ public class MySqlGenerator {
         gc.setOutputDir(projectPath + "/frame-ucenter/src/main/java");  // 输出目录
         gc.setAuthor("xubin");  // 作者名
         gc.setOpen(false);
+        // 覆盖文件
+        gc.setFileOverride(true);
+        // 开启swagger模式
+        gc.setSwagger2(true);
         mpg.setGlobalConfig(gc);
 
         // 数据源配置
@@ -83,7 +87,7 @@ public class MySqlGenerator {
             @Override
             public String outputFile(TableInfo tableInfo) {
                 // 自定义输入文件名称
-                return projectPath + "/frame-ucenter/src/main/resources/mapper/" + pc.getModuleName()
+                return projectPath + "/frame-ucenter/src/main/resources/mapper/"
                         + "/" + tableInfo.getEntityName() + "Mapper" + StringPool.DOT_XML;
             }
         });
@@ -97,6 +101,8 @@ public class MySqlGenerator {
         strategy.setColumnNaming(NamingStrategy.underline_to_camel);
         //strategy.setSuperEntityClass("com.baomidou.ant.common.BaseEntity");
         strategy.setEntityLombokModel(true);
+        strategy.setRestControllerStyle(true);
+        // 生成 @RestController 控制器
         strategy.setRestControllerStyle(true);
         //strategy.setSuperControllerClass("com.baomidou.ant.common.BaseController");
         //strategy.setInclude(scanner("表名"));  // 需要生成的表

@@ -4,15 +4,15 @@ import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.ui.TreeNode;
 import com.blessedbin.frame.common.validate.PutMethodValidationGroup;
+import com.blessedbin.frame.ucenter.entity.SysPermission;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
 import com.blessedbin.frame.ucenter.entity.pojo.Menu;
 import com.blessedbin.frame.ucenter.entity.pojo.Operation;
 import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
-import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.blessedbin.frame.ucenter.service.ApiService;
+import com.blessedbin.frame.ucenter.service.ISysPermissionService;
 import com.blessedbin.frame.ucenter.service.MenuService;
 import com.blessedbin.frame.ucenter.service.OperationService;
-import com.blessedbin.frame.ucenter.service.PermissionService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.log4j.Log4j2;
@@ -52,7 +52,7 @@ public class MenuController {
     private ApiService apiService;
 
     @Autowired
-    private PermissionService permissionService;
+    private ISysPermissionService permissionService;
 
     @GetMapping("/menu_tree.json")
     public SimpleResponse menuTree(@RequestParam(required = false) Integer roleId) {
@@ -60,10 +60,11 @@ public class MenuController {
         List<TreeNode> treeNodes = buildMenuTree(menuService.getMenuTree());
         datas.put("treeList",treeNodes);
 
-        if(roleId != null && roleId > 0){
+        // TODO
+        /*if(roleId != null && roleId > 0){
             List<Integer> ids = permissionService.selectPermissionIdsByRoleId(roleId);
             datas.put("checked",ids);
-        }
+        }*/
 
         return SimpleResponse.ok(datas);
     }

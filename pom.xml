@@ -24,6 +24,7 @@
         <module>frame-config</module>
         <module>frame-auth</module>
         <module>frame-message-service</module>
+        <module>frame-common-data</module>
     </modules>
 
     <properties>
@@ -42,6 +43,7 @@
         <druid.version>1.1.10</druid.version>
         <kaptcha.version>2.3.2</kaptcha.version>
         <frame-common.version>1.0.1-SNAPSHOT</frame-common.version>
+        <docker-maven-plugin.version>1.1.0</docker-maven-plugin.version>
     </properties>
 
 
@@ -181,7 +183,7 @@
             <plugin>
                 <groupId>com.spotify</groupId>
                 <artifactId>docker-maven-plugin</artifactId>
-                <version>1.1.0</version>
+                <version>${docker-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>build-image</id>

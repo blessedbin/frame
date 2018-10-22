@@ -1,8 +1,8 @@
 package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.ucenter.FrameUcenterApplicationTests;
+import com.blessedbin.frame.ucenter.entity.SysUser;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
-import com.blessedbin.frame.ucenter.modal.SysUser;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 

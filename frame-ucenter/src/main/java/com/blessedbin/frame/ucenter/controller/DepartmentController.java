@@ -1,12 +1,10 @@
 package com.blessedbin.frame.ucenter.controller;
 
 import com.blessedbin.frame.common.SimpleResponse;
-import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.ui.CascaderNode;
 import com.blessedbin.frame.common.ui.TreeNode;
 import com.blessedbin.frame.common.validate.PostMethodValidationGroup;
-import com.blessedbin.frame.ucenter.modal.SysDepartment;
-import com.blessedbin.frame.ucenter.modal.SysDepartmentExample;
+import com.blessedbin.frame.ucenter.entity.SysDepartment;
 import com.blessedbin.frame.ucenter.service.DepartmentService;
 import io.swagger.annotations.Api;
 import lombok.extern.log4j.Log4j2;
@@ -14,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -46,15 +43,15 @@ public class DepartmentController {
     }
 
     /**
-     * 添加部门
+     * TODO 添加部门
      * @param department
      * @return
      */
     @PostMapping
-    public SimpleResponse add(@RequestBody @Validated(PostMethodValidationGroup.class)SysDepartment department) {
+    public SimpleResponse add(@RequestBody @Validated(PostMethodValidationGroup.class) SysDepartment department) {
         log.debug("request department param:{}",department);
 
-        if(department.getPid() == null || department.getPid() == -1){
+       /* if(department.getPid() == null || department.getPid() == -1){
             SysDepartmentExample example = new SysDepartmentExample();
             example.createCriteria().andPidEqualTo(department.getPid()).andNameEqualTo(department.getName());
             if(departmentService.checkExistsByExample(example)){
@@ -69,10 +66,10 @@ public class DepartmentController {
             }
         }
 
-        department.setCreateTime(new Date());
-        department.setUpdateTime(new Date());
+        department.setCreateTime(LocalDateTime.now());
+        department.setUpdateTime(LocalDateTime.now());
 
-        departmentService.insert(department);
+        departmentService.save(department);*/
 
         return SimpleResponse.created("创建成功",department);
     }

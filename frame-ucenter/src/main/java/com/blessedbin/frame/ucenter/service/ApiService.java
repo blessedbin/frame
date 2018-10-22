@@ -2,9 +2,8 @@ package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
+import com.blessedbin.frame.ucenter.entity.SysPermission;
 import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
-import com.blessedbin.frame.ucenter.modal.SysPermission;
-import com.blessedbin.frame.ucenter.modal.SysPermissionExample;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Operation;
@@ -12,7 +11,6 @@ import io.swagger.v3.oas.models.PathItem;
 import io.swagger.v3.parser.OpenAPIV3Parser;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.stereotype.Service;
@@ -20,14 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-import static com.blessedbin.frame.ucenter.modal.SysPermission.TYPE_API;
+import static com.blessedbin.frame.ucenter.entity.SysPermission.TYPE_API;
 
 /**
  * Created by xubin on 2018/7/10.
@@ -41,9 +38,8 @@ import static com.blessedbin.frame.ucenter.modal.SysPermission.TYPE_API;
 @Log4j2
 public class ApiService {
 
-
     @Autowired
-    private PermissionService permissionService;
+    private ISysPermissionService permissionService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -113,7 +109,7 @@ public class ApiService {
                 SysPermission permission = buildPermission(operation, code);
                 SysApi api = buildApi(url, method, operation, permission.getPermissionId());
                 permission.setAdditionInformation(objectMapper.writeValueAsString(api));
-                permissionService.insertSelective(permission);
+                permissionService.save(permission);
 
                 log.debug("插入新的API：{}-{}",permission.getCode(),api);
                 addPoint.addAndGet(1);
@@ -129,11 +125,11 @@ public class ApiService {
                     SysPermission nPermission = new SysPermission();
                     nPermission.setName(operation.getSummary());
                     nPermission.setPermissionId(prePermission.getPermissionId());
-                    nPermission.setUpdateTime(new Date());
+                    nPermission.setUpdateTime(LocalDateTime.now());
 
                     nPermission.setAdditionInformation(objectMapper.writeValueAsString(api));
 
-                    permissionService.updateByPkSelective(nPermission);
+                    permissionService.updateById(nPermission);
 
                     log.debug("更新api {}：{}->{}",prePermission.getCode(),preAPi,api);
 
@@ -164,25 +160,28 @@ public class ApiService {
         permission.setSort(1);
         permission.setType(TYPE_API);
         permission.setName(operation.getSummary());
-        permission.setCreateTime(new Date());
-        permission.setUpdateTime(new Date());
+        permission.setCreateTime(LocalDateTime.now());
+        permission.setUpdateTime(LocalDateTime.now());
         permission.setCode(code);
         return permission;
     }
 
 
     /**
+     *
+     * TODO
      * @param pageNum
      * @param pageSize
      * @return
      */
     public Pagination<SysApi> getDataTables(Integer pageNum, Integer pageSize) {
-        SysPermissionExample example = new SysPermissionExample();
+        /*SysPermissionExample example = new SysPermissionExample();
         example.createCriteria().andTypeEqualTo(TYPE_API);
         Pagination<SysPermission> dataTable = permissionService.getDataTable(pageNum, pageSize, example);
         List<SysApi> collect = dataTable.getData().stream().map(this::toSysApi).collect(Collectors.toList());
         return new Pagination<SysApi>(dataTable.getCurrentPage(),dataTable.getPageSize(),
-                dataTable.getTotal(),collect);
+                dataTable.getTotal(),collect);*/
+        return null;
     }
 
     /**

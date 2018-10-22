@@ -1,15 +1,16 @@
 package com.blessedbin.frame.ucenter.mapper;
 
-import com.blessedbin.frame.common.mapper.MyMapper;
-import com.blessedbin.frame.ucenter.modal.SysRole;
-import org.apache.ibatis.annotations.Param;
+import com.blessedbin.frame.ucenter.entity.SysRole;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-import java.util.List;
+/**
+ * <p>
+ *  Mapper 接口
+ * </p>
+ *
+ * @author xubin
+ * @since 2018-10-22
+ */
+public interface SysRoleMapper extends BaseMapper<SysRole> {
 
-public interface SysRoleMapper extends MyMapper<SysRole> {
-    List<SysRole> selectRolesByUUid(@Param("uuid") String uuid);
-
-    SysRole selectByRoleKey(@Param("key") String key);
-
-    List<SysRole> selectAllByUuidAndEnabled(@Param("uuid")String uuid);
 }

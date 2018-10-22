@@ -16,9 +16,9 @@ import java.util.List;
 public class Pagination<M> {
 
 
-    private int currentPage;
+    private long currentPage;
 
-    private int pageSize;
+    private long pageSize;
 
     private long total;
 
@@ -33,16 +33,10 @@ public class Pagination<M> {
      * @param total 总数据数
      * @param data 数据
      */
-    public Pagination(int currentPage, int pageSize, long total, List<M> data) {
+    public Pagination(long currentPage, long pageSize, long total, List<M> data) {
         this.currentPage = currentPage;
         this.pageSize = pageSize;
         this.total = total;
         this.data = data;
-    }
-
-
-    public static <FROM,TO> Pagination<TO> convertPagination(Pagination<FROM> pagination){
-
-        return null;
     }
 }

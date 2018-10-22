@@ -1,10 +1,11 @@
 package com.blessedbin.frame.ucenter.service;
 
-import com.blessedbin.frame.common.Pagination;
-import com.blessedbin.frame.common.ui.CascaderNode;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.blessedbin.frame.ucenter.entity.SysPermission;
+import com.blessedbin.frame.ucenter.entity.SysRole;
+import com.blessedbin.frame.ucenter.entity.SysRolePermission;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
 import com.blessedbin.frame.ucenter.entity.pojo.Menu;
-import com.blessedbin.frame.ucenter.modal.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
@@ -15,13 +16,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.blessedbin.frame.ucenter.modal.SysPermission.TYPE_MENU;
-import static java.util.Collections.EMPTY_LIST;
+import static com.blessedbin.frame.ucenter.entity.SysPermission.TYPE_MENU;
 
 /**
  * Created by xubin on 2018/7/9.
@@ -36,14 +35,10 @@ import static java.util.Collections.EMPTY_LIST;
 public class MenuService {
 
     @Autowired
-    private PermissionService permissionService;
+    private ISysPermissionService permissionService;
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
-    private RoleService roleService;
-
+    private ISysRoleService roleService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -64,9 +59,10 @@ public class MenuService {
     }
 
     private List<Menu> allMenuEnabled() {
-        SysPermissionExample example = new SysPermissionExample();
-        example.createCriteria().andTypeEqualTo(TYPE_MENU).andEnabledEqualTo(Boolean.TRUE);
-        List<SysPermission> permissions = permissionService.selectAllByExample(example);
+
+        LambdaQueryWrapper<SysPermission> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysPermission::getType,TYPE_MENU).eq(SysPermission::getEnabled,Boolean.TRUE);
+        List<SysPermission> permissions = permissionService.list(wrapper);
 
         return permissions.stream().map(permission -> {
             try {
@@ -129,8 +125,8 @@ public class MenuService {
 
         SysPermission permission = new SysPermission();
         permission.setName(menu.getTitle());
-        permission.setCreateTime(new Date());
-        permission.setUpdateTime(new Date());
+        permission.setCreateTime(LocalDateTime.now());
+        permission.setUpdateTime(LocalDateTime.now());
         permission.setType(TYPE_MENU);
         permission.setSort(menu.getSort());
         permission.setCode("menu::" + menu.getName());
@@ -142,7 +138,7 @@ public class MenuService {
             throw new RuntimeException(e);
         }
 
-        permissionService.insertSelective(permission);
+        permissionService.save(permission);
     }
 
 
@@ -159,7 +155,7 @@ public class MenuService {
         }
         try {
             permission.setAdditionInformation(objectMapper.writeValueAsString(menu));
-            permissionService.updateByPkSelective(permission);
+            permissionService.updateById(permission);
         } catch (JsonProcessingException e) {
             log.error("JSON编码错误");
         }
@@ -168,8 +164,8 @@ public class MenuService {
 
 
     @Transactional(rollbackFor = Exception.class)
-    public int deleteByPk(Integer id) {
-        return permissionService.deleteByPk(id);
+    public boolean deleteByPk(Integer id) {
+        return permissionService.removeById(id);
     }
 
     /**
@@ -223,7 +219,7 @@ public class MenuService {
      * @return
      */
     public Menu getMenu(Integer id) {
-        SysPermission permission = permissionService.selectByPk(id);
+        SysPermission permission = permissionService.getById(id);
         if(permission == null) {
             return null;
         }

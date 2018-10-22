@@ -1,11 +1,17 @@
 package com.blessedbin.frame.ucenter.mapper;
 
-import com.blessedbin.frame.common.mapper.MyMapper;
-import com.blessedbin.frame.ucenter.modal.SysUser;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
+import com.blessedbin.frame.ucenter.entity.SysUser;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-@Repository
-public interface SysUserMapper extends MyMapper<SysUser> {
-    SysUser findByUsername(@Param("username") String username);
+/**
+ * <p>
+ * 用户表 Mapper 接口
+ * </p>
+ *
+ * @author xubin
+ * @since 2018-10-22
+ */
+public interface SysUserMapper extends BaseMapper<SysUser> {
+
+    SysUser findByUsername(String username);
 }

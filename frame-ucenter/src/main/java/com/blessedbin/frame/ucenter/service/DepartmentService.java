@@ -1,19 +1,21 @@
 package com.blessedbin.frame.ucenter.service;
 
-import com.blessedbin.frame.common.service.impl.AbstractMysqlCrudServiceImpl;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.blessedbin.frame.common.ui.CascaderNode;
 import com.blessedbin.frame.common.ui.TreeNode;
-import com.blessedbin.frame.ucenter.entity.dto.DepartmentDto;
-import com.blessedbin.frame.ucenter.modal.SysDepartment;
-import com.blessedbin.frame.ucenter.modal.SysDepartmentExample;
-import org.springframework.beans.BeanUtils;
+
+import com.blessedbin.frame.ucenter.entity.SysDepartment;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.util.Collections.EMPTY_LIST;
 
 /**
  * Created by xubin on 2018/7/9.
@@ -24,7 +26,10 @@ import java.util.stream.Collectors;
  * @tool intellij idea
  */
 @Service
-public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartment,Integer> {
+public class DepartmentService {
+
+    @Autowired
+    private ISysDepartmentService departmentService;
 
     public List<TreeNode> getDepartmentTree() {
         return buildDepartmentTree(null);
@@ -44,11 +49,11 @@ public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartmen
     }
 
     public List<SysDepartment> getTopAll(){
-        SysDepartmentExample example = new SysDepartmentExample();
-        example.createCriteria().andPidIsNull();
-        example.setOrderByClause("sort ASC");
 
-        return mapper.selectByExample(example);
+        LambdaQueryWrapper<SysDepartment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.isNull(SysDepartment::getPid);
+
+        return departmentService.list(wrapper);
     }
 
     public List<SysDepartment> getAllByPid(Integer pid){
@@ -56,11 +61,11 @@ public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartmen
             return getTopAll();
         }
 
-        SysDepartmentExample example = new SysDepartmentExample();
-        example.createCriteria().andPidEqualTo(pid);
-        example.setOrderByClause("sort ASC");
+        LambdaQueryWrapper<SysDepartment> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysDepartment::getPid,pid);
 
-        return mapper.selectByExample(example);
+
+        return departmentService.list(wrapper);
     }
 
     /**
@@ -86,15 +91,21 @@ public class DepartmentService extends AbstractMysqlCrudServiceImpl<SysDepartmen
                 .collect(Collectors.toList());
     }
 
+    /**
+     * TODO
+     * @param parentId
+     * @param organizationId
+     * @return
+     */
     public List<SysDepartment> getAllByPid(Integer parentId, Integer organizationId) {
-        Assert.notNull(organizationId,"organization id is not null.");
+       /* Assert.notNull(organizationId,"organization id is not null.");
         if(parentId == null){
             SysDepartmentExample example = new SysDepartmentExample();
             return mapper.selectByExample(example);
         }
         SysDepartmentExample example = new SysDepartmentExample();
-        // example.createCriteria().andPIdEqualTo(parentId).andOrganizationIdEqualTo(organizationId);
         example.setOrderByClause("sort ASC");
-        return mapper.selectByExample(example);
+        return mapper.selectByExample(example)*/
+       return EMPTY_LIST;
     }
 }

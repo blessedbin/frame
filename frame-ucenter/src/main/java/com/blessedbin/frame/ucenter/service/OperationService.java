@@ -2,10 +2,10 @@ package com.blessedbin.frame.ucenter.service;
 
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.common.exception.ServiceRuntimeException;
+import com.blessedbin.frame.ucenter.entity.SysPermission;
 import com.blessedbin.frame.ucenter.entity.dto.ActionDto;
 import com.blessedbin.frame.ucenter.entity.pojo.Menu;
 import com.blessedbin.frame.ucenter.entity.pojo.Operation;
-import com.blessedbin.frame.ucenter.modal.SysPermission;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.log4j.Log4j2;
@@ -17,11 +17,11 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.blessedbin.frame.ucenter.modal.SysPermission.TYPE_OPERATION;
+import static com.blessedbin.frame.ucenter.entity.SysPermission.TYPE_OPERATION;
 import static java.util.Collections.EMPTY_LIST;
 
 /**
@@ -40,7 +40,7 @@ public class OperationService {
     private MenuService menuService;
 
     @Autowired
-    private PermissionService permissionService;
+    private ISysPermissionService permissionService;
 
     @Value("${spring.application.name}")
     private String applicationName;
@@ -74,8 +74,8 @@ public class OperationService {
         SysPermission permission = new SysPermission();
         String code = TYPE_OPERATION + ":" + applicationName + ":" + operationCode;
         permission.setCode(code);
-        permission.setUpdateTime(new Date());
-        permission.setCreateTime(new Date());
+        permission.setUpdateTime(LocalDateTime.now());
+        permission.setCreateTime(LocalDateTime.now());
         if (!StringUtils.isEmpty(remark)) {
             permission.setRemark(remark);
         }
@@ -95,7 +95,7 @@ public class OperationService {
             e.printStackTrace();
         }
 
-        permissionService.insert(permission);
+        permissionService.save(permission);
 
         menu.addOperation(permission.getPermissionId());
         // 更新并保存菜单信息
@@ -162,11 +162,11 @@ public class OperationService {
     public void updateOperation(Operation operation) {
         Assert.notNull(operation.getId());
         try {
-            SysPermission permission = permissionService.selectByPk(operation.getId());
+            SysPermission permission = permissionService.getById(operation.getId());
             String s = objectMapper.writeValueAsString(operation);
             permission.setAdditionInformation(s);
-            permission.setUpdateTime(new Date());
-            permissionService.updateByPkSelective(permission);
+            permission.setUpdateTime(LocalDateTime.now());
+            permissionService.updateById(permission);
         } catch (JsonProcessingException e) {
             log.error(e);
         }
