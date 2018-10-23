@@ -12,6 +12,7 @@ import com.blessedbin.frame.ucenter.entity.SysUser;
  * @tool intellij idea
  */
 public interface UserService {
+
     SysUser findByUsername(String username);
 
     SysUser selectByUuid(String uuid);

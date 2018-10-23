@@ -42,7 +42,7 @@ public class ServiceController {
         if(user == null) {
             return null;
         } else {
-            List<FrameRole> roles = roleService.selectAllByUuid(
+            List<FrameRole> roles = roleService.selectByUuid(
                     user.getUuid()).stream().map(role -> FrameRole.builder().id(role.getId()).roleKey(role.getRoleKey()).roleName(role.getRoleName()).build()
             )
                     .collect(Collectors.toList());

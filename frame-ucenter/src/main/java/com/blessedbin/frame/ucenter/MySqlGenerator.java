@@ -106,7 +106,8 @@ public class MySqlGenerator {
         strategy.setRestControllerStyle(true);
         //strategy.setSuperControllerClass("com.baomidou.ant.common.BaseController");
         //strategy.setInclude(scanner("表名"));  // 需要生成的表
-        strategy.setInclude("sys_user","sys_user_role","sys_role","sys_role_permission","sys_permission","sys_department","sys_argument");
+        // "sys_user","sys_user_role","sys_role","sys_role_permission","sys_permission","sys_department","sys_argument"
+        strategy.setInclude("oauth_client_details");
         // strategy.setSuperEntityColumns("id");
         strategy.setControllerMappingHyphenStyle(true);
         strategy.setTablePrefix(pc.getModuleName() + "_");

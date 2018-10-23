@@ -138,8 +138,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public List<SysRole> selectAllByUuid(String uuid) {
-        return null;
+    public List<SysRole> selectByUuid(String uuid) {
+        return baseMapper.selectByUuid(uuid);
     }
 
     /**
@@ -148,6 +148,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public SysRole selectByKey(String key) {
-        return null;
+        return baseMapper.selectByKey(key);
     }
 }

@@ -1,5 +1,6 @@
 package com.blessedbin.frame.ucenter.service;
 
+import com.blessedbin.frame.common.data.service.BaseService;
 import com.blessedbin.frame.ucenter.entity.SysUser;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -11,7 +12,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @author xubin
  * @since 2018-10-22
  */
-public interface ISysUserService extends IService<SysUser> {
+public interface ISysUserService extends IService<SysUser>, BaseService<SysUser> {
 
     boolean checkEmailExists(String email);
 

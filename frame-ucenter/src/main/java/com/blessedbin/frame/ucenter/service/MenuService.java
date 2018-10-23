@@ -103,7 +103,7 @@ public class MenuService {
         Assert.notNull(uuid,"uuid is not null");
 
         // 判断是否是超级管理员
-        List<SysRole> roles = roleService.selectAllByUuid(uuid);
+        List<SysRole> roles = roleService.selectByUuid(uuid);
         boolean isAdmin = roles.stream().anyMatch(role -> "ROLE_ADMIN".equals(role.getRoleKey()));
         if(isAdmin) {
             return getMenuTreeEnabled();

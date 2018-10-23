@@ -2,4 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.blessedbin.frame.ucenter.mapper.SysUserMapper">
 
+    <select id="findByUsername" resultType="com.blessedbin.frame.ucenter.entity.SysUser">
+      select * from sys_user where username=#{username}
+    </select>
 </mapper>

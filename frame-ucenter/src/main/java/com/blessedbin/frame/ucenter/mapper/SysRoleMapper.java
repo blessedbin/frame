@@ -1,7 +1,9 @@
 package com.blessedbin.frame.ucenter.mapper;
 
 import com.blessedbin.frame.ucenter.entity.SysRole;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * <p>
@@ -13,4 +15,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface SysRoleMapper extends BaseMapper<SysRole> {
 
+    List<SysRole> selectByUuid(@Param("uuid")String uuid);
+
+    SysRole selectByKey(@Param("key")String key);
 }

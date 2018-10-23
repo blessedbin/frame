@@ -38,14 +38,14 @@
             #{i}
         </foreach>
     </select>
-    <select id="selectByUuid" resultMap="BaseResultMap">
+    <select id="selectByUuid" resultType="com.blessedbin.frame.ucenter.entity.SysPermission">
         select sys_permission.*
         from sys_permission
                  inner join sys_role_permission srp on sys_permission.permission_id = srp.sys_permission_id
                  inner join sys_user_role sur on srp.sys_role_id = sur.sys_role_id
         where sur.sys_user_uuid = #{uuid}
     </select>
-    <select id="selectByUuidAndType" resultMap="BaseResultMap">
+    <select id="selectByUuidAndType" resultType="com.blessedbin.frame.ucenter.entity.SysPermission">
         select sys_permission.*
         from sys_permission
                  inner join sys_role_permission srp on sys_permission.permission_id = srp.sys_permission_id

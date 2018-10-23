@@ -10,7 +10,6 @@ import com.blessedbin.frame.ucenter.entity.pojo.Menu;
 import com.blessedbin.frame.ucenter.entity.pojo.Operation;
 import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
 import com.blessedbin.frame.ucenter.service.ApiService;
-import com.blessedbin.frame.ucenter.service.ISysPermissionService;
 import com.blessedbin.frame.ucenter.service.MenuService;
 import com.blessedbin.frame.ucenter.service.OperationService;
 import io.swagger.annotations.Api;
@@ -50,9 +49,6 @@ public class MenuController {
 
     @Autowired
     private ApiService apiService;
-
-    @Autowired
-    private ISysPermissionService permissionService;
 
     @GetMapping("/menu_tree.json")
     public SimpleResponse menuTree(@RequestParam(required = false) Integer roleId) {

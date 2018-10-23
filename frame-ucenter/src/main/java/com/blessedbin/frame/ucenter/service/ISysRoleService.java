@@ -25,12 +25,12 @@ public interface ISysRoleService extends IService<SysRole>, BaseService<SysRole>
      */
     void saveRolePermission(Integer id, List<String> checkedList);
 
-    List<SysRole> selectAllByUuid(String uuid);
+    List<SysRole> selectByUuid(String uuid);
 
     /**
      *
      * @param key 角色关键字
      * @return
      */
-    public SysRole selectByKey(String key);
+    SysRole selectByKey(String key);
 }
