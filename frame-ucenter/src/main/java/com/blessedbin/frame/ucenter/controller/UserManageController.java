@@ -22,9 +22,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 
 import static com.blessedbin.frame.common.contant.SecurityConstants.DEFAULT_PASSWORD;
+import static com.blessedbin.frame.common.data.DataUtils.toPagination;
 
 import static com.blessedbin.frame.common.contant.SecurityConstants.DEFAULT_PASSWORD;
 
@@ -56,8 +56,7 @@ public class UserManageController {
                                                         @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue) {
         Page<SysUser> page = new Page<>(pageNum,pageSize);
         IPage<SysUser> iPage = userService.page(page, null);
-        Pagination<SysUser> dataTable = new Pagination<>(iPage.getCurrent(),iPage.getSize(),iPage.getTotal(),iPage.getRecords());
-        return SimpleResponse.ok(dataTable);
+        return SimpleResponse.ok(toPagination(iPage));
     }
 
     @GetMapping

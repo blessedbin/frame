@@ -2,13 +2,13 @@ package com.blessedbin.frame.ucenter.controller;
 
 import com.blessedbin.frame.common.entity.FrameRole;
 import com.blessedbin.frame.common.entity.FrameUser;
+import com.blessedbin.frame.common.service.UserApiService;
 import com.blessedbin.frame.ucenter.entity.SysUser;
 import com.blessedbin.frame.ucenter.service.ISysRoleService;
 import com.blessedbin.frame.ucenter.service.UserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
@@ -24,10 +24,9 @@ import java.util.stream.Collectors;
  * @tool intellij idea
  */
 @RestController
-@RequestMapping("/service")
 @ApiIgnore
 @Log4j2
-public class ServiceController {
+public class UserApiServiceImpl implements UserApiService {
 
     @Autowired
     private UserService userService;
@@ -37,6 +36,7 @@ public class ServiceController {
 
 
     @GetMapping("/findByUsername")
+    @Override
     public FrameUser findByUsername(String username){
         SysUser user = userService.findByUsername(username);
         if(user == null) {

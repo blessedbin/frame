@@ -65,6 +65,7 @@ public class ApiController {
                                                        @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
                                                        @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue,
                                                        @RequestParam(name = "tags",required = false,defaultValue = "") String tags) {
+
         Pagination<SysApi> dataTable = apiService.getDataTables(pageNum, pageSize);
         return SimpleResponse.ok(dataTable);
     }
@@ -74,6 +75,7 @@ public class ApiController {
      * @return
      */
     @GetMapping("/tag_options.json")
+    @ApiOperation("获取API标签列表")
     public SimpleResponse tagOptions(){
         Set<String> tags = new HashSet<>();
         apiService.selectAll().forEach(api -> {
