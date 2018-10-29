@@ -18,13 +18,13 @@ import java.util.Set;
 @Builder
 public class FrameUser {
 
-    private final String username;
-    private final List<FrameRole> roleList;
-    private final boolean accountNonExpired;
-    private final boolean accountNonLocked;
-    private final boolean credentialsNonExpired;
-    private final boolean enabled;
-    private final String uuid;
-    private final String password;
+    protected String username;
+    protected List<FrameRole> roleList;
+    protected boolean accountNonExpired;
+    protected boolean accountNonLocked;
+    protected boolean credentialsNonExpired;
+    protected boolean enabled;
+    protected String uuid;
+    protected String password;
 
 }

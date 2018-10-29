@@ -79,11 +79,11 @@
 
 
 
-        <!--&lt;!&ndash;邮件发送组件&ndash;&gt;
+        <!--邮件发送组件-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
-        </dependency>-->
+        </dependency>
 
         <!--图片处理-->
         <dependency>

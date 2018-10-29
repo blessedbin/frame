@@ -2,6 +2,7 @@ package com.blessedbin.frame.ucenter.controller;
 
 import com.blessedbin.frame.common.SimpleResponse;
 import com.blessedbin.frame.common.contant.SecurityConstants;
+import com.blessedbin.frame.common.entity.FrameUser;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.ucenter.entity.SysUser;
 import com.blessedbin.frame.ucenter.entity.dto.MenuTreeDto;
@@ -64,6 +65,12 @@ public class UserController {
     @GetMapping("/me")
     public SimpleResponse me(@RequestHeader(SecurityConstants.UUID_HEADER) String uuid){
         SysUser user = userService.getById(uuid);
+        user.setPassword(null);
+        return SimpleResponse.ok(user);
+    }
+
+    @GetMapping("/test")
+    public SimpleResponse<FrameUser> test(FrameUser user) {
         user.setPassword(null);
         return SimpleResponse.ok(user);
     }
