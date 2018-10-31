@@ -42,21 +42,35 @@ public class UserApiServiceImpl implements UserApiService {
         if(user == null) {
             return null;
         } else {
-            List<FrameRole> roles = roleService.selectByUuid(
-                    user.getUuid()).stream().map(role -> FrameRole.builder().id(role.getId()).roleKey(role.getRoleKey()).roleName(role.getRoleName()).build()
-            )
-                    .collect(Collectors.toList());
-            return FrameUser.builder()
-                    .uuid(user.getUuid())
-                    .accountNonExpired(user.getAccountNonExpired())
-                    .accountNonLocked(user.getAccountNonLocked())
-                    .roleList(roles)
-                    .credentialsNonExpired(user.getCredentialsNonExpired())
-                    .enabled(user.getEnabled())
-                    .password(user.getPassword())
-                    .username(user.getUsername())
-                    .build();
+            return buildFrameUser(user);
         }
+    }
+
+    @Override
+    public FrameUser findByUuid(String uuid) {
+        SysUser user = userService.selectByUuid(uuid);
+        if(user == null) {
+            return null;
+        } else {
+            return buildFrameUser(user);
+        }
+    }
+
+    private FrameUser buildFrameUser(SysUser user) {
+        List<FrameRole> roles = roleService.selectByUuid(
+                user.getUuid()).stream().map(role -> FrameRole.builder().id(role.getId()).roleKey(role.getRoleKey()).roleName(role.getRoleName()).build()
+        )
+                .collect(Collectors.toList());
+        return FrameUser.builder()
+                .uuid(user.getUuid())
+                .accountNonExpired(user.getAccountNonExpired())
+                .accountNonLocked(user.getAccountNonLocked())
+                .roleList(roles)
+                .credentialsNonExpired(user.getCredentialsNonExpired())
+                .enabled(user.getEnabled())
+                .password(user.getPassword())
+                .username(user.getUsername())
+                .build();
     }
 
 }

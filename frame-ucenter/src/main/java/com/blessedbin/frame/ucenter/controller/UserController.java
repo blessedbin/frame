@@ -63,10 +63,10 @@ public class UserController {
 
 
     @GetMapping("/me")
-    public SimpleResponse me(@RequestHeader(SecurityConstants.UUID_HEADER) String uuid){
-        SysUser user = userService.getById(uuid);
-        user.setPassword(null);
-        return SimpleResponse.ok(user);
+    public SimpleResponse me(FrameUser user){
+        SysUser nUser = userService.getById(user.getUuid());
+        nUser.setPassword(null);
+        return SimpleResponse.ok(nUser);
     }
 
     @GetMapping("/test")

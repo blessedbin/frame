@@ -3,8 +3,6 @@ package com.blessedbin.frame.ucenter.component;
 import com.blessedbin.frame.common.contant.SecurityConstants;
 import com.blessedbin.frame.common.entity.FrameUser;
 import com.blessedbin.frame.common.service.UserApiService;
-import com.blessedbin.frame.ucenter.entity.SysUser;
-import com.blessedbin.frame.ucenter.service.ISysUserService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -31,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 public class FrameUserArgumentResolver implements HandlerMethodArgumentResolver {
 
     @Autowired
-    private ISysUserService userService;
+    private UserApiService userService;
 
     /**
      * Whether the given {@linkplain MethodParameter method parameter} is
@@ -71,16 +69,6 @@ public class FrameUserArgumentResolver implements HandlerMethodArgumentResolver 
             log.debug("frame user argument resolver uuid is empty");
             return null;
         }
-        SysUser user = userService.getById(uuid);
-        return FrameUser.builder()
-                .uuid(user.getUuid())
-                .accountNonExpired(user.getAccountNonExpired())
-                .accountNonLocked(user.getAccountNonLocked())
-                // .roleList(roles)
-                .credentialsNonExpired(user.getCredentialsNonExpired())
-                .enabled(user.getEnabled())
-                .password(user.getPassword())
-                .username(user.getUsername())
-                .build();
+        return userService.findByUuid(uuid);
     }
 }
