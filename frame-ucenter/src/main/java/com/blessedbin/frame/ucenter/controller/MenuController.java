@@ -51,30 +51,12 @@ public class MenuController {
     private ApiService apiService;
 
     @GetMapping("/menu_tree.json")
-    public SimpleResponse menuTree(@RequestParam(required = false) Integer roleId) {
+    public SimpleResponse menuTree() {
         Map<String,Object> datas = new HashMap<>();
-        List<TreeNode> treeNodes = buildMenuTree(menuService.getMenuTree());
-        datas.put("treeList",treeNodes);
-
-        // TODO
-        /*if(roleId != null && roleId > 0){
-            List<Integer> ids = permissionService.selectPermissionIdsByRoleId(roleId);
-            datas.put("checked",ids);
-        }*/
+        List<MenuTreeDto> menuTree = menuService.getMenuTree();
+        datas.put("treeList",menuTree);
 
         return SimpleResponse.ok(datas);
-    }
-
-    private List<TreeNode> buildMenuTree(List<MenuTreeDto> treeList) {
-        if(!CollectionUtils.isEmpty(treeList)){
-            return treeList.stream().map(menuTreeDto -> {
-                List<TreeNode> children = buildMenuTree(menuTreeDto.getChildren());
-                return TreeNode.builder()
-                        .id(String.valueOf(menuTreeDto.getId())).tag(SysPermission.TYPE_MENU)
-                        .label(menuTreeDto.getTitle()).children(children).build();
-            }).collect(Collectors.toList());
-        }
-        return Collections.EMPTY_LIST;
     }
 
     @PostMapping
@@ -100,18 +82,18 @@ public class MenuController {
      */
     @DeleteMapping
     public SimpleResponse delete(@RequestParam Integer id){
-        menuService.deleteByPk(id);
+        menuService.deleteById(id);
         return SimpleResponse.deleted();
     }
 
     /**
-     * TODO
      * @param menu
      * @return
      */
     @PutMapping
     public SimpleResponse edit(@RequestBody @Validated(PutMethodValidationGroup.class) Menu menu){
         log.debug("request param:{}",menu);
+        menuService.updateMenu(menu);
         return SimpleResponse.accepted();
     }
 

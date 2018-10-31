@@ -3,6 +3,7 @@ package com.blessedbin.frame.common.entity;
 import lombok.Builder;
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import java.util.Set;
  */
 @Data
 @Builder
-public class FrameUser {
+public class FrameUser implements Serializable {
 
     protected String username;
     protected List<FrameRole> roleList;

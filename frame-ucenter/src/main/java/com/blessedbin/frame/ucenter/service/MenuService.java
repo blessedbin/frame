@@ -1,6 +1,7 @@
 package com.blessedbin.frame.ucenter.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.blessedbin.frame.common.exception.ResourceNotFoundException;
 import com.blessedbin.frame.ucenter.entity.SysPermission;
 import com.blessedbin.frame.ucenter.entity.SysRole;
 import com.blessedbin.frame.ucenter.entity.SysRolePermission;
@@ -46,6 +47,18 @@ public class MenuService {
 
     private List<Menu> allMenus(){
         List<SysPermission> permissions = permissionService.selectByType(TYPE_MENU);
+        return toMenus(permissions);
+    }
+
+    private List<Menu> allMenuEnabled() {
+
+        LambdaQueryWrapper<SysPermission> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysPermission::getType,TYPE_MENU).eq(SysPermission::getEnabled,Boolean.TRUE);
+        List<SysPermission> permissions = permissionService.list(wrapper);
+        return toMenus(permissions);
+    }
+
+    private List<Menu> toMenus(List<SysPermission> permissions) {
         return permissions.stream().map(permission -> {
             try {
                 Menu menu = objectMapper.readValue(permission.getAdditionInformation(), Menu.class);
@@ -58,21 +71,16 @@ public class MenuService {
         }).collect(Collectors.toList());
     }
 
-    private List<Menu> allMenuEnabled() {
-
-        LambdaQueryWrapper<SysPermission> wrapper = new LambdaQueryWrapper<>();
-        wrapper.eq(SysPermission::getType,TYPE_MENU).eq(SysPermission::getEnabled,Boolean.TRUE);
-        List<SysPermission> permissions = permissionService.list(wrapper);
-
-        return permissions.stream().map(permission -> {
-            try {
-                Menu menu = objectMapper.readValue(permission.getAdditionInformation(), Menu.class);
-                menu.setId(permission.getPermissionId());
-                return menu;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
+    private List<MenuTreeDto> buildMenuTree(List<Menu> menus,Integer pid){
+        return menus.stream().sorted((o1, o2) -> {
+            Integer a = o1.getSort() == null ? 0 : o1.getSort();
+            Integer b = o2.getSort() == null ? 0 : o2.getSort();
+            return b-a;
+        }).filter(menu -> menu.getPid().equals(pid)).map(menu -> {
+            MenuTreeDto dto = new MenuTreeDto();
+            BeanUtils.copyProperties(menu,dto);
+            dto.setChildren(buildMenuTree(menus,menu.getId()));
+            return dto;
         }).collect(Collectors.toList());
     }
 
@@ -83,15 +91,6 @@ public class MenuService {
 
     public List<MenuTreeDto> getMenuTreeEnabled() {
         return buildMenuTree(allMenuEnabled(), -1);
-    }
-
-    private List<MenuTreeDto> buildMenuTree(List<Menu> menus,Integer pid){
-        return menus.stream().filter(menu -> menu.getPid().equals(pid)).map(menu -> {
-            MenuTreeDto dto = new MenuTreeDto();
-            BeanUtils.copyProperties(menu,dto);
-            dto.setChildren(buildMenuTree(menus,menu.getId()));
-            return dto;
-        }).collect(Collectors.toList());
     }
 
     /**
@@ -151,10 +150,12 @@ public class MenuService {
         Assert.notNull(menu.getId(),"menu id should not null");
         SysPermission permission = permissionService.selectByPkAndType(menu.getId(),TYPE_MENU);
         if(permission == null) {
-            throw new IllegalArgumentException();
+            throw new ResourceNotFoundException();
         }
         try {
             permission.setAdditionInformation(objectMapper.writeValueAsString(menu));
+            permission.setEnabled(menu.getEnabled());
+            permission.setUpdateTime(LocalDateTime.now());
             permissionService.updateById(permission);
         } catch (JsonProcessingException e) {
             log.error("JSON编码错误");
@@ -162,20 +163,14 @@ public class MenuService {
     }
 
 
-
-    @Transactional(rollbackFor = Exception.class)
-    public boolean deleteByPk(Integer id) {
-        return permissionService.removeById(id);
-    }
-
     /**
-     * TODO
-     * 查找某角色下对应的已选菜单权限,只返回叶子节点
-     * @param roleId
+     * 根据ID删除
+     * @param id
      * @return
      */
-    public List<SysRolePermission> selectRolePermissionsByRoleId(Integer roleId) {
-        return null;
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteById(Integer id) {
+        return permissionService.removeById(id);
     }
 
 
@@ -189,28 +184,6 @@ public class MenuService {
         return false;
     }
 
-    /**
-     * TODO
-     * 检验功能点ID是否合法
-     * @param menuId
-     * @return
-     */
-    public boolean checkActionExistsByPk(Integer menuId) {
-        return true;
-    }
-
-    /**
-     * 保存权限点和API的关系
-     * @param actionId
-     * @param selected
-     */
-    @Transactional(rollbackFor = Exception.class)
-    public void saveActionApiRelation(Integer actionId, List<Integer> selected) {
-
-        //TODO
-        log.debug("成功更新{}条数据");
-
-    }
 
     /**
      *
@@ -227,7 +200,7 @@ public class MenuService {
     }
 
 
-    public Menu toMenu(SysPermission permission){
+    private Menu toMenu(SysPermission permission){
         Assert.notNull(permission,"permission can not be null");
         if(TYPE_MENU.equals(permission.getType())){
             Menu menu = null;

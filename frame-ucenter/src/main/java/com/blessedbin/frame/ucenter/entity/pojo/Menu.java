@@ -74,6 +74,7 @@ public class Menu {
      * 是否隐藏
      */
     private Boolean hidden;
+
     /**
      * 排序
      */
