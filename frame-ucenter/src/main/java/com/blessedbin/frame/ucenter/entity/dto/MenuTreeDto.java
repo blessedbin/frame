@@ -1,6 +1,8 @@
 package com.blessedbin.frame.ucenter.entity.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Date;
 import java.util.List;
@@ -81,5 +83,13 @@ public class MenuTreeDto {
 
 
     private List<MenuTreeDto> children;
+
+    private List<Integer> operations;
+
+
+    @JsonProperty("isLeaf")
+    public boolean isLeaf() {
+        return CollectionUtils.isEmpty(children);
+    }
 
 }

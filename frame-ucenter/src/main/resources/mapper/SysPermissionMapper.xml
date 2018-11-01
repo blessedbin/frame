@@ -51,7 +51,14 @@
                  inner join sys_role_permission srp on sys_permission.permission_id = srp.sys_permission_id
                  inner join sys_user_role sur on srp.sys_role_id = sur.sys_role_id
         where sur.sys_user_uuid = #{uuid}
-          and sys_permission.type = #{type} and sys_permission.enabled=true
+          and sys_permission.type = #{type}
+          and sys_permission.enabled = true
+    </select>
+    <select id="countMenuByPid" resultType="int">
+        select count(1)
+        from sys_permission
+        where JSON_EXTRACT(addition_information, '$.pid') = #{pid}
+          and type = 'MENU'
     </select>
 
 </mapper>

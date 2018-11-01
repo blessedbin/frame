@@ -175,13 +175,13 @@ public class MenuService {
 
 
     /**
-     * TODO
+     *
      * 检查菜单是否有子菜单
      * @param menuId menu id
      * @return 若有子菜单，返回true，否则返回false
      */
     public boolean hasChildren(Integer menuId){
-        return false;
+        return permissionService.countMenuByPid(menuId) > 0;
     }
 
 

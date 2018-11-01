@@ -51,7 +51,7 @@ public class OperationController {
     /**
      * 获取operation详情
      * @param id operation 的id
-     * @param array 是否强制为array
+     * @param array 是否强制返回array
      * @return
      */
     @GetMapping

@@ -26,14 +26,6 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
     @Autowired
     private SysRolePermissionMapper rolePermissionMapper;
 
-    /**
-     * TODO
-     * @param roleId
-     * @return
-     */
-    public List<SysPermission> selectByRoleId(Integer roleId) {
-        return null;
-    }
 
 
     public List<Integer> selectPermissionIdsByRoleId(Integer roleId){
@@ -76,4 +68,8 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
         return baseMapper.selectByUuidAndType(uuid,type);
     }
 
+    @Override
+    public int countMenuByPid(Integer pid) {
+        return baseMapper.countMenuByPid(pid);
+    }
 }

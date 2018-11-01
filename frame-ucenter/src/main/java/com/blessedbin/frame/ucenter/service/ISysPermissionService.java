@@ -26,4 +26,11 @@ public interface ISysPermissionService extends IService<SysPermission> {
     List<SysPermission> selectByPksAndType(List<Integer> ids, String typeApi);
 
     List<SysPermission> selectByRoleIdAndType(Integer roleId);
+
+    /**
+     * 统计子节点数量
+     * @param pid
+     * @return
+     */
+    int countMenuByPid(Integer pid);
 }

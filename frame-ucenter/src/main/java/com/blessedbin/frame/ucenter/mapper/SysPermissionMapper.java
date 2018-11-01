@@ -32,4 +32,5 @@ public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 
     List<SysPermission> selectByUuidAndType(@Param("uuid") String uuid,@Param("type") String type);
 
+    int countMenuByPid(@Param("pid")Integer pid);
 }
