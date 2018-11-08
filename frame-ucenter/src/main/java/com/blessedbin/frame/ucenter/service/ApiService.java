@@ -1,5 +1,8 @@
 package com.blessedbin.frame.ucenter.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
 import com.blessedbin.frame.ucenter.entity.SysPermission;
@@ -169,19 +172,19 @@ public class ApiService {
 
     /**
      *
-     * TODO
      * @param pageNum
      * @param pageSize
      * @return
      */
     public Pagination<SysApi> getDataTables(Integer pageNum, Integer pageSize) {
-        /*SysPermissionExample example = new SysPermissionExample();
-        example.createCriteria().andTypeEqualTo(TYPE_API);
-        Pagination<SysPermission> dataTable = permissionService.getDataTable(pageNum, pageSize, example);
-        List<SysApi> collect = dataTable.getData().stream().map(this::toSysApi).collect(Collectors.toList());
-        return new Pagination<SysApi>(dataTable.getCurrentPage(),dataTable.getPageSize(),
-                dataTable.getTotal(),collect);*/
-        return null;
+        Page<SysPermission> page = new Page<>(pageNum,pageSize);
+        LambdaQueryWrapper<SysPermission> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(SysPermission::getType, TYPE_API);
+        IPage<SysPermission> data = permissionService.page(page, wrapper);
+
+        List<SysApi> collect = data.getRecords().stream().map(this::toSysApi).collect(Collectors.toList());
+        return new Pagination<SysApi>(data.getCurrent(),data.getSize(),
+                data.getTotal(),collect);
     }
 
     /**

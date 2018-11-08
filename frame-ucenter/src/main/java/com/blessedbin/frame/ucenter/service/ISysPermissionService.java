@@ -28,7 +28,7 @@ public interface ISysPermissionService extends IService<SysPermission> {
     List<SysPermission> selectByRoleIdAndType(Integer roleId);
 
     /**
-     * 统计子节点数量
+     * 统计菜单子节点数量
      * @param pid
      * @return
      */
