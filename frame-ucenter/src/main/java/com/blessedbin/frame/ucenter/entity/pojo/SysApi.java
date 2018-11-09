@@ -1,10 +1,12 @@
 package com.blessedbin.frame.ucenter.entity.pojo;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
 @Data
+@EqualsAndHashCode
 public class SysApi {
 
 
@@ -40,4 +42,6 @@ public class SysApi {
 
 
     private String tags;
+
+    private String serviceId;
 }

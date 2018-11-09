@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.blessedbin.frame.ucenter.mapper.SysPermissionMapper">
 
-    <select id="selectByIdentification" resultType="com.blessedbin.frame.ucenter.entity.SysPermission">
+    <select id="selectByCode" resultType="com.blessedbin.frame.ucenter.entity.SysPermission">
         select *
         from sys_permission
         where code = #{code}

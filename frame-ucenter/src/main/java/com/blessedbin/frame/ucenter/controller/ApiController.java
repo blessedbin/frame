@@ -57,16 +57,18 @@ public class ApiController {
     @ApiOperation(value = "更新API列表", notes = "扫描并更新API列表")
     public SimpleResponse scan() {
         apiService.scanApi();
-        return SimpleResponse.accepted();
+        return SimpleResponse.accepted("正在执行更新.....");
     }
 
     @GetMapping("/datatable.json")
     public SimpleResponse<Pagination<SysApi>> getTable(@RequestParam(name = "page_num", required = false, defaultValue = "1") Integer pageNum,
                                                        @RequestParam(name = "page_size", required = false, defaultValue = "20") Integer pageSize,
                                                        @RequestParam(name = "search_value", required = false, defaultValue = "") String searchValue,
-                                                       @RequestParam(name = "tags",required = false,defaultValue = "") String tags) {
-
-        Pagination<SysApi> dataTable = apiService.getDataTables(pageNum, pageSize);
+                                                       @RequestParam(name = "tags",required = false,defaultValue = "") String tags,
+                                                       @RequestParam(name = "service_id",required = false,defaultValue = "") String serviceId) {
+        List<String> tagList = Arrays.asList(tags.split(","));
+        List<String> serviceIdList = Arrays.asList(serviceId.split(","));
+        Pagination<SysApi> dataTable = apiService.getDataTables(pageNum, pageSize,tagList,serviceIdList);
         return SimpleResponse.ok(dataTable);
     }
 
@@ -84,6 +86,19 @@ public class ApiController {
             }
         });
         List<SelectNode> collect = tags.stream().map(tag -> SelectNode.builder().label(tag).value(tag).build()).collect(Collectors.toList());
+        return SimpleResponse.ok(collect);
+    }
+
+    @GetMapping("/serviceID_options.json")
+    @ApiOperation("获取服务ID列表")
+    public SimpleResponse<List<SelectNode>> serviceIdOptions() {
+        Set<String> ids = new HashSet<>();
+        apiService.selectAll().forEach(api -> {
+            if(!StringUtils.isEmpty(api.getServiceId())){
+                ids.add(api.getServiceId());
+            }
+        });
+        List<SelectNode> collect = ids.stream().map(id -> SelectNode.builder().label(id).value(id).build()).collect(Collectors.toList());
         return SimpleResponse.ok(collect);
     }
 

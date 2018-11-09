@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface ISysPermissionService extends IService<SysPermission> {
 
-    SysPermission selectByIdentification(String code);
+    SysPermission selectByCode(String code);
 
     List<SysPermission> selectByUuidAndType(String uuid, String typeApi);
 

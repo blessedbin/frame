@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.blessedbin.frame.common.Pagination;
 import com.blessedbin.frame.common.exception.ParamCheckRuntimeException;
+import com.blessedbin.frame.common.exception.ServiceRuntimeException;
 import com.blessedbin.frame.ucenter.entity.SysPermission;
 import com.blessedbin.frame.ucenter.entity.pojo.SysApi;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +17,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
@@ -24,6 +26,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -50,12 +53,25 @@ public class ApiService {
     @Autowired
     private DiscoveryClient discoveryClient;
 
+    /**
+     * 标记API扫描是否完成
+     */
+    private AtomicBoolean scanComplete = new AtomicBoolean(true);
 
     /**
      * 扫描API列表
      */
     @Transactional(rollbackFor = Exception.class)
+    @Async
     public void scanApi() {
+
+        synchronized (this){
+            if(!scanComplete.get()){
+                throw new ServiceRuntimeException("扫描未完成，请稍后重试");
+            }
+            scanComplete.set(false);
+        }
+
         AtomicInteger addPoint = new AtomicInteger();
         AtomicInteger updatePoint = new AtomicInteger();
 
@@ -79,7 +95,6 @@ public class ApiService {
                 openAPI.getPaths().keySet().forEach(url -> {
                     PathItem path = openAPI.getPaths().get(url);
 
-                    // 执行
                     doMethod(addPoint, updatePoint, instance, url, path.getGet(), "GET");
                     doMethod(addPoint, updatePoint, instance, url, path.getPut(), "PUT");
                     doMethod(addPoint, updatePoint, instance, url, path.getPost(), "POST");
@@ -97,6 +112,7 @@ public class ApiService {
         }
 
         log.debug(">>> 新增权限点{}个，更新权限点{}个",addPoint.get(),updatePoint.get());
+        scanComplete.set(true);
     }
 
     private void doMethod(AtomicInteger addPoint, AtomicInteger updatePoint, ServiceInstance instance, String url, Operation operation, String method) {
@@ -105,36 +121,35 @@ public class ApiService {
         }
         String code = TYPE_API + ":" + instance.getServiceId() + ":" + operation.getOperationId();
 
-        SysPermission prePermission = permissionService.selectByIdentification(code);
+        SysPermission oldPermission = permissionService.selectByCode(code);
+
         try {
-            if(prePermission == null){
+            // 构建新数据
+            SysPermission permission = buildPermission(operation, code);
+            SysApi api = buildApi(url, method, operation, instance.getServiceId(),permission.getPermissionId());
+            permission.setAdditionInformation(objectMapper.writeValueAsString(api));
+
+            if(oldPermission == null){
                 // 新的点，插入
-                SysPermission permission = buildPermission(operation, code);
-                SysApi api = buildApi(url, method, operation, permission.getPermissionId());
-                permission.setAdditionInformation(objectMapper.writeValueAsString(api));
                 permissionService.save(permission);
 
                 log.debug("插入新的API：{}-{}",permission.getCode(),api);
                 addPoint.addAndGet(1);
             } else {
                 // 判断信息是否相同，不相同则更新，相同则跳过
-                SysApi preAPi = objectMapper.readValue(prePermission.getAdditionInformation(),SysApi.class);
-                SysApi api = buildApi(url, method, operation, prePermission.getPermissionId());
+                SysApi preAPi = objectMapper.readValue(oldPermission.getAdditionInformation(),SysApi.class);
+                permission.setPermissionId(oldPermission.getPermissionId());
 
-                SysPermission buildPermission = buildPermission(operation, code);
-                buildPermission.setPermissionId(prePermission.getPermissionId());
+                if(!permission.equals(oldPermission) || !api.equals(preAPi)){
+                    oldPermission.setName(operation.getSummary());
+                    oldPermission.setPermissionId(oldPermission.getPermissionId());
+                    oldPermission.setUpdateTime(LocalDateTime.now());
+                    oldPermission.setCode(code);
 
-                if(!buildPermission.equals(prePermission) || !api.equals(preAPi)){
-                    SysPermission nPermission = new SysPermission();
-                    nPermission.setName(operation.getSummary());
-                    nPermission.setPermissionId(prePermission.getPermissionId());
-                    nPermission.setUpdateTime(LocalDateTime.now());
+                    oldPermission.setAdditionInformation(objectMapper.writeValueAsString(api));
+                    permissionService.updateById(oldPermission);
 
-                    nPermission.setAdditionInformation(objectMapper.writeValueAsString(api));
-
-                    permissionService.updateById(nPermission);
-
-                    log.debug("更新api {}：{}->{}",prePermission.getCode(),preAPi,api);
+                    log.debug("更新api {}：{}->{}",oldPermission.getCode(),preAPi,api);
 
                     updatePoint.addAndGet(1);
                 }
@@ -145,7 +160,7 @@ public class ApiService {
         }
     }
 
-    private SysApi buildApi(String url, String httpMethod, Operation operation, Integer permissionId) {
+    private SysApi buildApi(String url, String httpMethod, Operation operation,String serviceId, Integer permissionId) {
         SysApi api = new SysApi();
         api.setId(permissionId);
         api.setDescription(operation.getDescription());
@@ -153,6 +168,7 @@ public class ApiService {
         api.setUrl(url);
         api.setMethod(httpMethod);
         api.setTags(StringUtils.collectionToDelimitedString(operation.getTags(),","));
+        api.setServiceId(serviceId);
         api.setSort(1);
         return api;
     }
@@ -174,9 +190,11 @@ public class ApiService {
      *
      * @param pageNum
      * @param pageSize
+     * @param tagList 标签列表
+     * @param serviceIdList tag服务列表
      * @return
      */
-    public Pagination<SysApi> getDataTables(Integer pageNum, Integer pageSize) {
+    public Pagination<SysApi> getDataTables(Integer pageNum, Integer pageSize, List<String> tagList, List<String> serviceIdList) {
         Page<SysPermission> page = new Page<>(pageNum,pageSize);
         LambdaQueryWrapper<SysPermission> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(SysPermission::getType, TYPE_API);

@@ -41,8 +41,10 @@ public class SysPermission implements Serializable {
     @ApiModelProperty(value = "权限标识")
     private String code;
 
+    @EqualsAndHashCode.Exclude
     private LocalDateTime createTime;
 
+    @EqualsAndHashCode.Exclude
     private LocalDateTime updateTime;
 
     @ApiModelProperty(value = "备注信息")
@@ -57,6 +59,7 @@ public class SysPermission implements Serializable {
     private Integer sort;
 
     @ApiModelProperty(value = "附加信息，JSON格式保存")
+    @EqualsAndHashCode.Exclude
     private String additionInformation;
 
 

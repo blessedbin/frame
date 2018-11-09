@@ -39,8 +39,8 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
     }
 
     @Override
-    public SysPermission selectByIdentification(String code) {
-        return baseMapper.selectByIdentification(code);
+    public SysPermission selectByCode(String code) {
+        return baseMapper.selectByCode(code);
     }
 
 
