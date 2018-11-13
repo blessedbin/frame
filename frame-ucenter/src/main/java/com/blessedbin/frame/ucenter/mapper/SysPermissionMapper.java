@@ -16,17 +16,7 @@ import java.util.List;
  */
 public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 
-    SysPermission selectByCode(@Param("code") String code);
-
     List<SysPermission> selectByRoleId(@Param("roleId") Integer roleId);
-
-    List<SysPermission> selectByType(@Param("type") String type);
-
-    SysPermission selectByPrimaryKeyAndType(@Param("id") Integer id, @Param("type") String type);
-
-    List<SysPermission> selectByPrimaryKeysAndType(@Param("ids") List<Integer> ids, @Param("type") String type);
-
-    List<Integer> selectIdsByInIds(@Param("ids")List<Integer> permissionIds);
 
     List<SysPermission> selectByUuid(@Param("uuid") String uuid);
 
